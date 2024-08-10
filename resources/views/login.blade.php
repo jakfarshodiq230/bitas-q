@@ -29,6 +29,7 @@
         
     </style>
     <script src=" {{ asset('assets/admin/js/settings.js') }}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css" rel="stylesheet">
     <link href=" {{ asset('assets/admin/css/modern.css') }}" type="text/css" rel="stylesheet">
 
 </head>
@@ -81,7 +82,7 @@
                                                 <div class="input-group-text" onclick="togglePasswordVisibility()"><i class="fas fa-eye" id="toggle-icon"></i></div>
                                             </div>
                                         </div>
-                                        <a href='{{ url('lupa_password') }}'>Lupa Password</a>
+                                        <a href='#' id="lupaBtn">Lupa Password</a>
                                         <div class="text-center mt-3 mb-2">
                                             <button type="submit" class="btn btn-lg btn-primary masukBtn" id="masukBtn">Masuk</button>
                                         </div>
@@ -106,6 +107,7 @@
             </symbol>
         </defs>
     </svg>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
     <script src=" {{ asset('assets/admin/js/app.js') }}"></script>
     <script>
         $('.alert').hide();
@@ -152,9 +154,27 @@
                     toggleIcon.classList.add("fa-eye");
                 }
             }
-
-            // Bind the toggle function to the click event
             $('#toggle-icon').on('click', togglePasswordVisibility);
+        });
+
+        $(document).on('click', '#lupaBtn', function() {
+            var id_periode = $(this).data('id_periode');
+            var tahun_ajaran = $(this).data('tahun_ajaran');
+            // Make an Ajax call to delete the record
+            Swal.fire({
+                title: 'Password',
+                text: 'Apakah Anda Ingin Merubah Password?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya akan melakukan...'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var url = "{{ url('lupa_password') }}";
+                    window.location.href = url;
+                }
+            });
         });
 
     </script>

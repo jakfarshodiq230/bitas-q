@@ -28,8 +28,8 @@ class SendEmailUpdatePass extends Mailable
      */
     public function build()
     {
-        return $this->subject('LUPA PASSWORD AKUN APKIS')
-                    ->view('Admin.user.emailUpdatePass') // Sesuaikan dengan path template email Anda
+        return $this->subject('LUPA PASSWORD AKUN MY-TAHFIDZ')
+                    ->view('Admin.users.emailUpdatePass') // Sesuaikan dengan path template email Anda
                     ->with(['data' => $this->data]); // Mengirimkan data ke view
     }
 

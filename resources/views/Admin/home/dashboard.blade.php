@@ -207,7 +207,6 @@
             url: '{{ url('admin/dashboard/data_home_default') }}',
             type: 'GET',
             success: function(response) {
-                console.log(response);
                 // Populate the modal fields with the data
                 $('#peserta').text(response.peserta);
                 $('#guru').text(response.guru);

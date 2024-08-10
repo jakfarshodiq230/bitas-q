@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Jenssegers\Agent\Agent;
@@ -13,9 +13,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
 use App\Models\Admin\LogAksesModel;
-use App\Models\Admin\User;
+use App\Models\User;
 use App\Models\Admin\Admin\GuruModel;
 use App\Models\Admin\Admin\SiswaModel;
+
+use App\Mail\SendLupaPassword;
+use App\Mail\SendEmailUpdatePass;
 
 class LoginController extends Controller
 {
@@ -56,6 +59,12 @@ class LoginController extends Controller
                         'redirect' => '/'
                     ]);
                 }
+            }else{
+                return response()->json([
+                    'error' => true,
+                    'massage' => 'Akun Belum Verifikasi',
+                    'redirect' => '/'
+                ]);
             }
         
             // Attempt authentication for guru guard
@@ -80,6 +89,12 @@ class LoginController extends Controller
                         'redirect' => '/'
                     ]);
                 }
+            }else{
+                return response()->json([
+                    'error' => true,
+                    'massage' => 'Akun Belum Verifikasi',
+                    'redirect' => '/'
+                ]);
             }
     
             // Attempt authentication for siswa guard
@@ -158,4 +173,89 @@ class LoginController extends Controller
         }
         return response()->json(['error' => 'Unauthorized'], 401);
     }
+
+    public function lupaPassword(){
+    	return view ('lupa_password');
+    }
+
+    public function CekAkun($id)
+    {
+        // Try to find the user in the 'users' guard
+        $user = User::where('email', $id)->first();
+        if ($user) {
+            $data_pesan = [
+                'title' => 'DATA AKUN MY-TAHFIDZ',
+                'nama_pelanggan' => $user->nama_user,
+                'email_pelanggan' => $user->email,
+                'no_hp' => $user->no_hp_user,
+                'link' => url("lupa_password/input_data/{$user->id}"),
+            ];
+            Mail::to($user->email)->send(new SendLupaPassword($data_pesan));
+            return response()->json(['success' => true, 'message' => 'Data Ditemukan']);
+        }
+    
+        // Try to find the user in the 'guru' guard
+        $guru = GuruModel::where('email_guru', $id)->first();
+        if ($guru) {
+            $data_pesan = [
+                'title' => 'DATA AKUN MY-TAHFIDZ',
+                'nama_pelanggan' => $guru->nama_guru,
+                'email_pelanggan' => $guru->email_guru,
+                'no_hp' => $guru->no_hp_guru,
+                'link' => url("lupa_password/input_data/{$guru->id_guru}"),
+            ];
+            Mail::to($guru->email)->send(new SendLupaPassword($data_pesan));
+            return response()->json(['success' => true, 'message' => 'Data Ditemukan']);
+        }
+    
+        // If neither user nor guru was found
+        return response()->json(['success' => false, 'message' => 'Data Tidak Ditemukan']);
+    }
+
+    public function lupa_passwordInput($id){
+    	return view ('lupa_password_form', compact('id'));
+    }
+
+    public function update_password(Request $request)
+    {
+
+        $user = User::where('id', $request->id)->first();
+        if ($user) {
+            $data_pesan = [
+                'title' => 'DATA AKUN MY-TAHFIDZ',
+                'nama_pelanggan' => $user->nama_user,
+                'email_pelanggan' => $user->email,
+                'no_hp' => $user->no_hp_user,
+                'password' => $request->password
+            ];
+            Mail::to($user->email)->send(new SendEmailUpdatePass($data_pesan));
+            $data = [
+                'password' => Hash::make($request->password),
+            ];
+            User::where('id',$request->id)->update($data);
+            return response()->json(['success' => true, 'message' => 'Data Berhasil Update Password']);
+        }else{
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+
+        $guru = GuruModel::where('id_guru', $request->id)->first();
+        if ($guru) {
+            $data_pesan = [
+                'title' => 'DATA AKUN MY-TAHFIDZ',
+                'nama_pelanggan' => $guru->nama_guru,
+                'email_pelanggan' => $guru->email_guru,
+                'no_hp' => $guru->no_hp_guru,
+                'password' => $request->password
+            ];
+            Mail::to($guru->email)->send(new SendEmailUpdatePass($data_pesan));
+            $data = [
+                'password' => Hash::make($request->password),
+            ];
+            GuruModel::where('id',$request->id)->update($data);
+            return response()->json(['success' => true, 'message' => 'Data Berhasil Update Password']);
+        }else{
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+    }
+    
 }

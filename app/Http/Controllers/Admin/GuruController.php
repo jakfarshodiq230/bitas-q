@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Imports\GuruImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Admin\GuruModel;
+use App\Mail\SendMailGuru;
+use Illuminate\Support\Facades\Mail;
 
 class GuruController extends Controller
 {
@@ -98,6 +100,20 @@ class GuruController extends Controller
     
             // Check if data was successfully stored
             if ($guru) {
+                // send email
+                $PesanEmail = [
+                    'nik_guru' => $validatedData['nik_guru'],
+                    'nama_guru' => $validatedData['nama_guru'],
+                    'tanggal_lahir_guru' => $validatedData['tanggal_lahir_guru'],
+                    'tempat_lahir_guru' => $validatedData['tempat_lahir_guru'],
+                    'jenis_kelamin_guru' => $validatedData['jenis_kelamin_guru'],
+                    'no_hp_guru' => $validatedData['no_hp_guru'],
+                    'email_guru' => $validatedData['email_guru'],
+                    'password' =>  $formatTanggal,
+                    'tanggal_daftar' => $tanggal,
+                ];
+                Mail::to($validatedData['email_guru'])->send(new SendMailGuru($PesanEmail));
+
                 return response()->json(['success' => true, 'message' => 'Berhasil Tambah Data', 'data' => $guru]);
             } else {
                 return response()->json(['error' => true, 'message' => 'Gagal Tambah Data']);
@@ -261,7 +277,31 @@ class GuruController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => true, 'message' => $e->getMessage()]);
         }
-        
-}
+    }
+
+    public function SendEmail($id)
+    {
+        try {
+            $guru = guruModel::where('nik_guru',$id)->first();
+            $date = new \DateTime($guru->tanggal_lahir_guru);
+            $formatTanggal = $date->format('dmY');
+            $PesanEmail = [
+                'nik_guru' => $guru->nik_guru,
+                'nama_guru' => $guru->nama_guru,
+                'tanggal_lahir_guru' => $guru->tanggal_lahir_guru,
+                'tempat_lahir_guru' => $guru->tempat_lahir_guru,
+                'jenis_kelamin_guru' => $guru->jenis_kelamin_guru,
+                'no_hp_guru' => $guru->no_hp_guru,
+                'email_guru' => $guru->email_guru,
+                'password' =>  $formatTanggal,
+                'tanggal_daftar' => $guru->created_at,
+            ];
+            Mail::to($guru->email_guru)->send(new SendMailGuru($PesanEmail));
+
+            return response()->json(['success' => true, 'message' => 'Berhasil Kirim Data']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $e->getMessage()]);
+        }
+    }
         
 }

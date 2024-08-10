@@ -36,7 +36,7 @@
                             <div class="card-body">
                                 <div class="m-sm-4">
                                     <div class="text-center">
-                                        <img src="{{ asset('assets/admin/img/icon_apkis.png') }}" alt="apkis"
+                                        <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="apkis"
                                             class="img-fluid rounded-circle" width="132" height="132" />
                                     </div>
                                     <div class="text-center mt-2">
@@ -108,14 +108,12 @@
         $('#saveBTN').on('click', function() {
             var password = document.getElementById('password').value;
             var id = '{{ $id }}';
-            var id_pelanggan = '{{ $id_pelanggan }}'
-            var url = '{{ url('lupa_password/update_password_store') }}';
+            var url = '{{ url('lupa_password/update_password') }}';
             $.ajax({
                 url: url,
                 method: 'POST',
                 data: {
-                    id: id,
-                    id_pelanggan: id_pelanggan,
+                    id:id,
                     password: password,
                     _token: '{{ csrf_token() }}'
                 },

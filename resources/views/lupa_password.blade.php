@@ -36,7 +36,7 @@
                             <div class="card-body">
                                 <div class="m-sm-4">
                                     <div class="text-center">
-                                        <img src="{{ asset('assets/admin/img/icon_apkis.png') }}" alt="apkis"
+                                        <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="apkis"
                                             class="img-fluid rounded-circle" width="132" height="132" />
                                     </div>
                                     <div class="text-center mt-2">
