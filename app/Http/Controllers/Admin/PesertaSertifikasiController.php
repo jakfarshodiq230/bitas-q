@@ -135,8 +135,8 @@ class PesertaSertifikasiController extends Controller
 
 
     public function DataDetailPeserta($peserta){
-        $menu = 'rapor';
-        $submenu= 'peserta-rapor';
+        $menu = 'ujian';
+        $submenu= 'peserta-sertifikasi';
         return view ('Admin/sertifikasi/peserta/detail_peserta_sertifikasi',compact('menu','submenu','peserta'));
     } 
 

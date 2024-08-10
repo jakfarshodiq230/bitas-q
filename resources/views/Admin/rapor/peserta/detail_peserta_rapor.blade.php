@@ -1,4 +1,4 @@
-@extends('Guru.layout')
+@extends('Admin.layout')
 @section('content')
     <style>
         .border-navy {

@@ -13,6 +13,7 @@ use App\Models\Admin\RaporKegiatanModel;
 use App\Models\Admin\PesertaKegiatan;
 use App\Models\Guru\PenilaianPengembanganDiriModel;
 use App\Pdf\CustomPdf;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 
 class PesertaRaporController extends Controller
 {
@@ -143,7 +144,7 @@ class PesertaRaporController extends Controller
         $pdf = new CustomPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         // Set document information
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Bukti Pembelian');
+        $pdf->SetTitle('Rapor Peserta');
 
         // Remove default header/footer
         $pdf->setPrintHeader(true); // Enable custom header
@@ -192,8 +193,21 @@ class PesertaRaporController extends Controller
         // Place the image
         $pdf->Image($imagePath, $x, $y, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 0, false, false, false);
            
+        // barcode
+        $url = url("cek_rapor/{$idRapor}/{$peserta}/{$tahun}/{$jenjang}/{$periode}");
+        $generator = new BarcodeGeneratorPNG();
+        $barcodeImage = $generator->getBarcode($url, BarcodeGeneratorPNG::TYPE_CODE_128);
+        // Create a temporary file for the barcode image
+        $tempBarcodeFile = tempnam(sys_get_temp_dir(), 'barcode');
+        file_put_contents($tempBarcodeFile, $barcodeImage);
 
+        $imageWidth1 = 40; // Set image width (3 cm)
+        $imageHeight1 = 10; // Set image height (4 cm)
+        $x1 = 150; // Calculate X position for centering
+        $y1 = 262; // Set a fixed Y position from the top
+        $pdf->Image($tempBarcodeFile, $x1, $y1, $imageWidth1, $imageHeight1, 'PNG', '', '', false, 300, '', false, false, 0, false, false, false);
         // Close and output PDF document
         $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
+        unlink($tempBarcodeFile);
     }
 }
