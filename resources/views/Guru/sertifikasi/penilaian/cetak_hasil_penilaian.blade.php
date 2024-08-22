@@ -68,7 +68,7 @@
             </td>
         </tr>
         <tr>
-            <th style="height: 20px; text-align: center;">______________________________</th>
+            <th style="height: 20px; text-align: center;">{{ $identitas->tanggungjawab_periode}}</th>
             <th style="height: 20px; text-align: center;"></th>
             <th style="height: 20px; text-align: center;"><b>{{ $identitas->nama_guru}}</b></th>
         </tr>
