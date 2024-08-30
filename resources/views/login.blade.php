@@ -129,13 +129,13 @@
                         } else {
                             // Show error message
                             $('.alert').show();
-                            $('.alert-message').text(response.massage);
+                            $('.alert-message').text(response.message);
                         }
                     },
                     error: function(xhr) {
                         // Handle error response
                         $('.alert').show();
-                        $('.alert-message').text(response.massage);
+                        $('.alert-message').text(response.message);
                     }
                 });
             });

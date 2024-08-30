@@ -292,6 +292,16 @@
             }
         }
 
+        function getRatingKhatam(rata_baru) {
+            if(rata_baru >= 5){
+                return "Sangat Baik";
+            }else if(rata_baru >= 1 && rata_baru <= 4){
+                return "Baik";
+            }else {
+                return "Kurang";
+            }
+        }
+
         function formatValue(value, decimals) {
             if (value === null) return '-'; // Handle null or undefined values
             return value.toFixed(decimals);
@@ -485,7 +495,7 @@
                         var rating_n_th_p = getRating(respons.data.n_th_p);
                         var rata_lama_n_th_p = formatValue(respons.data.n_th_p, 2) + " ( " + rating_n_th_p + " )";
 
-                        var rating_n_jk_p = getRating(respons.data.n_jk_p);
+                        var rating_n_jk_p = getRatingKhatam(respons.data.n_jk_p);
                         var rata_lama_n_jk_p = formatValue(respons.data.n_jk_p, 0) + " ( " + rating_n_jk_p + " )";
 
                         $('#n_k_th').text(rating_n_k_p !== null ? rata_lama_n_k_p : '00.00');

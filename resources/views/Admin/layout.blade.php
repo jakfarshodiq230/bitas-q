@@ -98,6 +98,7 @@
                             <li class="sidebar-item {{ $submenu == 'kelas' ? 'active' : null }}"><a
                                     class='sidebar-link' href='{{ url('admin/kelas') }}'>Kelas</a>
                             </li>
+                            
                         </ul>
                     </li>
 

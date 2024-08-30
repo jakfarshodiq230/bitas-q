@@ -268,11 +268,11 @@
                                                     <label>Jumlah Khatam Al-Qur'an</label>
                                                     <select class="form-control select2 mb-4 me-sm-2 mt-0"
                                                         name="n_jk_p_k" data-bs-toggle="select2"
-                                                        onchange="handleNilaiChange(this, $('input[name=\'n_jk_p\']'))" id="n_jk_p_k"
+                                                        onchange="handleKhatamChange(this, $('input[name=\'n_jk_p\']'))" id="n_jk_p_k"
                                                         required>
                                                         <option>PILIH</option>
-                                                        @foreach (range(1, 100) as $angka)
-                                                            <option value="{{ $angka }}">{{ $angka }}</option>
+                                                        @foreach (range(1, 5) as $angka)
+                                                            <option value="{{ $angka }}">{{ $angka === 5 ? $angka . ' ...' : $angka }}</option>
                                                         @endforeach
                                                     </select>
                                                     <div id="n_jk_p_k-error" class="invalid-feedback"></div>
@@ -471,6 +471,20 @@
             }else if(selectedValue >= 80 && selectedValue <= 85){
                 ktr_p = "Cukup";
             }else{
+                ktr_p = "Kurang";
+            }
+
+            $(inputElement).val(ktr_p);
+        }
+
+        function handleKhatamChange(selectElement, inputElement) {
+            const selectedValue = parseFloat(selectElement.value);
+            let ktr_p;
+            if(selectedValue >= 5){
+                ktr_p = "Sangat Baik";
+            }else if(selectedValue >= 1 && selectedValue <= 4){
+                ktr_p = "Baik";
+            }else {
                 ktr_p = "Kurang";
             }
 

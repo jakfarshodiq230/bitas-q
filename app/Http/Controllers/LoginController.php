@@ -30,100 +30,95 @@ class LoginController extends Controller
 
     public function authenticate(Request $request)
     {
+        // Prepare credentials for each guard
         $credentials_user = ['email' => $request->input('username'), 'password' => $request->input('password')];
         $credentials_guru = ['nik_guru' => $request->input('username'), 'password' => $request->input('password')];
         $credentials_siswa = ['nisn_siswa' => $request->input('username'), 'password' => $request->input('password')];
+    
         $agent = new Agent();
         $agent->setUserAgent($request->header('User-Agent'));
     
-            // Attempt authentication for users guard
-            if (Auth::guard('users')->attempt($credentials_user)) {
-                $user = Auth::guard('users')->user();
-                if ($user->email_verified_at !== null) {
-                    $request->session()->regenerate();
-                    $this->storeAccessInfo($request);
-                    $request->session()->put('user', [
-                        'id' => $user->id,
-                        'nama_user' => $user->nama_user,
-                        'level_user' => 'admin',
-                        'user_level' => $user->level_user,
-                    ]);
-                    return response()->json([
-                        'success' => true,
-                        'redirect' => '/admin/dashboard'
-                    ]);
-                }else{
-                    return response()->json([
-                        'error' => true,
-                        'massage' => 'Akun Belum Verifikasi',
-                        'redirect' => '/'
-                    ]);
-                }
-            }else{
+        // Attempt authentication for 'users' guard
+        if (Auth::guard('users')->attempt($credentials_user)) {
+            $user = Auth::guard('users')->user();
+            if ($user->email_verified_at !== null) {
+                $request->session()->regenerate();
+                $this->storeAccessInfo($request);
+                $request->session()->put('user', [
+                    'id' => $user->id,
+                    'nama_user' => $user->nama_user,
+                    'level_user' => 'admin',
+                    'user_level' => $user->level_user,
+                ]);
+                return response()->json([
+                    'success' => true,
+                    'redirect' => '/admin/dashboard'
+                ]);
+            } else {
                 return response()->json([
                     'error' => true,
-                    'massage' => 'Akun Belum Verifikasi',
+                    'message' => 'Akun belum verifikasi.',
                     'redirect' => '/'
                 ]);
             }
-        
-            // Attempt authentication for guru guard
-            if (Auth::guard('guru')->attempt($credentials_guru)) {
-                $user = Auth::guard('guru')->user();
-                if ($user->status_guru === 1) {
-                    $request->session()->regenerate();
-                    $this->storeAccessInfo($request);
-                    $request->session()->put('user', [
-                        'id' => $user->id_guru,
-                        'nama_user' => $user->nama_guru,
-                        'level_user' => 'guru',
-                    ]);
-                    return response()->json([
-                        'success' => true,
-                        'redirect' => '/guru/dashboard'
-                    ]);
-                }else{
-                    return response()->json([
-                        'error' => true,
-                        'massage' => 'Akun Belum Verifikasi',
-                        'redirect' => '/'
-                    ]);
-                }
-            }else{
-                return response()->json([
-                    'error' => true,
-                    'massage' => 'Akun Belum Verifikasi',
-                    'redirect' => '/'
-                ]);
-            }
+        }
     
-            // Attempt authentication for siswa guard
-            if (Auth::guard('siswa')->attempt($credentials_siswa)) {
-                $user = Auth::guard('siswa')->user();
-                if ($user->status_guru !== 0) {
-                    $request->session()->regenerate();
-                    $this->storeAccessInfo($request);
-                    $request->session()->put('user', [
-                        'id' => $user->id_guru,
-                        'nama_user' => $user->nama_siswa,
-                        'level_user' => 'siswa',
-                    ]);
+        // Attempt authentication for 'guru' guard
+        if (Auth::guard('guru')->attempt($credentials_guru)) {
+            $guru = Auth::guard('guru')->user();
+            if ($guru->status_guru === 1) {
+                $request->session()->regenerate();
+                $this->storeAccessInfo($request);
+                $request->session()->put('user', [
+                    'id' => $guru->id_guru,
+                    'nama_user' => $guru->nama_guru,
+                    'level_user' => 'guru',
+                ]);
+                return response()->json([
+                    'success' => true,
+                    'redirect' => '/guru/dashboard'
+                ]);
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Akun terblokir.',
+                    'redirect' => '/'
+                ]);
+            }
+        }
+    
+        // Attempt authentication for 'siswa' guard
+        if (Auth::guard('siswa')->attempt($credentials_siswa)) {
+            $siswa = Auth::guard('siswa')->user();
+            if ($siswa->status_guru !== 0) {
+                $request->session()->regenerate();
+                $this->storeAccessInfo($request);
+                $request->session()->put('user', [
+                    'id' => $siswa->id_siswa,
+                    'nama_user' => $siswa->nama_siswa,
+                    'level_user' => 'siswa',
+                ]);
                 return response()->json([
                     'success' => true,
                     'redirect' => '/siswa/dashboard'
                 ]);
-            }else{
+            } else {
                 return response()->json([
                     'error' => true,
-                    'massage' => 'Akun Belum Verifikasi',
+                    'message' => 'Akun belum verifikasi.',
                     'redirect' => '/'
                 ]);
             }
         }
     
         // If none of the attempts succeed, return JSON with redirect to '/'
-        return response()->json(['massage' => 'Username dan Password Salah','redirect' => '/']);
+        return response()->json([
+            'error' => true,
+            'message' => 'Username atau password salah.',
+            'redirect' => '/'
+        ]);
     }
+    
     
     protected function storeAccessInfo(Request $request)
     {

@@ -14,6 +14,18 @@ if (!function_exists('getRating')) {
     }
 }
 
+if (!function_exists('getRatingKhatam')) {
+    function getRatingKhatam($rata_baru) {
+        if($rata_baru >= 5){
+            return "Sangat Baik";
+        }else if($rata_baru >= 1 && $rata_baru <= 4){
+            return "Baik";
+        }else {
+            return "Kurang";
+        }
+    }
+}
+
 
 ?>
 <br><br>
@@ -209,7 +221,7 @@ if (!function_exists('getRating')) {
         <tr>
             <td style="height: 20px; text-align:center" width="5%">06</td>
             <td style="height: 20px;text-align:lefth" width="57%">Jumlah Khatam Al-Qur'an</td>
-            <td style="height: 20px; text-align:center"><?= getRating($nilai->n_jk_p) ?></td>
+            <td style="height: 20px; text-align:center"><?= getRatingKhatam($nilai->n_jk_p) ?></td>
         </tr>
     </table>
 
