@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Peserta Rapor
+                    DATA PESERTA RAPOR AL-QUR'AN
                 </h1>
             </div>
             <div class="row">
@@ -113,10 +113,24 @@
         var periode = '{{ $periode }}';
         var jenjang = '{{ $jenjang }}';
         var tahun = '{{ $tahun }}';
+        function formatTanggalIndonesia(tanggal) {
+            if (tanggal) {
+                const months = [
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                ];
 
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+                const date = new Date(tanggal);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = months[date.getMonth()];
+                const year = date.getFullYear();
+
+                return `${day} ${month} ${year}`;
+            } else {
+                return 'Tanggal tidak tersedia';
+            }
         }
+
         $(document).ready(function() {
             // identitas
             $.ajax({
@@ -132,10 +146,10 @@
                     var tanggal = periode.tggl_periode || '';
 
                     // Update the HTML elements
-                    $('#tahun_ajaran').text(capitalizeFirstLetter(nama_tahun_ajaran));
-                    $('#rapor').text(capitalizeFirstLetter(jenis_kegiatan));
-                    $('#tanggal').text(capitalizeFirstLetter(tanggal));
-                    $('#jenjang').text(capitalizeFirstLetter(jenis_jenjang));
+                    $('#tahun_ajaran').text(nama_tahun_ajaran.toUpperCase());
+                    $('#rapor').text(jenis_kegiatan.toUpperCase());
+                    $('#tanggal').text(formatTanggalIndonesia(tanggal));
+                    $('#jenjang').text(jenis_jenjang.toUpperCase());
                 },
                 error: function(xhr, status, error) {
                     console.error('AJAX Error: ' + status + error);

@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Kelas
+                    DATA KELAS
                 </h1>
             </div>
             <div class="row">
@@ -35,8 +35,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <button type="button" id="saveBtn" class="btn btn-primary mb-2">Tambah
-                                                Kelas</button>
+                                            <button type="button" id="saveBtn" class="btn btn-primary mb-2">Simpan</button>
                                         </div>
                                     </form>
                                 </div>

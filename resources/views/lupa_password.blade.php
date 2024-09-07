@@ -9,7 +9,7 @@
     <meta name="description" content="Modern, flexible and responsive Bootstrap 5 admin &amp; dashboard template">
     <meta name="author" content="Bootlab">
 
-    <title>APKIS</title>
+    <title>BITAS-Q</title>
     <style>
         body {
             opacity: 0;
@@ -36,7 +36,7 @@
                             <div class="card-body">
                                 <div class="m-sm-4">
                                     <div class="text-center">
-                                        <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="apkis"
+                                        <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="BITAS-Q"
                                             class="img-fluid rounded-circle" width="132" height="132" />
                                     </div>
                                     <div class="text-center mt-2">
@@ -93,8 +93,12 @@
 
         //save pembelian
         $('#cekBtn').on('click', function() {
+            var $button = $(this);
+            var originalText = $button.text();
+            $button.prop('disabled', true).text('Loading...');
+
             var email_akun = document.getElementById('email').value;
-            var url = '{{ url('lupa_password/cek_akun') }}/'+email_akun;
+            var url = '{{ url('lupa_password/cek_akun') }}/' + email_akun;
             $.ajax({
                 url: url,
                 method: 'GET',
@@ -116,6 +120,9 @@
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
+                },
+                complete: function() {
+                    $button.prop('disabled', false).text(originalText);
                 }
             });
         });

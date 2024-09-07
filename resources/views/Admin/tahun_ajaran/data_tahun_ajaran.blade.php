@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Tahun Ajaran
+                    DATA TAHUN AJAR
                 </h1>
             </div>
             <div class="row">

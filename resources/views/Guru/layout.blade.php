@@ -10,7 +10,7 @@
     <meta name="description" content="Modern, flexible and responsive Bootstrap 5 admin &amp; dashboard template">
     <meta name="author" content="Bootlab">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>MY TAHFIDZ</title>
+    <title>BITAS-Q</title>
     <style>
         body {
             opacity: 0;
@@ -30,7 +30,7 @@
     <div class="wrapper">
         <nav id="sidebar" class="sidebar">
             <a class='sidebar-brand' href='{{ url('/') }}'>
-                MY TAHFIDZ
+                BITAS-Q
             </a>
             <div class="sidebar-content">
                 <div class="sidebar-user">
@@ -71,7 +71,10 @@
                         </a>
                         <ul id="ui-tahfidz" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item {{ $submenu == 'penilaian' ? 'active' : null }}"><a
-                                class='sidebar-link' href='{{ url('guru/penilaian_kegiatan') }}'>Penilaian</a>
+                                class='sidebar-link' href='{{ url('guru/penilaian_kegiatan') }}'>Al-qur'an</a>
+                            </li>
+                            <li class="sidebar-item {{ $submenu == 'penilaian-pbi' ? 'active' : null }}"><a
+                                class='sidebar-link' href='{{ url('guru/penilaian_pbi') }}'>Bina Pribadi Islam (BPI)</a>
                             </li>
                         </ul>
                     </li>
@@ -86,7 +89,10 @@
                         </a>
                         <ul id="ui-rapor" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item {{ $submenu == 'penilaian-rapor' ? 'active' : null }}"><a
-                                    class='sidebar-link' href='{{ url('guru/penilaian_rapor') }}'>Penilaian</a>
+                                    class='sidebar-link' href='{{ url('guru/penilaian_rapor') }}'>Al-qur'an</a>
+                            </li>
+                            <li class="sidebar-item {{ $submenu == 'penilaian-rapor-pbi' ? 'active' : null }}"><a
+                                    class='sidebar-link' href='{{ url('guru/penilaian_rapor_pbi') }}'>Bina Pribadi Islam (BPI)</a>
                             </li>
                         </ul>
                     </li>
@@ -148,7 +154,7 @@
                     <div class="row text-muted">
                         <div class="col-12 text-end">
                             <p class="mb-0">
-                                MY TAHFIDZ &copy; {{ date('Y') }}
+                                BITAS-Q &copy; {{ date('Y') }}
                             </p>
                         </div>
                     </div>

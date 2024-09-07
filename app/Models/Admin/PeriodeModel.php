@@ -33,6 +33,19 @@ class PeriodeModel extends Model
         return $data;
     }
 
+    public static function DataPbi()
+    {
+        $data = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->select('periode.*','tahun_ajaran.*',) 
+            ->orderBy('periode.created_at', 'DESC')
+            ->whereNull('periode.deleted_at')
+            ->where('judul_periode', 'pbi')
+            ->get();
+        
+        return $data;
+    }
+
     public static function DataRapor()
     {
         $data = DB::table('periode')
@@ -43,6 +56,36 @@ class PeriodeModel extends Model
             ->where('judul_periode', 'rapor')
             ->get();
         
+        return $data;
+    }
+
+    public static function DataRaporPbi()
+    {
+        $data = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->select('periode.*','tahun_ajaran.*',) 
+            ->orderBy('periode.created_at', 'DESC')
+            ->whereNull('periode.deleted_at')
+            ->where('judul_periode', 'rapor')
+            ->where('jenis_periode', 'pbi')
+            ->get();
+        
+        return $data;
+    }
+
+    public static function DataPesertaRaporPbi()
+    {
+        $data = DB::table('periode')
+            ->leftJoin('rapor_pbi', 'periode.id_periode', '=', 'rapor_pbi.id_periode')
+            ->leftJoin('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->select('periode.*', 'tahun_ajaran.*', 
+                     DB::raw('COALESCE(COUNT(rapor_pbi.id_siswa), 0) as siswa_count'))
+            ->whereNull('periode.deleted_at')
+            ->where('judul_periode', 'rapor')
+            ->where('jenis_periode', 'pbi')
+            ->groupBy('periode.id_periode', 'tahun_ajaran.id_tahun_ajaran') // Group by unique identifiers
+            ->orderBy('periode.created_at', 'DESC')
+            ->get();
         return $data;
     }
 
@@ -112,6 +155,7 @@ class PeriodeModel extends Model
         $data = DB::table('periode')
             ->leftJoin('peserta_kegiatan', 'periode.id_periode', '=', 'peserta_kegiatan.id_periode')
             ->leftJoin('peserta_sertifikasi', 'periode.id_periode', '=', 'peserta_sertifikasi.id_periode')
+            ->leftJoin('peserta_pbi', 'periode.id_periode', '=', 'peserta_pbi.id_periode')
             ->leftJoin('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
             ->select(
                 'periode.judul_periode',
@@ -120,6 +164,7 @@ class PeriodeModel extends Model
                 'tahun_ajaran.nama_tahun_ajaran',
                 DB::raw('COUNT(DISTINCT peserta_kegiatan.id_siswa) as jumlah_siswa_setoran'),
                 DB::raw('COUNT(DISTINCT peserta_sertifikasi.id_siswa) as jumlah_siswa_sertifikasi'),
+                DB::raw('COUNT(DISTINCT peserta_pbi.id_siswa) as jumlah_siswa_bpi'),
             )
             ->whereNull('periode.deleted_at')
             ->where('periode.judul_periode', '!=', 'rapor')
@@ -136,12 +181,14 @@ class PeriodeModel extends Model
         $data = DB::table('periode')
             ->select('*')
             ->whereNull('periode.deleted_at')
-            ->where('periode.judul_periode', '!=', 'setoran')
+            ->whereNotIn('periode.judul_periode', ['setoran', 'pbi'])
             ->where('periode.status_periode', '=', 1)
-            ->orderBy('periode.tggl_akhir_penilaian','ASC')
+            ->orderBy('periode.tggl_akhir_penilaian', 'ASC')
             ->get();
             
         return $data;
     }
+    
+    
     
 }

@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Penialian Kegiatan {{ $judul_3 }}
+                    DETAIL PENILAIAN PESERTA {{ strtoupper($judul_3) }}
                 </h1>
             </div>
             <div class="row">
@@ -585,10 +585,10 @@
                     } else {
                         $('#kegiatan').text('Tahsin/Materikulasi');
                     }
-                    $('#tahun_ajaran').text(capitalizeFirstLetter(data.siswa.nama_tahun_ajaran));
-                    $('#pembimbing').text(capitalizeFirstLetter(data.siswa.nama_guru));
-                    $('#nama').text(capitalizeFirstLetter(data.siswa.nama_siswa));
-                    $('#kelas').text(data.siswa.nama_kelas);
+                    $('#tahun_ajaran').text(data.siswa.nama_tahun_ajaran.toUpperCase());
+                    $('#pembimbing').text(data.siswa.nama_guru.toUpperCase());
+                    $('#nama').text(data.siswa.nama_siswa.toUpperCase());
+                    $('#kelas').text(data.siswa.nama_kelas.toUpperCase());
                     if (data.siswa.foto_siswa != null) {
                         var fotoSiswaUrl = "{{ url('storage') }}/" + data.siswa.foto_siswa;
                         $('#avatarImg').attr('src', fotoSiswaUrl);
@@ -596,13 +596,6 @@
                         var fotoSiswaUrl = '{{ asset('assets/admin/img/avatars/avatar.jpg') }}'
                         $('#avatarImg').attr('src', fotoSiswaUrl);
                     }
-
-                    function capitalizeFirstLetter(string) {
-                        return string.charAt(0).toUpperCase() + string.slice(1);
-                    }
-
-                    
-
 
                 },
                 error: function(response) {

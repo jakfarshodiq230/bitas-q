@@ -5,9 +5,9 @@
 
         <div class="header">
             <h1 class="header-title">
-                Selamat Datang {{ ucfirst(strtolower(session('user')['nama_user'])) }},  Di MY TAHFIDZ.
+                SELAMAT DATANG {{ ucfirst(strtolower(session('user')['nama_user'])) }},  DI BITAS-Q.
             </h1>
-            <p class="header-subtitle">MY TAHFIDZ merupakan sistem informasi dan manajemen Tahsin, Tahfidz dan Sertifikasi Al-Qur'an.</p>
+            <p class="header-subtitle">BITAS-Q merupakan sistem informasi dan manajemen Tahsin, Tahfidz, Sertifikasi Al-Qur'an dan kegiatan Bina Pribadi Islam (BPI)</p>
         </div>
 
         <div class="row">
@@ -244,7 +244,14 @@
                         var namaTahunAjaran = row.nama_tahun_ajaran;
 
                         // Return formatted string based on the value of judul_periode
-                        return row.judul_periode === 'setoran' ? jenisPeriode + ' [ ' + namaTahunAjaran + ' ]' : judulPeriode + ' ' + row.juz_periode + ' [ ' + namaTahunAjaran + ' ' + jenisPeriode + ' ]';
+                        return row.judul_periode === 'setoran' 
+                        ? 'SETORAN - ' + jenisPeriode + ' [ ' + namaTahunAjaran + ' ]'
+                        : row.judul_periode === 'sertifikasi' 
+                        ? 'SERTIFIKASI - ' + jenisPeriode + ' [ ' + namaTahunAjaran + ' ]'
+                        : row.judul_periode === 'pbi' 
+                        ? 'BINA PRIBADI ISLAM (BPI) ' + ' [ ' + namaTahunAjaran + ' ]'
+                        : judulPeriode + ' ' + row.juz_periode + ' [ ' + namaTahunAjaran + ' ' + jenisPeriode + ' ]';
+
                     }
                 },
                 {
@@ -257,6 +264,8 @@
                             percentage = row.jumlah_siswa_sertifikasi;
                         } else if (row.judul_periode === "setoran") {
                             percentage = row.jumlah_siswa_setoran ;
+                        }else if (row.judul_periode === "pbi") {
+                            percentage = row.jumlah_siswa_bpi ;
                         }
 
                         return percentage;
@@ -273,6 +282,8 @@
                             percentage = (row.jumlah_siswa_sertifikasi / total) * 100;
                         } else if (row.judul_periode === "setoran") {
                             percentage = (row.jumlah_siswa_setoran / total) * 100;
+                        }else if (row.judul_periode === "pbi") {
+                            percentage = (row.jumlah_siswa_bpi / total) * 100;
                         }
 
                         return '<div class="progress">' +

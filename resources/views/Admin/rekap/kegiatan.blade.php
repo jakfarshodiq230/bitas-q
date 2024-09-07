@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Rekap Kegiatan
+                    REKAP KEGIATAN
                 </h1>
             </div>
             <div class="row">
@@ -81,8 +81,13 @@
                 success: function(response) {
                     populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ PENILAIAN ${item.jenis_periode.toUpperCase()} ]`);
                     populateSelect('kelas', response.kelas, item => item.nama_kelas.toUpperCase());
+                    $('.siswa').val(null).trigger('change');
 
+                    // Tambahkan event listener untuk setiap perubahan pada periode dan kelas
                     $('#periode, #kelas').on('change', function() {
+                        // Reset select siswa setiap ada perubahan pada periode atau kelas
+                        $('.siswa').val(null).trigger('change');
+
                         let periodeSelected = $('#periode').val();
                         let kelasSelected = $('#kelas').val();
 
@@ -93,13 +98,26 @@
                                 icon: 'warning',
                                 confirmButtonText: 'OK'
                             });
-                        }else{
+                        } else {
+                            Swal.fire({
+                                title: 'Loading',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
                             $.ajax({
-                                url: '{{ url('admin/rekap/kegiatan/siswa_kegiatan') }}/' + periodeSelected +'/'+ kelasSelected,
+                                url: '{{ url('admin/rekap/kegiatan/siswa_kegiatan') }}/' + periodeSelected + '/' + kelasSelected,
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function(response) {
-                                    populateSelect('siswa', response.siswa, item => item.nama_siswa.toUpperCase());
+                                    if (response.siswa) {
+                                        populateSelect('siswa', response.siswa, item => item.nama_siswa.toUpperCase());
+                                        Swal.close();
+                                    } else {
+                                        $('.siswa').val(null).trigger('change');
+                                    }
                                 },
                                 error: function(xhr, status, error) {
                                     Swal.fire({
@@ -125,6 +143,15 @@
 
             function populateSelect(name, data, formatText) {
                 const selectElement = document.querySelector(`select[name="${name}"]`);
+                // Kosongkan select sebelum diisi ulang
+                $(selectElement).empty();
+                
+                // Tambahkan pilihan default
+                const defaultOption = document.createElement('option');
+                defaultOption.value = 'PILIH';
+                defaultOption.textContent = 'PILIH';
+                selectElement.appendChild(defaultOption);
+
                 data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = (name === 'periode') ? item.id_periode : (name === 'kelas') ? item.id_kelas : item.id_siswa;
@@ -134,6 +161,7 @@
                 $(selectElement).select2();
             }
         });
+
         // save dan update data
         $('#downloadBtn').on('click', function() {
             var idPeriode = $('#periode').val();

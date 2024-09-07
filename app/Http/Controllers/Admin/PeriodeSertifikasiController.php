@@ -64,7 +64,7 @@ class PeriodeSertifikasiController extends Controller
                 'tggl_sertifikasi' => 'required|date',
                 'tanggungjawab_sertifikasi' => 'required|string',
                 'juz_sertifikasi' => 'required|string',
-                'sesi_sertifikasi' => 'required|string',
+                'sesi_sertifikasi' => 'required|numeric',
                 'file_sertifikat' => 'nullable|file|mimes:jpeg,jpg|max:2048'
             ]);
     

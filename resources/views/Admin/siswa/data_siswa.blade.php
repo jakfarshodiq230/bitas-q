@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Siswa
+                    DATA SISWA
                 </h1>
             </div>
             <div class="row">
@@ -29,7 +29,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>NISN</th>
-                                        <th>Nama</th>
+                                        <th>Siswa</th>
                                         <th>Tempat/Tanggal Lahir</th>
                                         <th>Jenis Kelamin</th>
                                         <th>No. HP</th>
@@ -43,7 +43,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>NISN</th>
-                                        <th>Nama</th>
+                                        <th>Siswa</th>
                                         <th>Tempat/Tanggal Lahir</th>
                                         <th>Jenis Kelamin</th>
                                         <th>No. HP</th>
@@ -143,6 +143,12 @@
                                                             data-bs-toggle="select2" required>
                                                         </select>
                                                         <div id="tahun_masuk_siswa-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Orang Tua / Wali</label>
+                                                        <input type="text" name="orangtua_siswa" id="orangtua_siswa" class="form-control"
+                                                            placeholder="Nama Orang Tua" required>
+                                                            <div id="orangtua_siswa-error" class="invalid-feedback"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -302,6 +308,7 @@
                         data: 'nisn_siswa',
                         name: 'nisn_siswa',
                     },
+                    
                     {
                         data: 'nama_siswa',
                         name: 'nama_siswa',
@@ -311,7 +318,7 @@
                                 .toUpperCase() + row.nama_siswa.slice(1);
 
                             // Return formatted string
-                            return nama_siswa;
+                            return 'Nama : ' + nama_siswa + '<br>' + 'Orang Tua : ' + row.orangtua_siswa;
                         }
                     },
                     {
@@ -466,14 +473,14 @@
                 contentType: false,
                 success: function(response) {
                     $('#formModal').modal('hide');
-                    if (response.success) {
+                    if (response.success === true) {
                         $('#dataForm')[0].reset();
                         $('#datatables-ajax').DataTable().ajax.reload();
                     }
                     Swal.fire({
-                        title: response.success ? 'Success' : 'Error',
+                        title: response.success === true ? 'Success' : response.error === true ? 'Error' : '',
                         text: response.message,
-                        icon: response.success ? 'success' : 'error',
+                        icon: response.success === true ? 'success' : response.error === true ? 'error' : '',
                         confirmButtonText: 'OK'
                     });
                 },

@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Pendaftaran Peserta Sertifikasi
+                    DATA DAFTAR SERTIFIKASI
                 </h1>
             </div>
             <div class="row">
@@ -294,7 +294,7 @@
                         render: function(data, type, row) {
                                 return `
                                     <button class="btn btn-sm btn-danger deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" data-id="${row.id_peserta_sertifikasi}"><i class="fas fa-trash"></i></button>
-                                    <button class="btn btn-sm btn-info lihatBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Nilai Sertifikasi" data-id="${row.id_peserta_sertifikasi}"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-info ${row.id_penguji === null ? 'disabled' : ''}  lihatBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Nilai Sertifikasi" data-id="${row.id_peserta_sertifikasi}"><i class="fas fa-eye"></i></button>
                                 `;
                         }
                     },

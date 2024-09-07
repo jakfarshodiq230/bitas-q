@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\NilaiRapor;
 use App\Exports\NilaiKegiatan;
 use App\Exports\NilaiSertifikasi;
+use App\Exports\NilaiBpi;
 
 
 class RekapController extends Controller
@@ -53,10 +54,17 @@ class RekapController extends Controller
     public function cetakExcel($idPeriode, $IdKelas)
     {
         try {
-            $export = new NilaiRapor($idPeriode, $IdKelas);
-            $filename = 'Rapor' . date('Y-m-d') . '.xlsx';
-            return Excel::download($export, $filename);
-            
+            $cekKegiatan = PeriodeModel:: where('id_periode',$idPeriode)->first();
+            if ($cekKegiatan->jenis_periode === 'pbi') {
+                $export = new NilaiBpi($idPeriode, $IdKelas);
+                $filename = 'RAPOR_BPI_' . date('Y-m-d') . '.xlsx';
+                return Excel::download($export, $filename);
+            } else {
+                $export = new NilaiRapor($idPeriode, $IdKelas);
+                $filename = 'RAPOR_' . date('Y-m-d') . '.xlsx';
+                return Excel::download($export, $filename);
+            }
+                      
         } catch (\Exception $e) {
             return response()->json([
                 'exception' => $e->getMessage(),

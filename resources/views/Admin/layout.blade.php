@@ -10,7 +10,7 @@
     <meta name="description" content="Modern, flexible and responsive Bootstrap 5 admin &amp; dashboard template">
     <meta name="author" content="Bootlab">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>MY TAHFIDZ</title>
+    <title>BITAS-Q</title>
     <style>
         body {
             opacity: 0;
@@ -30,7 +30,7 @@
     <div class="wrapper">
         <nav id="sidebar" class="sidebar">
             <a class='sidebar-brand' href='#'>
-                MY TAHFIDZ
+            BITAS-Q
             </a>
             <div class="sidebar-content">
                 <div class="sidebar-user">
@@ -97,8 +97,7 @@
                                     class='sidebar-link' href='{{ url('admin/tahun_ajaran') }}'>Tahun Ajaran</a>
                             <li class="sidebar-item {{ $submenu == 'kelas' ? 'active' : null }}"><a
                                     class='sidebar-link' href='{{ url('admin/kelas') }}'>Kelas</a>
-                            </li>
-                            
+                            </li>                            
                         </ul>
                     </li>
 
@@ -108,7 +107,7 @@
                     <li class="sidebar-item {{ $menu == 'kegiatan' ? 'active' : null }}">
                         <a data-bs-target="#ui-tahfidz" data-bs-toggle="collapse" class="sidebar-link collapsed">
                             <i class="align-middle me-2 fas fa-fw fa-address-card"></i> <span
-                                class="align-middle">Kegiatan</span>
+                                class="align-middle">Al-Qur'an</span>
                         </a>
                         <ul id="ui-tahfidz" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item {{ $submenu == 'periode' ? 'active' : null }}"><a
@@ -122,14 +121,31 @@
                             </li>
                         </ul>
                     </li>
-
+                    <li class="sidebar-item {{ $menu == 'pbi' ? 'active' : null }}">
+                        <a data-bs-target="#ui-pbi" data-bs-toggle="collapse" class="sidebar-link collapsed">
+                            <i class="align-middle me-2 fas fa-fw fa-address-card"></i> <span
+                                class="align-middle">Bina Pribadi Islam (PBI)</span>
+                        </a>
+                        <ul id="ui-pbi" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+                            <li class="sidebar-item {{ $submenu == 'periode-pbi' ? 'active' : null }}"><a
+                                    class='sidebar-link' href='{{ url('admin/periode_pbi') }}'>Periode</a>
+                            </li>
+                            <li class="sidebar-item {{ $submenu == 'peserta-pbi' ? 'active' : null }}"><a
+                                    class='sidebar-link' href='{{ url('admin/peserta_pbi') }}'>Peserta</a>
+                            </li>
+                            <li class="sidebar-item {{ $submenu == 'penilaian-pbi' ? 'active' : null }}"><a
+                                class='sidebar-link' href='{{ url('admin/penilaian_pbi') }}'>Penilaian</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
                     <li class="sidebar-header">
                         Rapor
                     </li>
                     <li class="sidebar-item {{ $menu == 'rapor' ? 'active' : null }}">
                         <a data-bs-target="#ui-rapor" data-bs-toggle="collapse" class="sidebar-link collapsed">
                             <i class="align-middle me-2 fas fa-fw fa-address-book"></i> <span
-                                class="align-middle">Rapor</span>
+                                class="align-middle">Al-Qur'an</span>
                         </a>
                         <ul id="ui-rapor" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item {{ $submenu == 'periode-rapor' ? 'active' : null }}"><a
@@ -141,13 +157,28 @@
                         </ul>
                     </li>
 
+                    <li class="sidebar-item {{ $menu == 'rapor-pbi' ? 'active' : null }}">
+                        <a data-bs-target="#ui-rapor-pbi" data-bs-toggle="collapse" class="sidebar-link collapsed">
+                            <i class="align-middle me-2 fas fa-fw fa-address-book"></i> <span
+                                class="align-middle">Bina Pribadi Islam (PBI)</span>
+                        </a>
+                        <ul id="ui-rapor-pbi" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+                            <li class="sidebar-item {{ $submenu == 'periode-rapor-pbi' ? 'active' : null }}"><a
+                                    class='sidebar-link' href='{{ url('admin/periode_rapor_pbi') }}'>Periode</a>
+                            </li>
+                            <li class="sidebar-item {{ $submenu == 'peserta-rapor-pbi' ? 'active' : null }}"><a
+                                    class='sidebar-link' href='{{ url('admin/peserta_rapor_pbi') }}'>Peserta</a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li class="sidebar-header">
-                        Ujian
+                        Sertifikasi
                     </li>
                     <li class="sidebar-item {{ $menu == 'ujian' ? 'active' : null }}">
                         <a data-bs-target="#ui-ujian" data-bs-toggle="collapse" class="sidebar-link collapsed">
                             <i class="align-middle me-2 fas fa-fw fa-id-card"></i> <span
-                                class="align-middle">Sertifikasi</span>
+                                class="align-middle">Sertifikasi Al-Qur'an</span>
                         </a>
                         <ul id="ui-ujian" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item {{ $submenu == 'periode-sertifikasi' ? 'active' : null }}"><a
@@ -164,7 +195,7 @@
                     </li>
                     <li class="sidebar-item {{ $menu == 'rekap' ? 'active' : null }}">
                         <a data-bs-target="#ui-rekap" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle me-2 fas fa-fw fa-cog"></i> <span
+                            <i class="align-middle me-2 fas fa-fw fa-file-excel"></i> <span
                                 class="align-middle">Rekap</span>
                         </a>
                         <ul id="ui-rekap" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
@@ -255,7 +286,7 @@
                     <div class="row text-muted">
                         <div class="col-12 text-end">
                             <p class="mb-0">
-                                MY TAHFIDZ &copy; {{ date('Y') }}
+                                BITAS-Q &copy; {{ date('Y') }}
                             </p>
                         </div>
                     </div>

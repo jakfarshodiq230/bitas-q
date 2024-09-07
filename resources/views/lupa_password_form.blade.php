@@ -9,7 +9,7 @@
     <meta name="description" content="Modern, flexible and responsive Bootstrap 5 admin &amp; dashboard template">
     <meta name="author" content="Bootlab">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>APKIS</title>
+    <title>BITAS-Q</title>
     <style>
         body {
             opacity: 0;
@@ -36,7 +36,7 @@
                             <div class="card-body">
                                 <div class="m-sm-4">
                                     <div class="text-center">
-                                        <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="apkis"
+                                        <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="BITAS-Q"
                                             class="img-fluid rounded-circle" width="132" height="132" />
                                     </div>
                                     <div class="text-center mt-2">
@@ -106,14 +106,20 @@
 
         //save pembelian
         $('#saveBTN').on('click', function() {
+            var $button = $(this);
+            var originalButtonText = $button.text();
+
+            $button.prop('disabled', true).text('Loading...');
+
             var password = document.getElementById('password').value;
             var id = '{{ $id }}';
             var url = '{{ url('lupa_password/update_password') }}';
+
             $.ajax({
                 url: url,
                 method: 'POST',
                 data: {
-                    id:id,
+                    id: id,
                     password: password,
                     _token: '{{ csrf_token() }}'
                 },
@@ -125,8 +131,7 @@
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.open('/',
-                                '_self'); // '_self' untuk membuka di tab atau jendela saat ini
+                            window.open('/', '_self'); // '_self' to open in the current tab or window
                         }
                     });
                 },
@@ -137,9 +142,14 @@
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
+                },
+                complete: function() {
+                    // Re-enable the button and restore the original text
+                    $button.prop('disabled', false).text(originalButtonText);
                 }
             });
         });
+
     </script>
 </body>
 

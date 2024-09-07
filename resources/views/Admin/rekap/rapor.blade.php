@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Rekap Rapor
+                    REKAP RAPOR
                 </h1>
             </div>
             <div class="row">
@@ -72,7 +72,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ ${item.jenis_periode.toUpperCase()} ${item.jenis_kegiatan.toUpperCase()} ]`);
+                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ ${item.jenis_periode === 'pbi' ? 'BPI':item.jenis_periode.toUpperCase()} ${item.jenis_kegiatan.toUpperCase()} ]`);
                     populateSelect('kelas', response.kelas, item => item.nama_kelas.toUpperCase());
                 },
                 error: function(xhr, status, error) {

@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Periode Rapor
+                    DATA PERIODE RAPOR AL-QUR'AN
                 </h1>
             </div>
             <div class="row">

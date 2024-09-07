@@ -42,7 +42,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Penilaian Rapor Peserta
+                    DATA DETAIL PENILAIAN RAPOR AL-QUR'AN
                 </h1>
             </div>
             <div class="row">
@@ -322,12 +322,12 @@
                     var jenjang = respons.data.jenis_kegiatan || '';
 
                     // Update the HTML elements
-                    $('#tahun_ajaran').text(capitalizeFirstLetter(nama_tahun_ajaran));
-                    $('#rapor').text(capitalizeFirstLetter(jenis_kegiatan));
-                    $('#pembimbing').text(capitalizeFirstLetter(nama_guru));
-                    $('#siswa').text(capitalizeFirstLetter(nama_siswa));
-                    $('#kelas').text(capitalizeFirstLetter(nama_kelas));
-                    $('#jenjang').text(capitalizeFirstLetter(jenjang));
+                    $('#tahun_ajaran').text(capitalizeFirstLetter(nama_tahun_ajaran.toUpperCase()));
+                    $('#rapor').text(capitalizeFirstLetter(jenis_kegiatan.toUpperCase()));
+                    $('#pembimbing').text(capitalizeFirstLetter(nama_guru.toUpperCase()));
+                    $('#siswa').text(capitalizeFirstLetter(nama_siswa.toUpperCase()));
+                    $('#kelas').text(capitalizeFirstLetter(nama_kelas.toUpperCase()));
+                    $('#jenjang').text(capitalizeFirstLetter(jenjang.toUpperCase()));
                     if (respons.data.foto_siswa != null) {
                         var fotoSiswaUrl = "{{ url('storage') }}/" + respons.data.foto_siswa;
                         $('#avatarImg').attr('src', fotoSiswaUrl);

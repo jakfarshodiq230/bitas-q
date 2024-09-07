@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Rekap Sertifikasi
+                    REKAP SERTIFIKASI
                 </h1>
             </div>
             <div class="row">

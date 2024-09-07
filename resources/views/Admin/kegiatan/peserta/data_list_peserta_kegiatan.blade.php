@@ -13,7 +13,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Peserta Kegiatan {{ $judul_3 }}
+                    DATA PESERTA KEGIATAN {{ strtoupper($judul_3) }}
                 </h1>
             </div>
             <div class="row">

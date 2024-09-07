@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Penilaian Rapor Peserta
+                    DATA PENILAIAN RAPOR PESERTA AL-QUR'AN
                 </h1>
             </div>
             <div class="row">
@@ -271,7 +271,7 @@
                                                         onchange="handleKhatamChange(this, $('input[name=\'n_jk_p\']'))" id="n_jk_p_k"
                                                         required>
                                                         <option>PILIH</option>
-                                                        @foreach (range(1, 5) as $angka)
+                                                        @foreach (range(0, 5) as $angka)
                                                             <option value="{{ $angka }}">{{ $angka === 5 ? $angka . ' ...' : $angka }}</option>
                                                         @endforeach
                                                     </select>
@@ -636,10 +636,10 @@
                     var formattedTanggal = formatIndoDate(tanggal);
 
                     // Update the HTML elements
-                    $('#tahun_ajaran').text(capitalizeFirstLetter(nama_tahun_ajaran));
-                    $('#rapor').text(capitalizeFirstLetter(jenis_kegiatan));
+                    $('#tahun_ajaran').text(capitalizeFirstLetter(nama_tahun_ajaran.toUpperCase()));
+                    $('#rapor').text(capitalizeFirstLetter(jenis_kegiatan.toUpperCase()));
                     $('#tanggal').text(capitalizeFirstLetter(formattedTanggal));
-                    $('#jenjang').text(capitalizeFirstLetter(jenis_jenjang));
+                    $('#jenjang').text(capitalizeFirstLetter(jenis_jenjang.toUpperCase()));
 
                     if (periode.status_periode === 1) {
                         if (new Date(periode.tggl_akhir_penilaian) < new Date()) {

@@ -5,9 +5,9 @@
     <div class="container-fluid">
         <div class="header">
             <h1 class="header-title" id="judul_header">
-            Selamat Datang {{ ucfirst(strtolower(session('user')['nama_user'])) }},  Di MY TAHFIDZ.
+            SELAMAT DATANG {{ ucfirst(strtolower(session('user')['nama_user'])) }},  DI BITAS-Q.
             </h1>
-            <p class="header-subtitle">MY TAHFIDZ merupakan sistem informasi dan manajemen Tahsin, Tahfidz dan Sertifikasi Al-Qur'an.</p>
+            <p class="header-subtitle">BITAS-Q merupakan sistem informasi dan manajemen Tahsin, Tahfidz, Sertifikasi Al-Qur'an dan Bina Pribadi Islam (BPI).</p>
         </div>
         <div class="row">
             <div class="col-lg-12">
@@ -57,40 +57,42 @@
                 url: '{{ url('guru/dashboard/ajax_data_dashboard') }}',
                 method: 'GET',
                 success: function(response) {
-                    var eventList = $('.timeline');
-                    eventList.empty(); 
+                    var eventList = $('.timeline').empty(); 
+                    
                     $.each(response.data, function(index, event) {
                         var bulan_start = new Date(event.created_at).toLocaleDateString('id-ID', options1);
                         var bulan_end = new Date(event.tggl_akhir_penilaian).toLocaleDateString('id-ID', options2);
                         var batas_penilaian = new Date(event.tggl_akhir_penilaian).toLocaleDateString('id-ID', options3);
-                        let title;
-                        if (event.judul_periode === 'rapor') {
-                            title = event.judul_periode.toUpperCase()+' '+ event.jenis_periode.toUpperCase();
-                        } else {
-                            title = event.judul_periode.toUpperCase()+' '+ event.jenis_periode.toUpperCase()+' JUZ '+ event.juz_periode;
-                        }
-                        var eventItem = `<li class="timeline-item">
-                            <div class="timeline-body">
-                                <div class="timeline-meta">
-                                    <div class="d-inline-flex flex-column px-2 py-1 text-success-emphasis  ${event.judul_periode === 'rapor' ? 'bg-success-subtle' : 'bg-danger-subtle'} border border-success-subtle rounded-2 text-md-end">
-                                        <span class="fw-bold">${event.judul_periode.toUpperCase()} </span>
-                                        <span>${bulan_start} - ${bulan_end}</span>
-                                    </div>
-                                </div>
-                                <div class="timeline-content timeline-indicator">
-                                    <div class="card border-0 shadow">
-                                        <div class="card-body p-sm-2">
-                                            <h2 class="card-title mb-2">${title}</h2>
-                                            <p class="card-text m-0">
-                                                Pendaftaran <span class="badge ${event.status_periode === 0 ? 'bg-danger' : 'bg-success'} "> ${event.status_periode === 0 ? 'TUTUP PENDAFTARAN' : 'BUKA PENDAFTARAN'} </span> <br>
-                                                Batas Penilaian <span class="badge ${event.tggl_akhir_penilaian < new Date() ? 'bg-danger' : 'bg-success'} "> ${batas_penilaian} </span> <br>
-                                                Segera lakukan penilaian sebelum waktu masa penilaian berakhir.
-                                            </p>
+
+                        var title = (event.judul_periode === 'rapor')
+                            ? `${event.judul_periode.toUpperCase()} ${(event.jenis_periode === 'pbi') ? 'BINA PRIBADI ISLAM (BPI)' : event.jenis_periode.toUpperCase()}`
+                            : `${event.judul_periode.toUpperCase()} ${event.jenis_periode.toUpperCase()}${event.judul_periode === 'sertifikasi' ? ' JUZ ' + event.juz_periode : ''}`;
+                        
+                        var eventStatus = event.status_periode === 0 ? 'TUTUP PENDAFTARAN' : 'BUKA PENDAFTARAN';
+                        var batasStatus = event.tggl_akhir_penilaian < new Date() ? 'bg-danger' : 'bg-success';
+
+                        var commonHtml = `
+                            <li class="timeline-item">
+                                <div class="timeline-body">
+                                    <div class="timeline-meta">
+                                        <div class="d-inline-flex flex-column px-2 py-1 text-success-emphasis ${event.judul_periode === 'rapor' ? 'bg-success-subtle' : 'bg-danger-subtle'} border border-success-subtle rounded-2 text-md-end">
+                                            <span class="fw-bold">${event.judul_periode.toUpperCase()}</span>
+                                            <span>${bulan_start} - ${bulan_end}</span>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </li>`;
+                                    <div class="timeline-content timeline-indicator">
+                                        <div class="card border-0 shadow">
+                                            <div class="card-body p-sm-2">
+                                                <h2 class="card-title mb-2">${title}</h2>`;
+
+                        var contentHtml = (event.jenis_periode === 'pbi')
+                            ? `<p class="card-text m-0">Rapor Bina Pribadi Islam (BPI) sudah dapat dicetak Mulai Tanggal <span class="badge ${batasStatus}">${batas_penilaian}</span><br> </p>`
+                            : `<p class="card-text m-0">Pendaftaran <span class="badge ${event.status_periode === 0 ? 'bg-danger' : 'bg-success'}">${eventStatus}</span><br>
+                            Batas Penilaian <span class="badge ${batasStatus}">${batas_penilaian}</span><br>
+                            Segera lakukan penilaian sebelum waktu masa penilaian berakhir.</p>`;
+
+                        var eventItem = `${commonHtml}${contentHtml}</div></div></div></li>`;
+                        
                         eventList.append(eventItem);
                     });
                 },
@@ -99,6 +101,7 @@
                 }
             });
         }
+
 
         // Load events on page load
         loadEvents();

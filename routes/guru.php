@@ -5,6 +5,8 @@ use App\Http\Controllers\Guru\PenilaianKegiatanGuruController;
 use App\Http\Controllers\Guru\PenilaianRaporGuruController;
 use App\Http\Controllers\Guru\SertifikasiController;
 use App\Http\Controllers\Guru\DaftarSertifikasiController;
+use App\Http\Controllers\Guru\PenilaianPbiGuruController;
+use App\Http\Controllers\Guru\PenilaianRaporPbiGuruController;
 use App\Http\Controllers\Guru\DashboardController As DashboardControllerGuru;
 
 Route::middleware('auth:guru')->group(function () {
@@ -36,6 +38,42 @@ Route::middleware('auth:guru')->group(function () {
         Route::get('/edit_penilaian_kegiatan/{id}', [PenilaianKegiatanGuruController::class, 'editDataPenilaian'])->name('editDataPenilaian');
         Route::post('/update_penilaian/{id}', [PenilaianKegiatanGuruController::class, 'updateData'])->name('updateData');
         Route::get('/cetak_kartu/{peserta}/{tahun}/{rapor}/{periode}', [PenilaianKegiatanGuruController::class, 'CetakKartu'])->name('admin.CetakKartu');
+    });
+
+    
+    Route::prefix('guru/penilaian_pbi')->group(function () {
+        Route::get('/', [PenilaianPbiGuruController::class, 'index'])->name('guru.penilaian_kegiatan.index');
+        Route::get('/data_periode_penilaian_kegiatan/{guru}', [PenilaianPbiGuruController::class, 'AjaxDataPeriode'])->name('guru.penilaian_pbi.data_periode');
+
+        Route::get('/data_list_periode_penilaian_kegiatan/{periode}/{tahun}', [PenilaianPbiGuruController::class, 'DataListPenilaianKegiatan'])->name('guru.penilaian_pbi.data_list_periode');
+        Route::get('/data_penilaian_kegiatan_list/{periode}/{tahun}', [PenilaianPbiGuruController::class, 'AjaxData']);
+
+        Route::get('/data_detail_periode_penilaian_pbi/{tahun}/{periode}/{siswa}/{guru}/{kelas}', [PenilaianPbiGuruController::class, 'DataDetailPenilaianKegiatan'])->name('guru.penilaian_pbi.data_detail_periode');
+        Route::get('/data_penilaian_kegiatan_all/{tahun}/{periode}/{siswa}/{kelas}', [PenilaianPbiGuruController::class, 'AjaxDataNilaiPesertaPbiList'])->name('guru.penilaian_pbi.data_penilaian_all');
+
+        Route::get('/add_penilaian_kegiatan/{periode}/{tahun}', [PenilaianPbiGuruController::class, 'addPenilaianpbi'])->name('add_penialain');
+        Route::get('/data_siswa/{periode}/{tahun}/{guru}', [PenilaianPbiGuruController::class, 'AjaxDataPesertaPenilaian'])->name('Ajax_Peserta');
+        Route::post('/store_penilaian', [PenilaianPbiGuruController::class, 'storeData'])->name('storeData');
+        Route::get('/data_penilaian_kegiatan/{periode}/{tahun}', [PenilaianPbiGuruController::class, 'AjaxDataNilaiPesertaPbi'])->name('AjaxDataNilaiPesertaPbi');
+        Route::delete('/hapus_data_pbi/{id}/{kategori}', [PenilaianPbiGuruController::class, 'deleteData'])->name('deleteData');
+        Route::get('/kirim_data_penilaian_pbi/{periode}/{tahun}/{kategori}', [PenilaianPbiGuruController::class, 'kirimData'])->name('kirimData');
+
+        Route::get('/edit_data_pbi/{id}/{kategori}', [PenilaianPbiGuruController::class, 'editDataPenilaian'])->name('editDataPenilaian');
+        Route::post('/update_penilaian_pbi/{id}/{kategori}', [PenilaianPbiGuruController::class, 'updateData'])->name('updateData');
+
+        Route::get('/cetak_kartu/{periode}/{tahun}/{siswa}/{kelas}', [PenilaianPbiGuruController::class, 'CetakKartu'])->name('guru.CetakKartu');
+    });
+
+    Route::prefix('guru/penilaian_rapor_pbi')->group(function () {
+        Route::get('/', [PenilaianRaporPbiGuruController::class, 'index'])->name('guru.penilaian_rapor.index');
+        Route::get('/data_peserta_rapor', [PenilaianRaporPbiGuruController::class, 'AjaxData'])->name('guru.penilaian_rapor.AjaxData');
+        Route::get('/list_peserta/{tahun}/{rapor}/{periode}', [PenilaianRaporPbiGuruController::class, 'DataPeserta'])->name('guru.penilaian_rapor.DataPeserta');
+        Route::get('/ajax_list_peserta/{tahun}/{rapor}/{periode}', [PenilaianRaporPbiGuruController::class, 'AjaxDataPesertaRapor'])->name('guru.penilaian_rapor.AjaxDataPesertaRapor');
+
+        Route::get('/detail_peserta/{id}/{peserta}/{tahun}/{rapor}/{periode}', [PenilaianRaporPbiGuruController::class, 'DataDetailPeserta'])->name('guru.penilaian_rapor.DataDetailPeserta');
+        Route::get('/ajax_detail_peserta/{id}/{peserta}/{tahun}/{rapor}/{periode}', [PenilaianRaporPbiGuruController::class, 'AjaxDataDetailPesertaRapor'])->name('guru.penilaian_rapor.AjaxDataDetailPesertaRapor');
+        
+        Route::get('/cetak_rapor/{idrapor}/{peserta}/{tahun}/{periode}', [PenilaianRaporPbiGuruController::class, 'CetakRapor'])->name('admin.penilaian_rapor.CetakRapor');
     });
 
     Route::prefix('guru/penilaian_rapor')->group(function () {

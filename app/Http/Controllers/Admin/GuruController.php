@@ -127,7 +127,7 @@ class GuruController extends Controller
         }
     }
 
-    public function updateData($id,Request $request)
+    public function updateData($id, Request $request)
     {
         try {
             // Validate incoming request data
@@ -141,69 +141,59 @@ class GuruController extends Controller
                 'email_guru' => 'required|email|max:255',
                 'foto_guru' => 'nullable|file|mimes:jpeg,png,jpg|max:2048'
             ]);
-
-            $guruCek = guruModel::where('id_guru',$request->id_guru)->first();
+    
+            // Cek apakah data guru ada
+            $guruCek = guruModel::where('id_guru', $id)->first();
             if (!$guruCek) {
                 return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
             }
-
+    
+            $data = $validatedData;
+    
+            // Proses upload foto
             if ($request->hasFile('foto_guru')) {
                 // Hapus gambar lama jika ada
                 if ($guruCek->foto_guru) {
-                    // Menggunakan Storage facade untuk menghapus file
                     Storage::delete('public/' . $guruCek->foto_guru);
                 }
-        
+    
                 // Simpan gambar baru
                 $file = $request->file('foto_guru');
-                if ($file) {
-                    $nama_guru = $request->nama_guru;
-
-                    // Dapatkan nama asli file
-                    $originalFileName = $file->getClientOriginalName();
-
-                    // Buat nama file kustom
-                    $customFileName = $nama_guru . '-' . $originalFileName;
-
-                    // Simpan file dengan nama kustom
-                    $path = $file->storeAs('public/guru', $customFileName);
-                    $data = [
-                        'foto_guru' => 'guru/' . $customFileName
-                    ];
-                    $guru = guruModel::where('id_guru',$request->id_guru)->update($data);
-                }
+                $nama_guru = $request->nama_guru;
+    
+                // Buat nama file kustom menggunakan timestamp
+                $customFileName = $nama_guru . '-' . time() . '.' . $file->extension();
+    
+                // Simpan file dengan nama kustom
+                $path = $file->storeAs('public/guru', $customFileName);
+                $data['foto_guru'] = 'guru/' . $customFileName;
             }
+    
+            // Format tanggal untuk password
             $date = new \DateTime($validatedData['tanggal_lahir_guru']);
             $formatTanggal = $date->format('dmY');
-            // Prepare data for insertion
-            $data = [
-                'nik_guru' => $validatedData['nik_guru'],
-                'nama_guru' => $validatedData['nama_guru'],
-                'tanggal_lahir_guru' => $validatedData['tanggal_lahir_guru'],
-                'tempat_lahir_guru' => $validatedData['tempat_lahir_guru'],
-                'jenis_kelamin_guru' => $validatedData['jenis_kelamin_guru'],
-                'no_hp_guru' => $validatedData['no_hp_guru'],
-                'email_guru' => $validatedData['email_guru'],
-                'password' =>  Hash::make($formatTanggal),
-            ];
-
-            // Store data into database
-            $guru = guruModel::where('id_guru',$request->id_guru)->update($data);
     
-            // Check if data was successfully stored
-            if ($guru) {
-                return response()->json(['success' => true, 'message' => 'Berhasil Edit Data', 'data' => $guru]);
+            // Tambahkan password ke data hanya jika password diperlukan untuk diperbarui
+            $data['password'] = Hash::make($formatTanggal);
+    
+            // Update data guru di database
+            $updateResult = guruModel::where('id_guru', $id)->update($data);
+    
+            // Cek apakah update berhasil
+            if ($updateResult) {
+                return response()->json(['success' => true, 'message' => 'Berhasil Edit Data']);
             } else {
                 return response()->json(['error' => true, 'message' => 'Gagal Edit Data']);
             }
     
-        }catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json($e->errors(), 422);
-        }catch (\Exception $e) {
-            // Handle any exceptions that occur during validation or data insertion
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => true, 'message' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            // Tangani pengecualian yang terjadi selama proses
             return response()->json(['error' => true, 'message' => $e->getMessage()]);
-        }        
+        }
     }
+    
 
     public function deleteData($id)
     {

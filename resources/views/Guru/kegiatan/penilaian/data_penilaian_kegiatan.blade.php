@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Peserta Kegiatan
+                DATA PERIODE KEGIATAN
                 </h1>
             </div>
             <div class="row">
@@ -102,7 +102,7 @@
                                         data-id_periode="${row.id_periode}" 
                                         data-tahun_ajaran="${row.id_tahun_ajaran}" 
                                         ${row.status_periode === 0 ? 'disabled' : ''}>
-                                    <i class="fas fa-user-plus"></i>
+                                    Penilaian
                                 </button>
 
                             `;

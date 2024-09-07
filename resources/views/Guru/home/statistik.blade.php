@@ -10,7 +10,7 @@
     <div class="container-fluid">
         <div class="header">
             <h1 class="header-title" id="judul_header">
-            History Perkembangan Peserta
+                RIWAYAT PERKEMBANGAN PESERTA
             </h1>
         </div>
         <div class="row">
@@ -46,44 +46,53 @@
                     <div class="card-body">
                         <div class="card-body border-navy">
                             <div class="row">
-                                <h5 class="card-title text-center">TAHSIN</h5>
-                                <div class="col-6 col-md-6">
-                                    <h5 class="card-title text-center">Hafalan Baru</h5>
-                                    <table id="datatables-ajax-tahsin-baru" class="table table-striped" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title">TAHSIN</h5>
+                                    <span class="toggle-icon" aria-label="Toggle Table">
+                                        <i class="fas fa-chevron-down" data-expanded="fa-chevron-down" data-collapsed="fa-chevron-up"></i>
+                                    </span>
                                 </div>
-                                <div class="col-6 col-md-6">
-                                    <h5 class="card-title text-center">Hafalan Lama</h5>
-                                    <table id="datatables-ajax-tahsin-lama" class="table table-striped" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                <div class="table-container">
+                                    <div class="row">
+                                        <div class="col-6 col-md-6">
+                                            <h5 class="card-title text-center">Hafalan Baru</h5>
+                                            <table id="datatables-ajax-tahsin-baru" class="table table-striped" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="col-6 col-md-6">
+                                            <h5 class="card-title text-center">Hafalan Lama</h5>
+                                            <table id="datatables-ajax-tahsin-lama" class="table table-striped" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -91,44 +100,53 @@
                     <div class="card-body">
                         <div class="card-body border-navy">
                             <div class="row">
-                                <h5 class="card-title text-center">TAHFIDZ</h5>
-                                <div class="col-6 col-md-6 ">
-                                    <h5 class="card-title text-center">Hafalan Baru</h5>
-                                    <table id="datatables-ajax-tahfidz-baru" class="table table-striped" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title">TAHFIDZ</h5>
+                                    <span class="toggle-icon" aria-label="Toggle Table">
+                                        <i class="fas fa-chevron-down" data-expanded="fa-chevron-down" data-collapsed="fa-chevron-up"></i>
+                                    </span>
                                 </div>
-                                <div class="col-6 col-md-6">
-                                    <h5 class="card-title text-center">Hafalan Lama</h5>
-                                    <table id="datatables-ajax-tahfidz-lama" class="table table-striped" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Surah</th>
-                                                <th>Ketrangan</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                <div class="table-container">
+                                    <div class="row">
+                                        <div class="col-6 col-md-6 ">
+                                            <h5 class="card-title text-center">Hafalan Baru</h5>
+                                            <table id="datatables-ajax-tahfidz-baru" class="table table-striped" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="col-6 col-md-6">
+                                            <h5 class="card-title text-center">Hafalan Lama</h5>
+                                            <table id="datatables-ajax-tahfidz-lama" class="table table-striped" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Surah</th>
+                                                        <th>Ketrangan</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -136,28 +154,159 @@
                     <div class="card-body">
                         <div class="card-body border-navy">                         
                             <div class="col-12 col-md-12">
-                                <h5 class="card-title text-center">Sertifikasi</h5>
-                                <table id="datatables-ajax-sertif" class="table table-striped" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Periode</th>
-                                            <th>Juz</th>
-                                            <th>Nilai</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Periode</th>
-                                            <th>Juz</th>
-                                            <th>Nilai</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title">SERTIFIKASI</h5>
+                                    <span class="toggle-icon" aria-label="Toggle Table">
+                                        <i class="fas fa-chevron-down" data-expanded="fa-chevron-down" data-collapsed="fa-chevron-up"></i>
+                                    </span>
+                                </div>
+                                <div class="table-container">
+                                    <table id="datatables-ajax-sertif" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Periode</th>
+                                                <th>Juz</th>
+                                                <th>Nilai</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Periode</th>
+                                                <th>Juz</th>
+                                                <th>Nilai</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>   
+                    </div> 
+                    <div class="card-body">
+                        <div class="card-body border-navy">                         
+                            <div class="col-12 col-md-12">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title">PENILAIAN PBI BIDANG STUDI</h5>
+                                    <span class="toggle-icon" aria-label="Toggle Table">
+                                        <i class="fas fa-chevron-down" data-expanded="fa-chevron-down" data-collapsed="fa-chevron-up"></i>
+                                    </span>
+                                </div>
+                                <div class="table-container">
+                                    <table id="datatables-ajax-bidang_studi" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>AL-QUR'AN</th>
+                                                <th>AQIDAH</th>
+                                                <th>TAZ</th>
+                                                <th>IBADAH</th>
+                                                <th>HADITS</th>
+                                                <th>SIRAH</th>
+                                                <th>FIKRUL ISLAM</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>AL-QUR'AN</th>
+                                                <th>AQIDAH</th>
+                                                <th>TAZ</th>
+                                                <th>IBADAH</th>
+                                                <th>HADITS</th>
+                                                <th>SIRAH</th>
+                                                <th>FIKRUL ISLAM</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                    <!-- Section 1 -->
+                    <div class="card-body">
+                        <div class="card-body border-navy">                         
+                            <div class="col-12 col-md-12">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title">PENILAIAN PBI KARAKTER</h5>
+                                    <span class="toggle-icon" aria-label="Toggle Table">
+                                        <i class="fas fa-chevron-down" data-expanded="fa-chevron-down" data-collapsed="fa-chevron-up"></i>
+                                    </span>
+                                </div>
+                                <div class="table-container">
+                                    <table id="datatables-ajax-karakter" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>AQDH</th>
+                                                <th>IBDH</th>
+                                                <th>AKHLK</th>
+                                                <th>PRBD</th>
+                                                <th>AQR</th>
+                                                <th>WWSN</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>AQDH</th>
+                                                <th>IBDH</th>
+                                                <th>AKHLK</th>
+                                                <th>PRBD</th>
+                                                <th>AQR</th>
+                                                <th>WWSN</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2 -->
+                    <div class="card-body">
+                        <div class="card-body border-navy">
+                            <div class="col-12 col-md-12">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title">PENILAIAN PBI AKTIVITAS AMAL</h5>
+                                    <span class="toggle-icon" aria-label="Toggle Table">
+                                        <i class="fas fa-chevron-down" data-expanded="fa-chevron-down" data-collapsed="fa-chevron-up"></i>
+                                    </span>
+                                </div>
+                                <div class="table-container">
+                                    <table id="datatables-ajax-amal" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>SHOLAT WAJIB</th>
+                                                <th>TILAWAH</th>
+                                                <th>TAHAJJUD</th>
+                                                <th>DUHA</th>
+                                                <th>RAWATIB</th>
+                                                <th>DZIKIR</th>
+                                                <th>PUASA</th>
+                                                <th>INFAQ</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>SHOLAT WAJIB</th>
+                                                <th>TILAWAH</th>
+                                                <th>TAHAJJUD</th>
+                                                <th>DUHA</th>
+                                                <th>RAWATIB</th>
+                                                <th>DZIKIR</th>
+                                                <th>PUASA</th>
+                                                <th>INFAQ</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <!-- end card -->
             </div>
@@ -207,22 +356,43 @@
 
         checkInputs(); // Initial check
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleIcons = document.querySelectorAll('.toggle-icon');
+
+            toggleIcons.forEach(function(toggleIcon) {
+                const icon = toggleIcon.querySelector('i');
+                const tableContainer = toggleIcon.closest('.card-body').querySelector('.table-container');
+
+                let isMinimized = true;
+                tableContainer.style.display = 'none';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+
+                toggleIcon.addEventListener('click', function() {
+                    if (isMinimized) {
+                        tableContainer.style.display = 'block';
+                        icon.classList.remove('fa-chevron-up');
+                        icon.classList.add('fa-chevron-down');
+                    } else {
+                        tableContainer.style.display = 'none';
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                    }
+                    isMinimized = !isMinimized;
+                });
+            });
+        });
+
         $(document).ready(function() {
-            $('#datatables-ajax-tahsin-baru, #datatables-ajax-tahsin-lama').DataTable({
+
+            const commonConfig = {
                 language: {
                     emptyTable: "No data available in table"
                 },
-            });
-            $('#datatables-ajax-tahfidz-baru, #datatables-ajax-tahfidz-lama').DataTable({
-                language: {
-                    emptyTable: "No data available in table"
-                },
-            });
-            $('#datatables-ajax-sertif').DataTable({
-                language: {
-                    emptyTable: "No data available in table"
-                },
-            });
+            };
+
+            $('#datatables-ajax-tahsin-baru, #datatables-ajax-tahsin-lama,#datatables-ajax-tahfidz-baru, #datatables-ajax-tahfidz-lama, #datatables-ajax-sertif, #datatables-ajax-bidang_studi, #datatables-ajax-karakter,#datatables-ajax-amal').DataTable(commonConfig);
+
             $.ajax({
                 url: '{{ url('guru/dashboard/ajax_statistik') }}', // Your API endpoint
                 method: 'GET',
@@ -427,7 +597,7 @@
                     responsive: true,
                     ajax: {
                         url: '{{ url('guru/dashboard/ajax_data_statistik') }}/' + peserta + '/' + tahun,
-                        dataSrc: 'sertifikasi'
+                        dataSrc: 'sertifikasi',
                     },
                     columns: [
                         {
@@ -458,6 +628,186 @@
                                 return row.total_nilai_sertifikasi.toFixed(0) + ' ( '+categorizeAverageScore(row.total_nilai_sertifikasi)+' )' ;
                             }
                         }
+                    ],
+                    initComplete: function() {
+                        Swal.close();
+                    }
+                });
+
+                $('#datatables-ajax-bidang_studi').DataTable({
+                    processing: true,
+                    serverSide: false,
+                    retrieve: false,
+                    destroy: true,
+                    responsive: true,
+                    ajax: {
+                        url: '{{ url('guru/dashboard/ajax_data_statistik') }}/' + peserta + '/' + tahun,
+                        dataSrc: 'nilai_bidang_studi',
+                    },
+                    columns: [
+                        {
+                            data: null,
+                            name: "rowNumber",
+                            render: function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        {
+                            data: 'alquran',
+                            name: 'alquran'
+                        },
+                        {
+                            data: 'aqidah',
+                            name: 'aqidah'
+                        },
+                        {
+                            data: 'ibadah',
+                            name: 'ibadah'
+                        },
+                        {
+                            data: 'hadits',
+                            name: 'hadits'
+                        },
+                        {
+                            data: 'sirah',
+                            name: 'sirah'
+                        },
+                        {
+                            data: 'tazkiyatun',
+                            name: 'tazkiyatun'
+                        },
+                        {
+                            data: 'fikrul',
+                            name: 'fikrul'
+                        },
+                    ],
+                    initComplete: function() {
+                        Swal.close();
+                    }
+                });
+
+                $('#datatables-ajax-karakter').DataTable({
+                    processing: true,
+                    serverSide: false,
+                    retrieve: false,
+                    destroy: true,
+                    responsive: true,
+                    ajax: {
+                        url: '{{ url('guru/dashboard/ajax_data_statistik') }}/' + peserta + '/' + tahun,
+                        dataSrc: 'nilai_karakter',
+                    },
+                    columns: [
+                        {
+                            data: null,
+                            name: "rowNumber",
+                            render: function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        {
+                            data: 'aqdh',
+                            name: 'aqdh'
+                        },
+                        {
+                            data: 'ibdh',
+                            name: 'ibdh'
+                        },
+                        {
+                            data: 'akhlak',
+                            name: 'akhlak'
+                        },
+                        {
+                            data: 'prbd',
+                            name: 'prbd'
+                        },
+                        {
+                            data: 'aqr',
+                            name: 'aqr'
+                        },
+                        {
+                            data: 'wwsn',
+                            name: 'wwsn'
+                        },
+                    ],
+                    initComplete: function() {
+                        Swal.close();
+                    }
+                });
+
+                $('#datatables-ajax-amal').DataTable({
+                    processing: true,
+                    serverSide: false,
+                    retrieve: false,
+                    destroy: true,
+                    responsive: true,
+                    ajax: {
+                        url: '{{ url('guru/dashboard/ajax_data_statistik') }}/' + peserta + '/' + tahun,
+                        dataSrc: 'nilai_amal',
+                    },
+                    columns: [
+                        {
+                            data: null,
+                            name: "rowNumber",
+                            render: function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        {
+                        data: 'sholat_wajib',
+                        name: 'sholat_wajib',
+                        render: function(data, type, row) {
+                            return row.sholat_wajib + ' KALI';
+                        }
+                    },
+                    {
+                        data: 'tilawah',
+                        name: 'tilawah',
+                        render: function(data, type, row) {
+                            return row.tilawah + ' KALI';
+                        }
+                    },
+                    {
+                        data: 'tahajud',
+                        name: 'tahajud',
+                        render: function(data, type, row) {
+                            return row.tilawah + ' KALI';
+                        }
+                    },
+                    {
+                        data: 'duha',
+                        name: 'duha',
+                        render: function(data, type, row) {
+                            return row.duha + ' KALI';
+                        }
+                    },
+                    {
+                        data: 'rawatib',
+                        name: 'rawatib',
+                        render: function(data, type, row) {
+                            return row.rawatib + ' KALI';
+                        }
+                    },
+                    {
+                        data: 'dzikri',
+                        name: 'dzikri',
+                        render: function(data, type, row) {
+                            return row.dzikri + ' KALI';
+                        }
+                    },
+                    {
+                        data: 'puasa',
+                        name: 'puasa',
+                        render: function(data, type, row) {
+                            return row.puasa + ' KALI';
+                        }
+                    },
+                    {
+                        data: 'infaq',
+                        name: 'infaq',
+                        render: function(data, type, row) {
+                            return row.infaq + ' KALI';
+                        }
+                    },
                     ],
                     initComplete: function() {
                         Swal.close();

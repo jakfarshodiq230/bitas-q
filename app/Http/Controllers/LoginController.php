@@ -30,14 +30,18 @@ class LoginController extends Controller
 
     public function authenticate(Request $request)
     {
+        $validator = $request->validate([
+            'captcha' => 'required|captcha'
+        ]);
+
         // Prepare credentials for each guard
         $credentials_user = ['email' => $request->input('username'), 'password' => $request->input('password')];
         $credentials_guru = ['nik_guru' => $request->input('username'), 'password' => $request->input('password')];
         $credentials_siswa = ['nisn_siswa' => $request->input('username'), 'password' => $request->input('password')];
-    
+
         $agent = new Agent();
         $agent->setUserAgent($request->header('User-Agent'));
-    
+
         // Attempt authentication for 'users' guard
         if (Auth::guard('users')->attempt($credentials_user)) {
             $user = Auth::guard('users')->user();
@@ -62,7 +66,7 @@ class LoginController extends Controller
                 ]);
             }
         }
-    
+
         // Attempt authentication for 'guru' guard
         if (Auth::guard('guru')->attempt($credentials_guru)) {
             $guru = Auth::guard('guru')->user();
@@ -86,7 +90,7 @@ class LoginController extends Controller
                 ]);
             }
         }
-    
+
         // Attempt authentication for 'siswa' guard
         if (Auth::guard('siswa')->attempt($credentials_siswa)) {
             $siswa = Auth::guard('siswa')->user();
@@ -110,13 +114,14 @@ class LoginController extends Controller
                 ]);
             }
         }
-    
+
         // If none of the attempts succeed, return JSON with redirect to '/'
         return response()->json([
             'error' => true,
             'message' => 'Username atau password salah.',
             'redirect' => '/'
         ]);
+        
     }
     
     
@@ -175,36 +180,40 @@ class LoginController extends Controller
 
     public function CekAkun($id)
     {
-        // Try to find the user in the 'users' guard
-        $user = User::where('email', $id)->first();
-        if ($user) {
-            $data_pesan = [
-                'title' => 'DATA AKUN MY-TAHFIDZ',
-                'nama_pelanggan' => $user->nama_user,
-                'email_pelanggan' => $user->email,
-                'no_hp' => $user->no_hp_user,
-                'link' => url("lupa_password/input_data/{$user->id}"),
-            ];
-            Mail::to($user->email)->send(new SendLupaPassword($data_pesan));
-            return response()->json(['success' => true, 'message' => 'Data Ditemukan']);
+        try {
+
+            $user = User::where('email', $id)->first();
+            if ($user) {
+                $data_pesan = [
+                    'title' => 'DATA AKUN MY-TAHFIDZ',
+                    'nama_pelanggan' => $user->nama_user,
+                    'email_pelanggan' => $user->email,
+                    'no_hp' => $user->no_hp_user,
+                    'link' => url("lupa_password/input_data/{$user->id}"),
+                ];
+                Mail::to($user->email)->send(new SendLupaPassword($data_pesan));
+                return response()->json(['success' => true, 'message' => 'Data Ditemukan']);
+            }
+        
+            // Try to find the user in the 'guru' guard
+            $guru = GuruModel::where('email_guru', $id)->first();
+            if ($guru) {
+                $data_pesan = [
+                    'title' => 'DATA AKUN MY-TAHFIDZ',
+                    'nama_pelanggan' => $guru->nama_guru,
+                    'email_pelanggan' => $guru->email_guru,
+                    'no_hp' => $guru->no_hp_guru,
+                    'link' => url("lupa_password/input_data/{$guru->id_guru}"),
+                ];
+                Mail::to($guru->email)->send(new SendLupaPassword($data_pesan));
+                return response()->json(['success' => true, 'message' => 'Data Ditemukan']);
+            }
+        
+        } catch (\Throwable $th) {
+            // If neither user nor guru was found
+            return response()->json(['success' => false, 'message' => 'Data Tidak Ditemukan']);
         }
-    
-        // Try to find the user in the 'guru' guard
-        $guru = GuruModel::where('email_guru', $id)->first();
-        if ($guru) {
-            $data_pesan = [
-                'title' => 'DATA AKUN MY-TAHFIDZ',
-                'nama_pelanggan' => $guru->nama_guru,
-                'email_pelanggan' => $guru->email_guru,
-                'no_hp' => $guru->no_hp_guru,
-                'link' => url("lupa_password/input_data/{$guru->id_guru}"),
-            ];
-            Mail::to($guru->email)->send(new SendLupaPassword($data_pesan));
-            return response()->json(['success' => true, 'message' => 'Data Ditemukan']);
-        }
-    
-        // If neither user nor guru was found
-        return response()->json(['success' => false, 'message' => 'Data Tidak Ditemukan']);
+        
     }
 
     public function lupa_passwordInput($id){

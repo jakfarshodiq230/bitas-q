@@ -26,7 +26,7 @@ class PesertaKegiatanController extends Controller
     }
 
     public function AjaxDataPeriode(Request $request) {
-        $DataPeserta = PesertaKegiatan::DataAll();
+        $DataPeserta = PesertaKegiatan::DataAllAdmin();
         if ($DataPeserta == true) {
             return response()->json(['success' => true, 'message' => 'Data Ditemukan', 'data' => $DataPeserta]);
         }else{

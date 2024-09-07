@@ -122,7 +122,7 @@ return [
     "url" => "Format :attribute tidak valid.",
     "user" => "Kami tidak dapat menemukan pengguna dengan alamat surel tersebut.",
     "uuid" => ":Attribute harus merupakan UUID yang valid.",
-
+    'captcha' => 'The captcha is incorrect.',
     /*
     |---------------------------------------------------------------------------------------
     | Baris Bahasa untuk Validasi Kustom

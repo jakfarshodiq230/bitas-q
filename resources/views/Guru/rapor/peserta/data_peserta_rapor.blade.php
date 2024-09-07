@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Penilaian Rapor
+                    DATA PERIODE RAPOR AL-QUR'AN
                 </h1>
             </div>
             <div class="row">
@@ -71,21 +71,16 @@
                         data: 'nama_tahun_ajaran',
                         name: 'nama_tahun_ajaran',
                         render: function(data, type, row) {
-                            var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() +
-                                row.nama_tahun_ajaran.slice(1);
-                            var jenis_periode = row.jenis_periode.trim().toUpperCase();
-                            var jenis_kegiatan = row.jenis_kegiatan.trim().toUpperCase();
-                            var tanggal = new Date(row.tggl_periode);
-                            var options = { day: 'numeric', month: 'long', year: 'numeric' };
-                            var tanggal_formatted = tanggal.toLocaleDateString('id-ID', options);
-                            return 'Periode : ' + nama_tahun_ajaran + '<br>' +
-                            'Rapor : ' +  jenis_periode +' '+ jenis_kegiatan +
-                            '<br> Penanggung Jawab : ' + row.tanggungjawab_periode +
-                            '<br> Tanggal Rapor : ' + tanggal_formatted;
-                        }
+                            var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() + row.nama_tahun_ajaran.slice(1);
+                            var jenis_periode = row.jenis_periode.trim().toUpperCase() === 'PBI' ? 'BINA PRIBADI ISLAM (BPI)' : row.jenis_periode.trim().toUpperCase() + ' ' + row.jenis_kegiatan.trim().toUpperCase();
+                            var tanggal_formatted = new Date(row.tggl_periode).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
+                            return 'Periode : ' + nama_tahun_ajaran + '<br>' +
+                                'Rapor : ' + jenis_periode + '<br>' +
+                                'Penanggung Jawab : ' + row.tanggungjawab_periode + '<br>' +
+                                'Tanggal Rapor : ' + tanggal_formatted;
+                        }
                     },
-                    
                     {
                         data: null,
                         name: null,

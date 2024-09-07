@@ -3,6 +3,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\AktifitasAmalController;
 use App\Http\Controllers\Admin\PeriodeController;
 use App\Http\Controllers\Admin\PesertaKegiatanController;
 use App\Http\Controllers\Admin\PenilaianKegiatanController;
@@ -15,6 +17,11 @@ use App\Http\Controllers\Admin\SetingMailController;
 use App\Http\Controllers\Admin\PeriodeSertifikasiController;
 use App\Http\Controllers\Admin\PesertaSertifikasiController;
 use App\Http\Controllers\Admin\RekapController;
+use App\Http\Controllers\Admin\PeriodePbiController;
+use App\Http\Controllers\Admin\PesertaPbiController;
+use App\Http\Controllers\Admin\PenilaianPbiController;
+use App\Http\Controllers\Admin\PeriodeRaporPbiController;
+use App\Http\Controllers\Admin\PesertaRaporPbiController;
 use App\Http\Controllers\Admin\DashboardController as DashboardControllerAdmin;
 
 
@@ -72,6 +79,16 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::put('kelas/status_kelas/{id}/{status}', 'statusData');
     });
 
+    Route::prefix('admin')->controller(UnitController::class)->group(function () {
+        Route::get('unit', 'index');
+        Route::get('unit/data_unit', 'AjaxData');
+        Route::get('unit/edit_unit/{id}', 'editData');
+        Route::post('unit/store_unit', 'storeData');
+        Route::post('unit/update_unit/{id}', 'updateData');
+        Route::delete('unit/delete_unit/{id}', 'deleteData');
+        Route::put('unit/status_unit/{id}/{status}', 'statusData');
+    });
+
     Route::prefix('admin')->controller(TahunAjaranController::class)->group(function () {
         Route::get('tahun_ajaran', 'index');
         Route::get('tahun_ajaran/data_tahun_ajaran', 'AjaxData');
@@ -114,6 +131,65 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::get('penilaian_kegiatan/data_penilaian_kegiatan/{periode}/{tahun}', 'AjaxData');
         Route::get('penilaian_kegiatan/data_detail_periode_penilaian_kegiatan/{tahun}/{periode}/{siswa}/{guru}/{kelas}', 'DataDetailPenilaianKegiatan');
         Route::get('penilaian_kegiatan/data_penilaian_kegiatan_all/{tahun}/{periode}/{siswa}/{guru}/{kelas}', 'AjaxDataDetailPenilaianKegiatan');
+    });
+
+    Route::prefix('admin')->controller(PeriodePbiController::class)->group(function () {
+        Route::get('periode_pbi', 'index');
+        Route::get('periode_pbi/data_tahun', 'AjaxDataTahun');
+        Route::get('periode_pbi/data_periode_pbi', 'AjaxData');
+        Route::get('periode_pbi/edit_periode_pbi/{id}', 'editData');
+        Route::post('periode_pbi/store_periode_pbi', 'storeData');
+        Route::post('periode_pbi/update_periode_pbi/{id}', 'updateData');
+        Route::delete('periode_pbi/delete_periode_pbi/{id}', 'deleteData');
+        Route::put('periode_pbi/status_periode_pbi/{id}/{status}', 'statusData');
+        Route::get('periode_pbi/peserta_periode_pbi/{tahun}/{pbi}/{periode}', 'PesertaPbi');
+    });
+
+    Route::prefix('admin')->controller(PenilaianPbiController::class)->group(function () {
+        Route::get('penilaian_pbi', 'index');
+        Route::get('penilaian_pbi/data_periode_penilaian_pbi', 'AjaxDataPeriode');
+        Route::get('penilaian_pbi/data_list_periode_penilaian_pbi/{periode}/{tahun}', 'DataListPenilaianKegiatan');
+        Route::get('penilaian_pbi/data_penilaian_pbi/{periode}/{tahun}', 'AjaxData');
+        Route::get('penilaian_pbi/data_detail_periode_penilaian_pbi/{tahun}/{periode}/{siswa}/{guru}/{kelas}', 'DataDetailPenilaianKegiatan');
+        Route::get('penilaian_pbi/data_penilaian_pbi_all/{tahun}/{periode}/{siswa}/{guru}/{kelas}', 'AjaxDataDetailPenilaianKegiatan');
+    });
+
+    Route::prefix('admin')->controller(PesertaPbiController::class)->group(function () {
+        Route::get('peserta_pbi', 'index');
+        Route::get('peserta_pbi/data_periode_peserta_pbi', 'AjaxDataPeriode');
+        Route::get('peserta_pbi/data_list_periode_peserta_pbi/{periode}/{tahun}', 'DataListPesertaPbi');
+        Route::get('peserta_pbi/data_peserta_pbi/{periode}/{tahun}', 'AjaxData');
+        Route::get('peserta_pbi/data_siswa/{tahun}/{periode}', 'AjaxDataSiswa');
+        Route::get('peserta_pbi/edit_peserta_pbi/{id}', 'editData');
+        Route::post('peserta_pbi/store_peserta_pbi', 'storeData');
+        Route::post('peserta_pbi/update_peserta_pbi/{id}', 'updateData');
+        Route::delete('peserta_pbi/delete_peserta_pbi/{id}', 'deleteData');
+        Route::put('peserta_pbi/status_peserta_pbi/{id}/{status}', 'statusData');
+        Route::put('peserta_pbi/status_peserta_pbi_all/{tahun}/{periode}/{status}', 'statusDataAll');
+    });
+
+    Route::prefix('admin')->controller(PeriodeRaporPbiController::class)->group(function () {
+        Route::get('periode_rapor_pbi', 'index');
+        Route::get('periode_rapor_pbi/data_tahun', 'AjaxDataTahun');
+        Route::get('periode_rapor_pbi/data_periode_rapor_pbi', 'AjaxData');
+        Route::get('periode_rapor_pbi/edit_periode_rapor_pbi/{id}', 'editData');
+        Route::post('periode_rapor_pbi/store_periode_rapor_pbi', 'storeData');
+        Route::post('periode_rapor_pbi/update_periode_rapor_pbi/{id}', 'updateData');
+        Route::delete('periode_rapor_pbi/delete_periode_rapor_pbi/{id}', 'deleteData');
+        Route::put('periode_rapor_pbi/status_periode_rapor_pbi/{id}/{status}', 'statusData');
+        Route::get('periode_rapor_pbi/peserta_periode_rapor_pbi/{tahun}/{rapor}/{periode}', 'PesertaRaport');
+    });
+
+    Route::prefix('admin')->controller(PesertaRaporPbiController::class)->group(function () {
+        Route::get('/peserta_rapor_pbi/cetak_rapor_admin/{param1}/{param2}/{param3}/{param4}/{param5}', 'CetakRaporPdf');
+        Route::get('peserta_rapor_pbi', 'index');
+        Route::get('peserta_rapor_pbi/data_peserta_rapor_pbi', 'AjaxData');
+        Route::get('peserta_rapor_pbi/sync/{tahun}/{rapor}/{peserta}', 'SyncRapor');
+        Route::get('peserta_rapor_pbi/list_peserta/{tahun}/{rapor}/{periode}', 'DataPeserta');
+        Route::get('peserta_rapor_pbi/ajax_list_peserta/{tahun}/{rapor}/{periode}', 'AjaxDataPesertaRapor');
+        Route::get('peserta_rapor_pbi/detail_peserta/{id}/{peserta}/{tahun}/{rapor}/{periode}', 'DataDetailPeserta');
+        Route::get('peserta_rapor_pbi/ajax_detail_peserta/{id}/{peserta}/{tahun}/{rapor}/{periode}', 'AjaxDataDetailPesertaRapor');
+        
     });
 
     Route::prefix('admin')->controller(PeriodeRaporController::class)->group(function () {

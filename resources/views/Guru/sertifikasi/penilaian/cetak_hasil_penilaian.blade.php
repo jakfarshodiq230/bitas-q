@@ -10,19 +10,19 @@
     <table cellpadding="0" >
         <tr>
             <th width="15%" style="height: 20px;";>Nama</th>
-            <th width="60%" style="height: 20px;";>: <b> {{ ucwords($identitas->nama_siswa) }}</b></th>
+            <th width="60%" style="height: 20px;";>: <b> {{ strtoupper($identitas->nama_siswa) }}</b></th>
         </tr>
         <tr>
             <th width="15%" style="height: 20px;";>Program</th>
-            <th width="60%" style="height: 20px;";>: <b> {{ ucwords($identitas->judul_periode) }}</b></th>
+            <th width="60%" style="height: 20px;";>: <b> {{ strtoupper($identitas->judul_periode) }}</b></th>
         </tr>
         <tr>
             <th width="15%" style="height: 20px;";>Kelas</th>
-            <th width="60%" style="height: 20px;";>: <b> {{ $identitas->nama_kelas }}</b></th>
+            <th width="60%" style="height: 20px;";>: <b> {{ strtoupper($identitas->nama_kelas) }}</b></th>
         </tr>
         <tr>
             <th width="15%" style="height: 20px;";>Periode</th>
-            <th width="60%" style="height: 20px;";>: <b> {{ $identitas->nama_tahun_ajaran}}</b></th>
+            <th width="60%" style="height: 20px;";>: <b> {{ strtoupper($identitas->nama_tahun_ajaran)}}</b></th>
         </tr>
     </table>
  </div>

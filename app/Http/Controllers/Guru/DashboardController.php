@@ -12,7 +12,9 @@ use App\Models\Admin\PeriodeModel;
 use App\Models\Admin\PesertaKegiatan;
 use App\Models\Admin\PenilaianModel;
 use App\Models\Admin\PenilaianSertifikasiModel;
-
+use App\Models\Admin\AktifitasAmalModel;
+use App\Models\Admin\BidangStudiModel;
+use App\Models\Admin\KarakterModel;
 class DashboardController extends Controller
 {
     public function __construct()
@@ -52,19 +54,30 @@ class DashboardController extends Controller
     }
 
     public function AjaxDataStatistik($peserta, $tahun) {
-        $tahfidz_baru = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'tahfidz');
-        $tahfidz_lama = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'murajaah');
-        $tahsin_baru = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'tahsin');
-        $tahsin_lama = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'materikulasi');
-        $sertifikasi = PenilaianSertifikasiModel::DataSertifDashbord($peserta, $tahun);
-        return response()->json([
-            'success' => true, 
-            'message' => 'Data Ditemukan', 
-            'tahfidz_baru' => $tahfidz_baru,
-            'tahfidz_lama' => $tahfidz_lama,
-            'tahsin_baru' => $tahsin_baru,
-            'tahsin_lama' => $tahsin_lama,
-            'sertifikasi' => $sertifikasi,
-        ]);
+        try {
+            $tahfidz_baru = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'tahfidz');
+            $tahfidz_lama = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'murajaah');
+            $tahsin_baru = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'tahsin');
+            $tahsin_lama = PenilaianModel::DataAjaxDashbort($peserta, $tahun,'materikulasi');
+            $sertifikasi = PenilaianSertifikasiModel::DataSertifDashbord($peserta, $tahun);
+            $nilai_bidang_studi = BidangStudiModel::DataBidangStudiHome($peserta, $tahun);
+            $nilai_karakter = KarakterModel::DataKarakterHome($peserta, $tahun);
+            $nilai_amal = AktifitasAmalModel::DataAmalaHome($peserta, $tahun);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'tahfidz_baru' => $tahfidz_baru,
+                'tahfidz_lama' => $tahfidz_lama,
+                'tahsin_baru' => $tahsin_baru,
+                'tahsin_lama' => $tahsin_lama,
+                'sertifikasi' => $sertifikasi,
+                'nilai_bidang_studi' => $nilai_bidang_studi,
+                'nilai_karakter' => $nilai_karakter,
+                'nilai_amal' => $nilai_amal,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+
     }
 }

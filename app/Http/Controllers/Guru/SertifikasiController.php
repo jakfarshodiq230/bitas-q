@@ -245,8 +245,8 @@ class SertifikasiController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        if (file_exists(public_path('storage/siswa/' . $identitas->foto_siswa))) {
-            $imagePath = public_path('storage/siswa/' . $identitas->foto_siswa);
+        if (file_exists(public_path('storage/' . $identitas->foto_siswa))) {
+            $imagePath = public_path('storage/' . $identitas->foto_siswa);
         } else {
             $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
         }        

@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Users
+                    DATA USER
                 </h1>
             </div>
             <div class="row">

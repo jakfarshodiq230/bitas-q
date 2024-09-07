@@ -117,4 +117,51 @@ class RaporKegiatanModel extends Model
         return $data; // Return the result set
     }
 
+    public static function dataExcelBpi($idPeriode,$IdKelas)  {
+        
+        $data = DB::table('rapor_pbi')
+        ->join('siswa', 'rapor_pbi.id_siswa', '=', 'siswa.id_siswa')
+        ->join('kelas', 'rapor_pbi.id_kelas', '=', 'kelas.id_kelas')
+        ->join('guru', 'rapor_pbi.id_guru', '=', 'guru.id_guru')
+        ->join('periode', 'rapor_pbi.id_periode', '=', 'periode.id_periode')
+        ->join('tahun_ajaran', 'rapor_pbi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+        ->select(
+            'tahun_ajaran.nama_tahun_ajaran', //periode
+            'siswa.nama_siswa', // nama
+            'kelas.nama_kelas', // kelas
+            'guru.nama_guru', //pembimbing
+            'rapor_pbi.alquran', // hafalan alquran
+            'rapor_pbi.aqidah', // hafalan aqidah
+            'rapor_pbi.ibadah',  // nilai ibadah
+            'rapor_pbi.hadits', // Nilai hadits
+            'rapor_pbi.sirah', // Nilai sirah
+            'rapor_pbi.tazkiyatun', // Nilai tazkiyatun
+            'rapor_pbi.fikrul', // Nilai fikrul
+
+            'rapor_pbi.aqdh', // Nilai aqdh
+            'rapor_pbi.ibdh', // Nilai ibdh
+            'rapor_pbi.akhlak', // Nilai akhlak
+            'rapor_pbi.prbd', // Nilai prbd
+            'rapor_pbi.aqr', // Nilai aqr
+            'rapor_pbi.wwsn', // Nilai wwsn
+            'rapor_pbi.sholat_wajib', // Nilai sholat_wajib
+            'rapor_pbi.tilawah', // Nilai tilawah
+            'rapor_pbi.tahajud', // Nilai tahajud
+            'rapor_pbi.duha', // Nilai duha
+            'rapor_pbi.rawatib', // Nilai rawatib
+            'rapor_pbi.dzikri', // Nilai dzikri
+            'rapor_pbi.puasa', // Nilai puasa
+            'rapor_pbi.infaq', // Nilai infaq
+
+        )
+        ->whereNull('rapor_pbi.deleted_at')
+        ->whereNull('siswa.deleted_at')
+        ->where('rapor_pbi.id_periode', $idPeriode)
+        ->where('rapor_pbi.id_kelas', $IdKelas)
+        ->get();
+
+        return $data; // Return the result set
+    }
+
+
 }

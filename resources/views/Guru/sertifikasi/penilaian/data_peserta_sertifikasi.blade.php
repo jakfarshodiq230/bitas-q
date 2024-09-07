@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Data Penilaian Sertifikasi
+                    DATA PERIODE SERTIFIKASI
                 </h1>
             </div>
             <div class="row">

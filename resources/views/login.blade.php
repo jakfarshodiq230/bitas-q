@@ -6,10 +6,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="APKIS merupakan sistem manajemen sederhana dalam memajemen pemebelian, penjualan dan pengeluaran pengepul sawit untuk UKM menengah ke bawah">
+    <meta name="description" content="BITAS-Q merupakan sistem manajemen sederhana dalam memajemen Penilaian Amalan Islami">
     <meta name="author" content="Bootlab">
 
-    <title>MY TAHFIDZ</title>
+    <title>BITAS-Q</title>
     <style>
         body {
             opacity: 0;
@@ -48,14 +48,14 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="m-sm-4">
-                                    <div class="text-center">
+                                    <!-- <div class="text-center">
                                         <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="apkis"
-                                            class="img-fluid rounded-circle" width="100" height="100" />
-                                    </div>
+                                            class="img-fluid rounded-circle" width="80" height="80" />
+                                    </div> -->
                                     <div class="text-center mt-2">
-                                        <h1 class="h2">MY TAHFIDZ</h1>
-                                        <p class="lead">
-                                            SILAHKAN MASUKAN USERNAME & PASSWORD
+                                        <h1 class="h2">BITAS-Q</h1>
+                                        <p class="lead" style="font-size: 15px;">
+                                            Penilaian Bina Pribadi Islam (PBI), Tahfidz, Tahsin dan Sertifikasi Al-Qur'an
                                         </p>
                                     </div>
                                     <div class="alert alert-danger alert-dismissible" role="alert">
@@ -82,6 +82,15 @@
                                                 <div class="input-group-text" onclick="togglePasswordVisibility()"><i class="fas fa-eye" id="toggle-icon"></i></div>
                                             </div>
                                         </div>
+
+                                        <div class="form-group">
+                                            <div class="mb-2">
+                                                <img id="captcha-image" src="{{ captcha_src('characters') }}" alt="captcha">
+                                                <a href="#" onclick="event.preventDefault(); refreshCaptcha();">Refresh Captcha</a>
+                                            </div>
+                                            <input type="text" name="captcha" class="form-control" required>
+                                        </div>
+
                                         <a href='#' id="lupaBtn">Lupa Password</a>
                                         <div class="text-center mt-3 mb-2">
                                             <button type="submit" class="btn btn-lg btn-primary masukBtn" id="masukBtn">Masuk</button>
@@ -91,7 +100,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -111,34 +119,57 @@
     <script src=" {{ asset('assets/admin/js/app.js') }}"></script>
     <script>
         $('.alert').hide();
+        function refreshCaptcha() {
+            const captchaImg = document.getElementById('captcha-image');
+            captchaImg.src = '{{ captcha_src('characters') }}' + '?' + Math.random();
+        }
         $(document).ready(function() {
             $('#formLogin').on('submit', function(event) {
                 event.preventDefault(); // Prevent the default form submission
+
+                var $button = $('button[type="submit"]'); 
+                var originalButtonText = $button.text();
+                $button.prop('disabled', true).text('Verifikasi...');
 
                 // Serialize form data
                 var formData = $(this).serialize();
 
                 $.ajax({
-                    url: '{{ route("cek_login") }}', // Replace with your login route
+                    url: '{{ route("cek_login") }}',
                     type: 'POST',
                     data: formData,
                     success: function(response) {
                         // Handle success response
                         if (response.success === true) {
-                            window.location.href = '{{ url("") }}'+response.redirect; // Redirect on successful login
+                            window.location.href = '{{ url("") }}' + response.redirect; 
                         } else {
                             // Show error message
                             $('.alert').show();
                             $('.alert-message').text(response.message);
+                            if (response.error === true) {
+                                refreshCaptcha();
+                            }
                         }
                     },
                     error: function(xhr) {
-                        // Handle error response
-                        $('.alert').show();
-                        $('.alert-message').text(response.message);
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            if (errors.captcha) {
+                                $('.alert').show();
+                                $('.alert-message').text(errors.captcha[0]);
+                            }
+                        } else {
+                            $('.alert').show();
+                            $('.alert-message').text('Login failed, please try again.');
+                        }
+                        refreshCaptcha();
+                    },
+                    complete: function() {
+                        $button.prop('disabled', false).text(originalButtonText);
                     }
                 });
             });
+
 
             // Function to toggle password visibility
             function togglePasswordVisibility() {

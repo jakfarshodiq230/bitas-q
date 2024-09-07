@@ -57,6 +57,7 @@ class SiswaController extends Controller
                 'no_hp_siswa' => 'required|numeric|digits_between:10,15',
                 'email_siswa' => 'required|email|max:255|unique:siswa,email_siswa,NULL,id',
                 'tahun_masuk_siswa' => 'required|numeric|digits:4|between:2000,' . date('Y'),
+                'orangtua_siswa' => 'required|string|max:255',
                 'foto_siswa' => 'required|file|mimes:jpg,jpeg|max:2048'
             ]);
                      
@@ -116,9 +117,10 @@ class SiswaController extends Controller
         }      
     }
 
-    public function updateData($id,Request $request)
+    public function updateData($id, Request $request)
     {
         try {
+            // Validasi input
             $validatedData = $request->validate([
                 'nisn_siswa' => 'required|numeric|digits:10',
                 'nama_siswa' => 'required|string|max:255',
@@ -128,70 +130,58 @@ class SiswaController extends Controller
                 'no_hp_siswa' => 'required|numeric|digits_between:10,15',
                 'email_siswa' => 'required|email|max:255',
                 'tahun_masuk_siswa' => 'required|numeric|digits:4|between:2000,' . date('Y'),
-                'foto_siswa' => 'nullable|file|mimes:jpg,jpeg|max:2048'
+                'orangtua_siswa' => 'required|string|max:255',
+                'foto_siswa' => 'nullable|file|mimes:jpeg,jpg|max:2048',
+                
             ]);
-
-            $siswaCek = SiswaModel::where('id_siswa',$request->id_siswa)->first();
+    
+            // Cek apakah data siswa ada
+            $siswaCek = SiswaModel::where('id_siswa', $id)->first();
             if (!$siswaCek) {
                 return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
             }
-
+    
+            // Proses upload foto
             if ($request->hasFile('foto_siswa')) {
                 // Hapus gambar lama jika ada
                 if ($siswaCek->foto_siswa) {
                     // Menggunakan Storage facade untuk menghapus file
                     Storage::delete('public/' . $siswaCek->foto_siswa);
                 }
-        
+    
                 // Simpan gambar baru
                 $file = $request->file('foto_siswa');
-                if ($file) {
-                    $nama_siswa = $request->nama_siswa;
-
-                    // Dapatkan nama asli file
-                    $originalFileName = $file->getClientOriginalName();
-
-                    // Buat nama file kustom
-                    $customFileName = $nama_siswa . '-' . $originalFileName;
-
-                    // Simpan file dengan nama kustom
-                    $path = $file->storeAs('public/siswa', $customFileName);
-                    $data = [
-                        'foto_siswa' => 'siswa/' . $customFileName
-                    ];
-                    $siswa = SiswaModel::where('id_siswa',$request->id_siswa)->update($data);
-                }
+                $nama_siswa = $request->nama_siswa;
+    
+                // Buat nama file kustom untuk menghindari bentrok
+                $customFileName = $nama_siswa . '-' . time() . '.' . $file->extension();
+    
+                // Simpan file dengan nama kustom
+                $path = $file->storeAs('public/siswa', $customFileName);
+                $data['foto_siswa'] = 'siswa/' . $customFileName;
             }
     
-            // Prepare data for insertion
-            $data = [
-                'nisn_siswa' => $validatedData['nisn_siswa'],
-                'nama_siswa' => $validatedData['nama_siswa'],
-                'tanggal_lahir_siswa' => $validatedData['tanggal_lahir_siswa'],
-                'tempat_lahir_siswa' => $validatedData['tempat_lahir_siswa'],
-                'jenis_kelamin_siswa' => $validatedData['jenis_kelamin_siswa'],
-                'no_hp_siswa' => $validatedData['no_hp_siswa'],
-                'email_siswa' => $validatedData['email_siswa'],
-                'tahun_masuk_siswa' => $validatedData['tahun_masuk_siswa']
-            ];
-
-            // Store data into database
-            $siswa = SiswaModel::where('id_siswa',$request->id_siswa)->update($data);
+            // Prepare data for update
+            $data = array_merge($validatedData, $data ?? []);
     
-            // Check if data was successfully stored
-            if ($siswa) {
-                return response()->json(['success' => true, 'message' => 'Berhasil Edit Data', 'data' => $siswa]);
+            // Update data siswa di database
+            $updateResult = SiswaModel::where('id_siswa', $id)->update($data);
+    
+            // Cek apakah update berhasil
+            if ($updateResult) {
+                return response()->json(['success' => true, 'message' => 'Berhasil Edit Data']);
             } else {
                 return response()->json(['error' => true, 'message' => 'Gagal Edit Data']);
             }
     
-        }catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json($e->errors(), 422);
-        }catch (\Exception $e) {
-            // Handle any exceptions that occur during validation or data insertion
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => true, 'message' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            // Tangani pengecualian yang terjadi selama proses
             return response()->json(['error' => true, 'message' => $e->getMessage()]);
-        }        
+        }
     }
+    
 
     public function deleteData($id)
     {

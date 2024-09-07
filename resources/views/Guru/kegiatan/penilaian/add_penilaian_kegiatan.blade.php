@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Penialian Kegiatan {{ $judul_3 }}
+                    FORM PENILAIAN PESERTA {{ strtoupper($judul_3) }}
                 </h1>
             </div>
             <div class="row">
@@ -817,7 +817,7 @@
 
         // Add Button
         $('#addBtn').on('click', function() {
-            $('#ModalLabel').text('Tambah Penilaian ' + judul);
+            $('#ModalLabel').text('TAMBAH PENIALAIN ' + judul.toUpperCase());
             $('#dataForm')[0].reset();
             $('#formModal').modal('show');
         });

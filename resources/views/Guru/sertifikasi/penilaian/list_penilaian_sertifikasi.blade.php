@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    Data Penilaian Peserta Sertifikasi
+                    DATA PESERTA SERTIFIKASI
                 </h1>
             </div>
             <div class="row">
