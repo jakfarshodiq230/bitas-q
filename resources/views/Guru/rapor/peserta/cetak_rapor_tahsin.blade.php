@@ -72,7 +72,7 @@ if (!function_exists('getRating')) {
         </tr>
         <tr>
             <td style="height: 20px; text-align:center">04</td>
-            <td style="height: 20px;text-align:lefth">Tajwid</td>
+            <td style="height: 20px;text-align:lefth">Waqof</td>
             <td style="height: 20px; text-align:center">{{ $nilai->n_w_baru === null ? 0 : floor($nilai->n_w_baru)}}</td>
             <td style="height: 20px;text-align:center"><?= getRating($nilai->n_w_baru) ?></td>
         </tr>
@@ -167,7 +167,7 @@ if (!function_exists('getRating')) {
         </tr>
         <tr>
             <td style="height: 20px; text-align:center">04</td>
-            <td style="height: 20px;text-align:lefth">Tajwid</td>
+            <td style="height: 20px;text-align:lefth">Waqof</td>
             <td style="height: 20px; text-align:center">{{ $nilai->n_w_lama === null ? 0 : floor($nilai->n_w_lama)}}</td>
             <td style="height: 20px;text-align:center"><?= getRating($nilai->n_w_lama) ?></td>
         </tr>

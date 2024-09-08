@@ -194,4 +194,53 @@ class RaporBpiModel extends Model
         return $data; // Return the result set
     }
 
+    public static function DataRaporPeserta()  {
+        
+        $data = DB::table('rapor_pbi')
+        ->join('siswa', 'rapor_pbi.id_siswa', '=', 'siswa.id_siswa')
+        ->join('kelas', 'rapor_pbi.id_kelas', '=', 'kelas.id_kelas')
+        ->join('guru', 'rapor_pbi.id_guru', '=', 'guru.id_guru')
+        ->join('periode', 'rapor_pbi.id_periode', '=', 'periode.id_periode')
+        ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+        ->select(
+            'siswa.*',
+            'kelas.*',
+            'guru.*',
+            'periode.*',
+            'rapor_pbi.*',
+            'tahun_ajaran.*'
+        )
+        ->whereNull('rapor_pbi.deleted_at')
+        ->whereNull('siswa.deleted_at')
+        ->where('rapor_pbi.id_siswa', session('user')['id'])
+        ->get();
+
+        return $data; // Return the result set
+    }
+
+    public static function NilaiPesertaRapor($periode)  {
+        
+        $data = DB::table('rapor_pbi')
+        ->leftjoin('siswa', 'rapor_pbi.id_siswa', '=', 'siswa.id_siswa')
+        ->leftjoin('kelas', 'rapor_pbi.id_kelas', '=', 'kelas.id_kelas')
+        ->leftjoin('guru', 'rapor_pbi.id_guru', '=', 'guru.id_guru')
+        ->leftjoin('periode', 'rapor_pbi.id_periode', '=', 'periode.id_periode')
+        ->leftjoin('tahun_ajaran', 'rapor_pbi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+        ->select(
+            'siswa.*',
+            'kelas.*',
+            'guru.*',
+            'periode.*',
+            'rapor_pbi.*',
+            'tahun_ajaran.*',
+        )
+        ->whereNull('rapor_pbi.deleted_at')
+        ->whereNull('siswa.deleted_at')
+        ->where('rapor_pbi.id_siswa', session('user')['id'])
+        ->where('rapor_pbi.id_periode', $periode)
+        ->first();
+
+        return $data; // Return the result set
+    }
+
 }

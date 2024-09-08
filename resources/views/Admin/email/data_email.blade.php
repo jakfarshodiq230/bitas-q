@@ -5,7 +5,7 @@
 
             <div class="header">
                 <h1 class="header-title">
-                    Seting Mail
+                    SETING MAIL
                 </h1>
             </div>
             <div class="row">

@@ -107,8 +107,15 @@
                                         <th id="average-column5">0</th>
                                     </tr>
                                 </tfoot>
-                                <button id="download-button" class="btn btn-sm btn-primary downloadBtn me-1 mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Nilai Sertifikasi"><i class="fas fa-download"></i> Nilai</button>
-                                <button id="downloadSertif-button" class="btn btn-sm btn-warning downloadSertifBtn me-1 mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Sertifikasi"><i class="fas fa-download"></i> Sertifikat</button>
+                                <div class="d-flex align-items-center mb-4">
+                                    <button id="download-button" class="btn btn-sm btn-primary downloadBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Nilai Sertifikasi">
+                                        <i class="fas fa-download"></i> Nilai
+                                    </button>
+                                    <button id="downloadSertif-button" class="btn btn-sm btn-warning downloadSertifBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Sertifikasi">
+                                        <i class="fas fa-download"></i> Sertifikat
+                                    </button>
+                                    <span class="badge bg-success ktrProses">Dalam Proses Penilaian atau Tidak Lulus Sertifikasi</span>
+                                </div>
                             </table>
                         </div>
                     </div>
@@ -121,7 +128,7 @@
     <!-- Your other content -->
 <script>
         var peserta = '{{ $peserta }}';
-        console.log(peserta);
+        $('.ktrProses').hide();
         // Define the ranges object
         const ranges = {
             "Lulus": {
@@ -235,12 +242,14 @@
                     var average = count > 0 ? (total / count).toFixed(0) : 0;
                     var nilai_ktr = average + ' (' + categorizeAverageScore(average) + ')';
                     $('#average-column5').text(nilai_ktr);
-                    if (average < 65 && average > 0) {
+                    if (average <= 65  || average < 0) {
                         $('#download-button').addClass('disabled');
                         $('#downloadSertif-button').addClass('disabled');
+                        $('.ktrProses').show();
                     } else {
                         $('#download-button').removeClass('disabled');
                         $('#downloadSertif-button').removeClass('disabled');
+                        $('.ktrProses').hide();
                     }
                     
                 }

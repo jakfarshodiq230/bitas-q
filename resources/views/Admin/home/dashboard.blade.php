@@ -175,7 +175,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-12 col-xxl-4 d-flex">
+            <div class="col-12 col-md-12 col-xxl-12 d-flex">
                 <div class="card flex-fill w-100">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Periode</h5>

@@ -293,5 +293,38 @@ class GuruController extends Controller
             return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $e->getMessage()]);
         }
     }
+
+    public function ResetPassword($id){
+        try {
+            $guru = guruModel::where('nik_guru',$id)->first();
+            if ($guru) {
+                $date = new \DateTime($guru->tanggal_lahir_guru);
+                $formatTanggal = $date->format('dmY');
+                $data = [
+                    'password' =>  Hash::make($formatTanggal),
+                ];
+
+                $PesanEmail = [
+                    'nik_guru' => $guru->nik_guru,
+                    'nama_guru' => $guru->nama_guru,
+                    'tanggal_lahir_guru' => $guru->tanggal_lahir_guru,
+                    'tempat_lahir_guru' => $guru->tempat_lahir_guru,
+                    'jenis_kelamin_guru' => $guru->jenis_kelamin_guru,
+                    'no_hp_guru' => $guru->no_hp_guru,
+                    'email_guru' => $guru->email_guru,
+                    'password' =>  $formatTanggal,
+                    'tanggal_daftar' => $guru->created_at,
+                ];
+                Mail::to($guru->email_guru)->send(new SendMailGuru($PesanEmail));
+                
+                return response()->json(['success' => true, 'message' => 'Berhasil Reset Password']);
+            } else {
+                return response()->json(['success' => true, 'message' => 'Gagal Reset Password']);
+            }
+            
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $e->getMessage()]);
+        }
+    }
         
 }

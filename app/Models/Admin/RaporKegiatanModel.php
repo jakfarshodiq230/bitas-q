@@ -163,5 +163,29 @@ class RaporKegiatanModel extends Model
         return $data; // Return the result set
     }
 
+    public static function DataRaporPeserta()  {
+        
+        $data = DB::table('rapor_kegiatan')
+        ->join('siswa', 'rapor_kegiatan.id_siswa', '=', 'siswa.id_siswa')
+        ->join('kelas', 'rapor_kegiatan.id_kelas', '=', 'kelas.id_kelas')
+        ->join('guru', 'rapor_kegiatan.id_guru', '=', 'guru.id_guru')
+        ->join('periode', 'rapor_kegiatan.id_periode', '=', 'periode.id_periode')
+        ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+        ->select(
+            'siswa.*',
+            'kelas.*',
+            'guru.*',
+            'periode.*',
+            'rapor_kegiatan.*',
+            'tahun_ajaran.*'
+        )
+        ->whereNull('rapor_kegiatan.deleted_at')
+        ->whereNull('siswa.deleted_at')
+        ->where('rapor_kegiatan.id_siswa', session('user')['id'])
+        ->get();
+
+        return $data; // Return the result set
+    }
+
 
 }

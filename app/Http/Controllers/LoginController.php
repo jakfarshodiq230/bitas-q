@@ -22,8 +22,6 @@ use App\Mail\SendEmailUpdatePass;
 
 class LoginController extends Controller
 {
-
-    // index login
     public function index(){
     	return view ('login');
     }
@@ -94,7 +92,7 @@ class LoginController extends Controller
         // Attempt authentication for 'siswa' guard
         if (Auth::guard('siswa')->attempt($credentials_siswa)) {
             $siswa = Auth::guard('siswa')->user();
-            if ($siswa->status_guru !== 0) {
+            if ($siswa->status_siswa === 1) {
                 $request->session()->regenerate();
                 $this->storeAccessInfo($request);
                 $request->session()->put('user', [

@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::post('guru/import_guru', 'importExcel');
         Route::post('guru/seting_guru', 'setingData');
         Route::get('guru/pesan_email_guru/{id}', 'SendEmail');
+        Route::get('guru/reset_password_guru/{id}', 'ResetPassword');
     });
 
     Route::prefix('admin')->controller(KelasController::class)->group(function () {

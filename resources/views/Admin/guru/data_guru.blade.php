@@ -337,6 +337,7 @@
                                     <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" data-id="${row.nik_guru}"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-secondary deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" data-id="${row.nik_guru}"><i class="fas fa-trash"></i></button>
                                     <button class="btn btn-sm btn-info emailBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Kirim Email" data-id="${row.nik_guru}"><i class="fas fa-envelope"></i></button>
+                                    <button class="btn btn-sm btn-success resetBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password" data-id="${row.nik_guru}"><i class="fas fa-sync"></i></button>
                                 `;
                             } else {
                                 return `
@@ -344,6 +345,7 @@
                                     <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" data-id="${row.nik_guru}"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-secondary deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" data-id="${row.nik_guru}"><i class="fas fa-trash"></i></button>
                                     <button class="btn btn-sm btn-info emailBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Kirim Email" data-id="${row.nik_guru}"><i class="fas fa-envelope"></i></button>
+                                    <button class="btn btn-sm btn-success resetBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password" data-id="${row.nik_guru}"><i class="fas fa-sync"></i></button>
                                 `;
                             }
                         }
@@ -675,6 +677,57 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         url: '{{ url('admin/guru/pesan_email_guru') }}/' +
+                            id, // URL to delete data for the selected row
+                        type: 'GET',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Reload the table data
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                            $('#datatables-ajax').DataTable().ajax.reload();
+                        },
+                        error: function(response) {
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '.resetBtn', function() {
+            var id = $(this).data('id');
+            // Make an Ajax call to delete the record
+            Swal.fire({
+                title: 'Resert Password',
+                text: 'Apakah Anda Ingin reset password data ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya reset password data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we reset the password',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    $.ajax({
+                        url: '{{ url('admin/guru/reset_password_guru') }}/' +
                             id, // URL to delete data for the selected row
                         type: 'GET',
                         data: {

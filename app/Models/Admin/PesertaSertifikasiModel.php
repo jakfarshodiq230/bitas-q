@@ -206,6 +206,59 @@ class PesertaSertifikasiModel extends Model
     
         return $data; // Return the result set
     }
+
+
+    public static function DataSertifikasiPeserta()  {
+        
+        $data = DB::table('peserta_sertifikasi')
+        ->join('siswa', 'peserta_sertifikasi.id_siswa', '=', 'siswa.id_siswa')
+        ->join('kelas', 'peserta_sertifikasi.id_kelas', '=', 'kelas.id_kelas')
+        ->join('guru as pembimbing', 'peserta_sertifikasi.id_guru', '=', 'pembimbing.id_guru')
+        ->join('periode', 'peserta_sertifikasi.id_periode', '=', 'periode.id_periode')
+        ->join('tahun_ajaran', 'peserta_sertifikasi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+        ->leftjoin('guru as penguji', 'peserta_sertifikasi.id_penguji', '=', 'penguji.id_guru')
+        ->select(
+            'siswa.*',
+            'kelas.*',
+            'periode.*',
+            'peserta_sertifikasi.*',
+            'tahun_ajaran.*',
+            'pembimbing.nama_guru as pembimbing_nama',
+            'penguji.nama_guru as penguji_nama'
+        )
+        ->whereNull('peserta_sertifikasi.deleted_at')
+        ->whereNull('siswa.deleted_at')
+        ->where('peserta_sertifikasi.id_siswa', session('user')['id'])
+        ->get();
+
+        return $data; // Return the result set
+    }
+
+    public static function DataIdentitasSertifPeserta($peserta)
+    {
+        $data = DB::table('peserta_sertifikasi')
+            ->join('tahun_ajaran', 'peserta_sertifikasi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->join('periode', 'peserta_sertifikasi.id_periode', '=', 'periode.id_periode')
+            ->join('siswa', 'peserta_sertifikasi.id_siswa', '=', 'siswa.id_siswa')
+            ->join('kelas', 'peserta_sertifikasi.id_kelas', '=', 'kelas.id_kelas')
+            ->join('guru', 'peserta_sertifikasi.id_guru', '=', 'guru.id_guru')
+            ->join('guru as guru_penguji', 'peserta_sertifikasi.id_guru', '=', 'guru_penguji.id_guru')
+            ->select(
+                'periode.*',
+                'tahun_ajaran.*',
+                'siswa.*',
+                'kelas.*',
+                'guru.*',
+                'peserta_sertifikasi.*',
+                'guru_penguji.nama_guru as nama_penguji'
+            )
+            ->whereNull('periode.deleted_at')
+            ->whereNull('peserta_sertifikasi.deleted_at')
+            ->where('peserta_sertifikasi.id_siswa', session('user')['id'])
+            ->where('peserta_sertifikasi.id_peserta_sertifikasi', $peserta)
+            ->first();
+        return $data; // Return the result set
+    }
     
 
 

@@ -1,4 +1,4 @@
-@extends('Guru.layout')
+@extends('Siswa.layout')
 @section('content')
     <style>
         .border-navy {
@@ -127,8 +127,8 @@
 @section('scripts')
     <!-- Your other content -->
 <script>
-        var peserta = '{{ $peserta }}';
-        $('.ktrProses').hide();
+    var periode = '{{ $periode}}';
+    $('.ktrProses').hide();
         const ranges = {
             "Lulus": {
                 min: 65,
@@ -156,9 +156,9 @@
 
         function loadPeserta() {
             $.ajax({
-                url: '{{ url('guru/daftar_sertifikasi/ajax_detail_penilaian_peserta') }}/' + peserta,
+                url: '{{ url('siswa/sertifikasi/ajax-nilai') }}/' + periode,
                 method: 'GET',
-                success: function(response) {
+                success: function(response) {                    
                     $('#tahun_ajaran').text(response.identitas.nama_tahun_ajaran);
                     $('#sertifikasi').text(capitalizeFirstLetter(response.identitas.jenis_periode.toUpperCase()));
                     $('#juz').text(response.identitas.juz_periode);
@@ -189,7 +189,7 @@
                 destroy: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ url('guru/daftar_sertifikasi/ajax_detail_penilaian_peserta') }}/' + peserta,
+                    url: '{{ url('siswa/sertifikasi/ajax-nilai') }}/' + periode,
                     dataSrc:'nilai',
                 },
                 columns: [{
@@ -238,9 +238,9 @@
 
                     var count = api.column(columnIndex).data().count();
                     var average = count > 0 ? (total / count).toFixed(0) : 0;
-                    var nilai_ktr = average + ' (' + categorizeAverageScore(average) + ')';
+                    var nilai_ktr = average + ' (' + categorizeAverageScore(average) + ')';                    
                     $('#average-column5').text(nilai_ktr);
-                    if (average < 65 && average > 0) {
+                    if (average <= 65  || average < 0) {
                         $('#download-button').addClass('disabled');
                         $('#downloadSertif-button').addClass('disabled');
                         $('.ktrProses').show();
@@ -257,13 +257,13 @@
         // download pdf
         $(document).on('click', '.downloadBtn', function() {
             var id = $(this).data('id');
-            var url= '{{ url('guru/penilaian_sertifikasi/cetak_sertifikat') }}/'+ id;
+            var url= '{{ url('siswa/sertifikasi/downloadKartu') }}/'+ id;
             window.location.href = url;
         });
 
         $(document).on('click', '.downloadSertifBtn', function() {
             var id = $(this).data('id');
-            var url= '{{ url('guru/daftar_sertifikasi/download_sertifikat') }}/'+ id;
+            var url= '{{ url('siswa/sertifikasi/downloadSertif') }}/'+ id;
             window.location.href = url;
         });
 

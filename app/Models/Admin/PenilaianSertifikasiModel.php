@@ -146,9 +146,53 @@ class PenilaianSertifikasiModel extends Model
         return $query->get();
     }
 
+    public static function DataNilaiSertifikasiPeserta($peserta)
+    {
+        $data = DB::table('penilaian_sertifikasi')
+            ->leftjoin('peserta_sertifikasi', 'penilaian_sertifikasi.id_peserta_sertifikasi', '=', 'peserta_sertifikasi.id_peserta_sertifikasi')
+            ->leftjoin('surah as surahMulai', 'penilaian_sertifikasi.surah_mulai', '=', 'surahMulai.nomor')
+            ->leftjoin('surah as surahAkhir', 'penilaian_sertifikasi.surah_akhir', '=', 'surahAkhir.nomor')
+            ->select(
+                'surahMulai.namaLatin as SurahMulai',
+                'surahAkhir.namaLatin as SurahAkhir',
+                'penilaian_sertifikasi.*',
+            )
+            ->whereNull('penilaian_sertifikasi.deleted_at')
+            ->where('penilaian_sertifikasi.id_peserta_sertifikasi', $peserta)
+            //->where('peserta_sertifikasi.id_periode', $periode)
+            ->get();
+        return $data; // Return the result set
+    }
 
+    public static function DataRenkNilaiSertifikasiPeserta($id)
+    {
+        // Build the initial query
+        $data = DB::table('penilaian_sertifikasi')
+            ->select(DB::raw('SUM(nilai_sertifikasi) as total_nilai, COUNT(*) as count'))
+            ->whereNull('deleted_at')
+            ->where('id_peserta_sertifikasi', $id)
+            ->first(); 
     
+        // Calculate average
+        $rata = ($data->total_nilai ?? 0) / ($data->count ?? 1); // Avoid division by zero
     
+        // Determine grade based on average
+        if ($rata >= 94 && $rata <= 100) {
+            $ktr = "A";
+        } elseif ($rata >= 87 && $rata < 94) {
+            $ktr = "B";
+        } elseif ($rata >= 80 && $rata < 87) {
+            $ktr = "C";
+        } else {
+            $ktr = "D";
+        }
     
+        // Return both the total score and the grade
+        return [
+            'total_nilai' => $data->total_nilai ?? 0,
+            'rata' => $rata,
+            'grade' => $ktr
+        ];
+    }
     
 }
