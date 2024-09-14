@@ -661,6 +661,10 @@
                             name: 'aqidah'
                         },
                         {
+                            data: 'tazkiyatun',
+                            name: 'tazkiyatun'
+                        },
+                        {
                             data: 'ibadah',
                             name: 'ibadah'
                         },
@@ -672,10 +676,7 @@
                             data: 'sirah',
                             name: 'sirah'
                         },
-                        {
-                            data: 'tazkiyatun',
-                            name: 'tazkiyatun'
-                        },
+                        
                         {
                             data: 'fikrul',
                             name: 'fikrul'
@@ -763,7 +764,7 @@
                         data: 'tilawah',
                         name: 'tilawah',
                         render: function(data, type, row) {
-                            return row.tilawah + ' KALI';
+                            return row.tilawah + ' HAL';
                         }
                     },
                     {

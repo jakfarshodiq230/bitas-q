@@ -5,6 +5,8 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
+
 
 class PesertaKegiatan extends Model
 {
@@ -16,7 +18,12 @@ class PesertaKegiatan extends Model
     protected $fillable = [
         'id_peserta_kegiatan', 'id_tahun_ajaran', 'id_periode', 'id_siswa', 'id_kelas', 'id_guru', 'status_peserta_kegiatan', 'deleted_at', 'id_user'
     ];
-
+    
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
+    
     public static function DataAllAdmin()
     {
         $data = DB::table('periode')

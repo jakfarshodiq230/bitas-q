@@ -819,6 +819,7 @@
         $('#addBtn').on('click', function() {
             $('#ModalLabel').text('TAMBAH PENIALAIN ' + judul.toUpperCase());
             $('#dataForm')[0].reset();
+            $('.select2').val(null).trigger('change');
             $('#formModal').modal('show');
         });
 

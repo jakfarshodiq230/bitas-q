@@ -5,6 +5,8 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
+
 
 class PeriodeModel extends Model
 {
@@ -19,6 +21,11 @@ class PeriodeModel extends Model
         'tanggungjawab_periode', 'pesan_periode', 'status_periode', 'file_periode', 'id_user','deleted_at',
         'juz_periode', 'sesi_periode'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function DataAll()
     {

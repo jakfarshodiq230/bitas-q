@@ -5,6 +5,8 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
+
 
 class RaporBpiModel extends Model
 {
@@ -44,6 +46,11 @@ class RaporBpiModel extends Model
     'id_user',
     'deleted_at'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function DataPesertaRapor($tahun,$periode)  {
         
@@ -242,5 +249,75 @@ class RaporBpiModel extends Model
 
         return $data; // Return the result set
     }
+
+    public static function NilaiGrafikPerkembangan($id, $fields) {
+        // Fetch the data with left joins
+        $data = DB::table('rapor_pbi')
+            ->leftjoin('periode', 'rapor_pbi.id_periode', '=', 'periode.id_periode')
+            ->leftjoin('tahun_ajaran', 'rapor_pbi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->select(
+                'periode.*',
+                'tahun_ajaran.nama_tahun_ajaran',
+                ...$fields
+            )
+            ->where('rapor_pbi.id_siswa', $id)
+            ->get();
+
+        $result = [];
+
+        $tahun_ajaran = [];
+        $periode_ajaran = [];
+        foreach ($data as $row) {
+
+            $tahun_ajaran[] = $row->nama_tahun_ajaran;
+            $periode_ajaran[] = $row->jenis_kegiatan;
+
+            foreach ($fields as $field) {
+                if (!isset($result[$field])) {
+                    $result[$field] = [];
+                }
+                $result[$field][] = $row->$field; 
+            }
+        }
+    
+        $result['tahun_ajaran'] = $tahun_ajaran;
+        $result['periode_ajaran'] = $periode_ajaran;
+
+        return $result;
+    }
+
+    public static function DataPeriodeGrafik($id)  {
+        
+        $data = DB::table('rapor_pbi')
+        ->leftjoin('periode', 'rapor_pbi.id_periode', '=', 'periode.id_periode')
+        ->leftjoin('tahun_ajaran', 'rapor_pbi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+        ->select(
+            'periode.jenis_kegiatan',
+            'tahun_ajaran.nama_tahun_ajaran',
+            'rapor_pbi.id_rapor_pbi'
+        )
+        ->where('rapor_pbi.id_siswa', $id)
+        ->get();
+
+        return $data; // Return the result set
+    }
+
+    public static function RataGrafikHome($periode, $tahun, $siswa)
+    {
+        // Start the query
+        $query = DB::table('rapor_pbi')
+            ->select(
+                DB::raw('ROUND(SUM(alquran + aqidah + ibadah + hadits + sirah + tazkiyatun + fikrul)/7, 2) AS total_bidang_studi'),
+                DB::raw('ROUND(SUM(aqdh + ibdh + akhlak + prbd + aqr + wwsn + kwta + perkemahan + mbit)/9, 2) AS total_karakter'),
+                DB::raw('ROUND(SUM(sholat_wajib + tilawah + tahajud + duha + rawatib + dzikri + puasa + infaq)/8, 2) AS total_amal')
+            )
+            ->where('rapor_pbi.id_periode', $periode)
+            ->where('rapor_pbi.id_tahun_ajaran', $tahun)
+            ->where('rapor_pbi.id_siswa', $siswa)
+            ->first();
+        
+        return $query;
+    }  
+       
 
 }

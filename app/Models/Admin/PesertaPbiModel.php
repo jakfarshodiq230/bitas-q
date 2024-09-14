@@ -5,6 +5,8 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
+
 
 class PesertaPbiModel extends Model
 {
@@ -16,6 +18,11 @@ class PesertaPbiModel extends Model
     protected $fillable = [
         'id_peserta_pbi', 'id_tahun_ajaran', 'id_periode', 'id_siswa', 'id_kelas', 'id_guru', 'status_peserta_pbi', 'deleted_at', 'id_user'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function DataAllAdmin()
     {
@@ -94,7 +101,8 @@ class PesertaPbiModel extends Model
                 'siswa.*',
                 'kelas.*',
                 'guru.*',
-                'peserta_pbi.*'
+                'peserta_pbi.*',
+                DB::raw('NULL as password')
             )
             ->whereNull('peserta_pbi.deleted_at')
             ->where('periode.judul_periode', 'pbi')
@@ -205,7 +213,8 @@ class PesertaPbiModel extends Model
                 'tahun_ajaran.*',
                 'siswa.*',
                 'kelas.*',
-                'guru.*'
+                'guru.*',
+                DB::raw('NULL as password')
             )
             ->whereNull('periode.deleted_at')
             ->whereNull('peserta_pbi.deleted_at')
@@ -224,7 +233,8 @@ class PesertaPbiModel extends Model
         $query = DB::table('peserta_pbi')
             ->leftJoin('siswa', 'peserta_pbi.id_siswa', '=', 'siswa.id_siswa')
             ->select(
-                'siswa.*'
+                'siswa.*',
+                DB::raw('NULL as password')
             )
             ->where('peserta_pbi.id_tahun_ajaran', $tahun)
             ->groupBy(
@@ -276,7 +286,8 @@ class PesertaPbiModel extends Model
                 'siswa.*',
                 'kelas.*',
                 'guru.*',
-                'peserta_pbi.*'
+                'peserta_pbi.*',
+                DB::raw('NULL as password')
             )
             ->whereNull('peserta_pbi.deleted_at')
             ->where('periode.judul_periode', 'pbi')
@@ -303,6 +314,7 @@ class PesertaPbiModel extends Model
                 'siswa.*',
                 'kelas.*',
                 'guru.*',
+                DB::raw('NULL as password')
             )
             ->whereNull('peserta_pbi.deleted_at')
             ->where('periode.judul_periode', 'pbi')
@@ -331,6 +343,7 @@ class PesertaPbiModel extends Model
                 'siswa.*',
                 'kelas.*',
                 'guru.*',
+                DB::raw('NULL as password')
             )
             ->whereNull('peserta_pbi.deleted_at')
             ->where('periode.judul_periode', 'pbi')
@@ -347,8 +360,6 @@ class PesertaPbiModel extends Model
 
     public static function DataPesertaRapor($id_tahun_ajaran, $jenisRapor, $tglMulai, $tglAkhir)
     {
-            $keterangan_1 = 'tahfidz';
-    
         $queryBase = DB::table('peserta_pbi')
             ->join('tahun_ajaran', 'peserta_pbi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
             ->join('periode', 'peserta_pbi.id_periode', '=', 'periode.id_periode')
@@ -356,11 +367,6 @@ class PesertaPbiModel extends Model
             ->join('penilaian_bidang_studi_pbi', 'peserta_pbi.id_peserta_pbi', '=', 'penilaian_bidang_studi_pbi.id_peserta_pbi')
             ->join('penilaian_karakter_pbi', 'peserta_pbi.id_peserta_pbi', '=', 'penilaian_karakter_pbi.id_peserta_pbi')
             ->select(
-                'periode.*',
-                'tahun_ajaran.*',
-                'penilaian_aktifitas_amal_pbi.*',
-                'penilaian_bidang_studi_pbi.*',
-                'penilaian_karakter_pbi.*',
                 'peserta_pbi.*'
             )
             ->whereNull('peserta_pbi.deleted_at')
@@ -375,38 +381,57 @@ class PesertaPbiModel extends Model
         $queryKeterangan = clone $queryBase;
         $queryKeterangan->addSelect(
             // nilai penilaian_aktifitas_amal_pbi
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.sholat_wajib), 0) as sholat_wajib'),
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.tilawah), 0) as tilawah'),
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.tahajud), 0) as tahajud'),
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.duha), 0) as duha'),
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.rawatib), 0) as rawatib'),
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.dzikri), 0) as dzikri'),
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.puasa), 0) as puasa'),
-            DB::raw('COALESCE(SUM(penilaian_aktifitas_amal_pbi.infaq), 0) as infaq'),           
-
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.sholat_wajib)) / (COUNT(penilaian_aktifitas_amal_pbi.sholat_wajib)), 2) AS sholat_wajib'),
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.tilawah)) / (COUNT(penilaian_aktifitas_amal_pbi.tilawah)), 2) AS tilawah'),
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.tahajud)) / (COUNT(penilaian_aktifitas_amal_pbi.tahajud)), 2) AS tahajud'),
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.duha)) / (COUNT(penilaian_aktifitas_amal_pbi.duha)), 2) AS duha'),
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.rawatib)) / (COUNT(penilaian_aktifitas_amal_pbi.rawatib)), 2) AS rawatib'),
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.dzikri)) / (COUNT(penilaian_aktifitas_amal_pbi.dzikri)), 2) AS dzikri'),
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.puasa)) / (COUNT(penilaian_aktifitas_amal_pbi.puasa)), 2) AS puasa'),
+            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.infaq)) / (COUNT(penilaian_aktifitas_amal_pbi.infaq)), 2) AS infaq'),
+    
             // nilai penilaian_bidang_studi_pbi
-            DB::raw('SUM(penilaian_bidang_studi_pbi.alquran) / NULLIF(COUNT(penilaian_bidang_studi_pbi.alquran), 0) as alquran'),
-            DB::raw('SUM(penilaian_bidang_studi_pbi.aqidah) / NULLIF(COUNT(penilaian_bidang_studi_pbi.aqidah), 0) as aqidah'),
-            DB::raw('SUM(penilaian_bidang_studi_pbi.ibadah) / NULLIF(COUNT(penilaian_bidang_studi_pbi.ibadah), 0) as ibadah'),
-            DB::raw('SUM(penilaian_bidang_studi_pbi.hadits) / NULLIF(COUNT(penilaian_bidang_studi_pbi.hadits), 0) as hadits'),
-            DB::raw('SUM(penilaian_bidang_studi_pbi.sirah) / NULLIF(COUNT(penilaian_bidang_studi_pbi.sirah), 0) as sirah'),
-            DB::raw('SUM(penilaian_bidang_studi_pbi.tazkiyatun) / NULLIF(COUNT(penilaian_bidang_studi_pbi.tazkiyatun), 0) as tazkiyatun'),
-            DB::raw('SUM(penilaian_bidang_studi_pbi.fikrul) / NULLIF(COUNT(penilaian_bidang_studi_pbi.fikrul), 0) as fikrul'),
-
+            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.alquran)) / (COUNT(penilaian_bidang_studi_pbi.alquran)), 2) AS alquran'),
+            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.aqidah)) / (COUNT(penilaian_bidang_studi_pbi.aqidah)), 2) AS aqidah'),
+            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.ibadah)) / (COUNT(penilaian_bidang_studi_pbi.ibadah)), 2) AS ibadah'),
+            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.hadits)) / (COUNT(penilaian_bidang_studi_pbi.hadits)), 2) AS hadits'),
+            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.sirah)) / (COUNT(penilaian_bidang_studi_pbi.sirah)), 2) AS sirah'),
+            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.tazkiyatun)) / (COUNT(penilaian_bidang_studi_pbi.tazkiyatun)), 2) AS tazkiyatun'),
+            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.fikrul)) / (COUNT(penilaian_bidang_studi_pbi.fikrul)), 2) AS fikrul'),
+    
             // nilai penilaian_karakter_pbi
-            DB::raw('SUM(penilaian_karakter_pbi.aqdh) / NULLIF(COUNT(penilaian_karakter_pbi.aqdh), 0) as aqdh'),
-            DB::raw('SUM(penilaian_karakter_pbi.ibdh) / NULLIF(COUNT(penilaian_karakter_pbi.ibdh), 0) as ibdh'),
-            DB::raw('SUM(penilaian_karakter_pbi.akhlak) / NULLIF(COUNT(penilaian_karakter_pbi.akhlak), 0) as akhlak'),
-            DB::raw('SUM(penilaian_karakter_pbi.prbd) / NULLIF(COUNT(penilaian_karakter_pbi.prbd), 0) as prbd'),
-            DB::raw('SUM(penilaian_karakter_pbi.aqr) / NULLIF(COUNT(penilaian_karakter_pbi.aqr), 0) as aqr'),
-            DB::raw('SUM(penilaian_karakter_pbi.wwsn) / NULLIF(COUNT(penilaian_karakter_pbi.wwsn), 0) as wwsn'),
-
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.aqdh)) / (COUNT(penilaian_karakter_pbi.aqdh)), 2) AS aqdh'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.ibdh)) / (COUNT(penilaian_karakter_pbi.ibdh)), 2) AS ibdh'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.akhlak)) / (COUNT(penilaian_karakter_pbi.akhlak)), 2) AS akhlak'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.prbd)) / (COUNT(penilaian_karakter_pbi.prbd)), 2) AS prbd'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.aqr)) / (COUNT(penilaian_karakter_pbi.aqr)), 2) AS aqr'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.wwsn)) / (COUNT(penilaian_karakter_pbi.wwsn)), 2) AS wwsn'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.kwta)) / (COUNT(penilaian_karakter_pbi.kwta)), 2) AS kwta'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.perkemahan)) / (COUNT(penilaian_karakter_pbi.perkemahan)), 2) AS perkemahan'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.mbit)) / (COUNT(penilaian_karakter_pbi.mbit)), 2) AS mbit'),
+            DB::raw('ROUND((SUM(penilaian_karakter_pbi.mbit)) / NULLIF(COUNT(penilaian_karakter_pbi.mbit), 0), 2) AS jumlah_amal')
         )
         ->groupBy('peserta_pbi.id_peserta_pbi', 'periode.id_periode', 'tahun_ajaran.id_tahun_ajaran');
     
         $dataKeterangan = $queryKeterangan->get();
     
-        return  $dataKeterangan;
+        return $dataKeterangan;
+    }
+    
+
+    public static function PesrtaStatistikPerkembanganPbiGuru()
+    {
+        $data = DB::table('rapor_pbi')
+            ->join('siswa', 'rapor_pbi.id_siswa', '=', 'siswa.id_siswa')
+            ->select(
+                'siswa.nama_siswa',
+                'rapor_pbi.id_siswa',
+            )
+            ->where('rapor_pbi.id_guru', session('user')['id'])
+            ->groupBy('rapor_pbi.id_siswa')
+            ->get();
+    
+        return $data; // Return the result set
     }
 
    

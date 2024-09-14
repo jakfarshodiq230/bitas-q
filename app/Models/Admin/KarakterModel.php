@@ -5,6 +5,8 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
+
 
 class KarakterModel extends Model
 {
@@ -14,8 +16,13 @@ class KarakterModel extends Model
     public $incrementing = false; 
     protected $keyType = 'string';
     protected $fillable = [
-        'id_karakter', 'id_peserta_pbi', 'pekan_karakter', 'aqdh', 'ibdh', 'akhlak', 'prbd', 'aqr', 'wwsn', 'tanggal_penilaian_karakter', 'ktr_karakter', 'status_karakter', 'id_user','deleted_at'
+        'id_karakter', 'id_peserta_pbi', 'pekan_karakter', 'aqdh', 'ibdh', 'akhlak', 'prbd', 'aqr', 'wwsn', 'kwta', 'perkemahan', 'mbit', 'tanggal_penilaian_karakter', 'ktr_karakter', 'status_karakter', 'id_user','deleted_at'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function NilaiKarakter($periode, $tahun)  {
         
@@ -101,7 +108,7 @@ class KarakterModel extends Model
             ->where('peserta_pbi.id_periode', $periode)
             ->where('peserta_pbi.id_peserta_pbi', $peserta)
             ->where('penilaian_karakter_pbi.id_user', session('user')['id'])
-            ->max('penilaian_karakter_pbi.pekan_amal');
+            ->max('penilaian_karakter_pbi.pekan_karakter');
     
         $nextPekan = $data ? $data + 1 : 1;
     
@@ -150,4 +157,23 @@ class KarakterModel extends Model
         // Execute the query and return the results
         return $query;
     }
+
+    public static function RataNilaiRapor($periode, $tahun, $siswa)
+    {
+        // Start the query
+        $query = DB::table('penilaian_karakter_pbi')
+            ->join('peserta_pbi', 'penilaian_karakter_pbi.id_peserta_pbi', '=', 'peserta_pbi.id_peserta_pbi')
+            ->select(
+                DB::raw('ROUND((SUM(aqdh) + SUM(ibdh) + SUM(akhlak) + SUM(prbd) + SUM(aqr) + SUM(wwsn) + SUM(kwta) + SUM(perkemahan) + SUM(mbit)) / (COUNT(*) * 9), 2) AS jumlah_karakter')
+            )
+            ->where('peserta_pbi.id_periode', $periode)
+            ->where('peserta_pbi.id_tahun_ajaran', $tahun)
+            ->where('peserta_pbi.id_siswa', $siswa)
+            ->where('penilaian_karakter_pbi.status_karakter', 1)
+            ->first();
+        
+        return $query;
+    }
+    
+    
 }

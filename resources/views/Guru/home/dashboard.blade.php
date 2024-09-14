@@ -56,6 +56,9 @@
             $.ajax({
                 url: '{{ url('guru/dashboard/ajax_data_dashboard') }}',
                 method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(response) {
                     var eventList = $('.timeline').empty(); 
                     

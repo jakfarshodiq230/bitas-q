@@ -143,6 +143,9 @@
                                         <th>PRBD</th>
                                         <th>AQR</th>
                                         <th>WWSN</th>
+                                        <th>KWTA</th>
+                                        <th>PERKEMAHAN</th>
+                                        <th>MBIT</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -156,6 +159,9 @@
                                         <th>PRBD</th>
                                         <th>AQR</th>
                                         <th>WWSN</th>
+                                        <th>KWTA</th>
+                                        <th>PERKEMAHAN</th>
+                                        <th>MBIT</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>
@@ -432,6 +438,48 @@
                                                         </select>
                                                         <div id="karakter_wawasan-error" class="invalid-feedback"></div>
                                                     </div>
+                                                    <div class="mb-3">
+                                                        <label>Karya Wisata/Tafakur Alam</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0"
+                                                            name="kwta" id="kwta" data-bs-toggle="select2"
+                                                            onchange="handleNilaiChange(this, $('select[name=\'nilai_kwta\']'))"
+                                                            required>
+                                                            <option>PILIH</option>
+                                                            <option value="sangat_baik">SANGAT BAIK</option>
+                                                            <option value="baik">BAIK</option>
+                                                            <option value="cukup">CUKUP</option>
+                                                            <option value="kurang">KURANG</option>
+                                                        </select>
+                                                        <div id="kwta-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Perkemahan</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0"
+                                                            name="perkemahan" id="perkemahan" data-bs-toggle="select2"
+                                                            onchange="handleNilaiChange(this, $('select[name=\'nilai_perkemahan\']'))"
+                                                            required>
+                                                            <option>PILIH</option>
+                                                            <option value="sangat_baik">SANGAT BAIK</option>
+                                                            <option value="baik">BAIK</option>
+                                                            <option value="cukup">CUKUP</option>
+                                                            <option value="kurang">KURANG</option>
+                                                        </select>
+                                                        <div id="perkemahan-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Malam Bina Iman dan Taqwa</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0"
+                                                            name="mbit" id="mbit" data-bs-toggle="select2"
+                                                            onchange="handleNilaiChange(this, $('select[name=\'nilai_mbit\']'))"
+                                                            required>
+                                                            <option>PILIH</option>
+                                                            <option value="sangat_baik">SANGAT BAIK</option>
+                                                            <option value="baik">BAIK</option>
+                                                            <option value="cukup">CUKUP</option>
+                                                            <option value="kurang">KURANG</option>
+                                                        </select>
+                                                        <div id="mbit-error" class="invalid-feedback"></div>
+                                                    </div>
                                                 </div>
 
                                                 <!-- keterangan aktivitas amal -->
@@ -455,7 +503,7 @@
                                                             required>
                                                             <option>PILIH</option>
                                                             @for ($i = 1; $i <= 100; $i++)
-                                                            <option value="{{$i}}">{{$i." KALI"}}</option>
+                                                            <option value="{{$i}}">{{$i." HALAMAN/PEKAN"}}</option>
                                                             @endfor
                                                         </select>
                                                         <div id="aktivitas_amal_tilawah-error" class="invalid-feedback"></div>
@@ -645,6 +693,33 @@
                                                         </select>
                                                         <div id="nilai_karakter_wawasan-error" class="invalid-feedback"></div>
                                                     </div>
+                                                    <div class="mb-3">
+                                                        <label>Nilai Karya Wisata/Tafakur Alam</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0 "
+                                                            name="nilai_kwta" id="nilai_kwta"
+                                                            data-bs-toggle="select2" required>
+                                                            <option>PILIH</option>
+                                                        </select>
+                                                        <div id="nilai_kwta-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Nilai Perkemahan</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0 "
+                                                            name="nilai_perkemahan" id="nilai_perkemahan"
+                                                            data-bs-toggle="select2" required>
+                                                            <option>PILIH</option>
+                                                        </select>
+                                                        <div id="nilai_perkemahan-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Nilai Malam Bina Iman dan Taqwa</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0 "
+                                                            name="nilai_mbit" id="nilai_mbit"
+                                                            data-bs-toggle="select2" required>
+                                                            <option>PILIH</option>
+                                                        </select>
+                                                        <div id="nilai_mbit-error" class="invalid-feedback"></div>
+                                                    </div>
                                                 </div>
 
                                                 <!-- keterangan aktivitas amal -->
@@ -803,246 +878,120 @@
             var periode = "{{ $periode->id_periode }}";
             var tahun = "{{ $tahun->id_tahun_ajaran }}";
 
-            $('#datatables-ajax-bidang_studi').DataTable({
-                processing: true,
-                serverSide: false,
-                retrieve: false,
-                destroy: true,
-                responsive: true,
-                ajax: {
-                    url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan') }}/" + periode +
-                        '/' + tahun,
-                    dataSrc: "nilai_bidang_studi",
-                    error: function(xhr, error, thrown) {
-                        console.log("AJAX error:", error);
-                        console.log("Thrown error:", thrown);
-                    }
-                },
-
-                columns: [{
-                        "data": null,
-                        "name": "rowNumber",
-                        "render": function(data, type, row, meta) {
-                            return meta.row + 1;
+            function initializeDataTable(selector, dataSrc, columns, countSelector, buttonSelector, idField, kategori) {
+                $(selector).DataTable({
+                    processing: true,
+                    serverSide: false,
+                    retrieve: false,
+                    destroy: true,
+                    responsive: true,
+                    ajax: {
+                        url: `{{ url('guru/penilaian_pbi/data_penilaian_kegiatan') }}/${periode}/${tahun}`,
+                        dataSrc: dataSrc,
+                        error: function(xhr, error, thrown) {
+                            console.log("AJAX error:", error);
+                            console.log("Thrown error:", thrown);
                         }
                     },
-                    {
-                        data: 'nama_siswa',
-                        name: 'nama_siswa',
-                        render: function(data, type, row) {
-                            return row.nama_siswa.trim().toUpperCase()+'<br>'+row.nisn_siswa +'<br>'+row.nama_kelas.toUpperCase()+'<br>'+'PEKAN KE-'+row.pekan_bidang_studi;
-                        }
-                    },
-                    {
-                        data: 'alquran',
-                        name: 'alquran'
-                    },
-                    {
-                        data: 'aqidah',
-                        name: 'aqidah'
-                    },
-                    {
-                        data: 'ibadah',
-                        name: 'ibadah'
-                    },
-                    {
-                        data: 'hadits',
-                        name: 'hadits'
-                    },
-                    {
-                        data: 'sirah',
-                        name: 'sirah'
-                    },
-                    {
-                        data: 'tazkiyatun',
-                        name: 'tazkiyatun'
-                    },
-                    {
-                        data: 'fikrul',
-                        name: 'fikrul'
-                    },
-                    {
+                    columns: columns.concat([{
                         data: null,
                         name: null,
                         render: function(data, type, row) {
                             return `
                                 <button class="btn btn-sm btn-danger deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" 
-                                data-id_penialain="${row.id_bidang_studi}" data-kategori="bidang_studi">
+                                data-id_penilaain="${row[idField]}" data-kategori="${kategori}">
                                 <i class="fas fa-trash"></i></button>
                                 `;
                         }
+                    }]),
+                    drawCallback: function(settings) {
+                        var api = this.api();
+                        var count = api.data().count();
+                        $(countSelector).text(count);
+                        if (count > 0) {
+                            $(buttonSelector).show();
+                        }
                     }
-                ],
-                drawCallback: function(settings) {
-                    var api = this.api();
-                    var count = api.data().count();
-                    $('#countdata-bidang_studi').text(count);
-                    if (count > 0) {
-                        $('#kirimBtn-bidang_studi').show()
-                    }
-                }
-            });
+                });
+            }
 
-            $('#datatables-ajax-karakter').DataTable({
-                processing: true,
-                serverSide: false,
-                retrieve: false,
-                destroy: true,
-                responsive: true,
-                ajax: {
-                    url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan') }}/" + periode +
-                        '/' + tahun,
-                    dataSrc: "nilai_karakter",
-                    error: function(xhr, error, thrown) {
-                        console.log("AJAX error:", error);
-                        console.log("Thrown error:", thrown);
+            // Define common column settings
+            var commonColumns = [
+                {
+                    data: null,
+                    name: "rowNumber",
+                    render: function(data, type, row, meta) {
+                        return meta.row + 1;
                     }
                 },
-
-                columns: [{
-                        "data": null,
-                        "name": "rowNumber",
-                        "render": function(data, type, row, meta) {
-                            return meta.row + 1;
-                        }
-                    },
-                    {
-                        data: 'nama_siswa',
-                        name: 'nama_siswa',
-                        render: function(data, type, row) {
-                            return row.nama_siswa.trim().toUpperCase()+'<br>'+row.nisn_siswa +'<br>'+row.nama_kelas.toUpperCase()+'<br>'+'PEKAN KE-'+row.pekan_karakter;
-                        }
-                    },
-                    {
-                        data: 'aqdh',
-                        name: 'aqdh'
-                    },
-                    {
-                        data: 'ibdh',
-                        name: 'ibdh'
-                    },
-                    {
-                        data: 'akhlak',
-                        name: 'akhlak'
-                    },
-                    {
-                        data: 'prbd',
-                        name: 'prbd'
-                    },
-                    {
-                        data: 'aqr',
-                        name: 'aqr'
-                    },
-                    {
-                        data: 'wwsn',
-                        name: 'wwsn'
-                    },
-                    {
-                        data: null,
-                        name: null,
-                        render: function(data, type, row) {
-                            return `
-                                <button class="btn btn-sm btn-danger deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" 
-                                data-id_penialain="${row.id_karakter}" data-kategori="karakter">
-                                <i class="fas fa-trash"></i></button>
-                                `;
-                        }
-                    }
-                ],
-                drawCallback: function(settings) {
-                    var api = this.api();
-                    var count = api.data().count();
-                    $('#countdata-karakter').text(count);
-                    if (count > 0) {
-                        $('#kirimBtn-karakter').show()
+                {
+                    data: 'nama_siswa',
+                    name: 'nama_siswa',
+                    render: function(data, type, row) {
+                        return row.nama_siswa.trim().toUpperCase() + '<br>' + row.nisn_siswa + '<br>' + row.nama_kelas.toUpperCase() + '<br>' + 'PEKAN KE-' + row.pekan;
                     }
                 }
-            });
+            ];
 
-            $('#datatables-ajax-aktivitas_amal').DataTable({
-                processing: true,
-                serverSide: false,
-                retrieve: false,
-                destroy: true,
-                responsive: true,
-                ajax: {
-                    url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan') }}/" + periode +
-                        '/' + tahun,
-                    dataSrc: "nilai_amal",
-                    error: function(xhr, error, thrown) {
-                        console.log("AJAX error:", error);
-                        console.log("Thrown error:", thrown);
-                    }
-                },
+            // Initialize each DataTable
+            initializeDataTable(
+                '#datatables-ajax-bidang_studi',
+                'nilai_bidang_studi',
+                commonColumns.concat([
+                    { data: 'alquran', name: 'alquran' },
+                    { data: 'aqidah', name: 'aqidah' },
+                    { data: 'ibadah', name: 'ibadah' },
+                    { data: 'hadits', name: 'hadits' },
+                    { data: 'sirah', name: 'sirah' },
+                    { data: 'tazkiyatun', name: 'tazkiyatun' },
+                    { data: 'fikrul', name: 'fikrul' }
+                ]),
+                '#countdata-bidang_studi',
+                '#kirimBtn-bidang_studi',
+                'id_bidang_studi',
+                'bidang_studi'
+            );
 
-                columns: [{
-                        "data": null,
-                        "name": "rowNumber",
-                        "render": function(data, type, row, meta) {
-                            return meta.row + 1;
-                        }
-                    },
-                    {
-                        data: 'nama_siswa',
-                        name: 'nama_siswa',
-                        render: function(data, type, row) {
-                            return row.nama_siswa.trim().toUpperCase()+'<br>'+row.nisn_siswa +'<br>'+row.nama_kelas.toUpperCase()+'<br>'+'PEKAN KE-'+row.pekan_amal;
-                        }
-                    },
-                    {
-                        data: 'sholat_wajib',
-                        name: 'sholat_wajib'
-                    },
-                    {
-                        data: 'tilawah',
-                        name: 'tilawah'
-                    },
-                    {
-                        data: 'tahajud',
-                        name: 'tahajud'
-                    },
-                    {
-                        data: 'duha',
-                        name: 'duha'
-                    },
-                    {
-                        data: 'rawatib',
-                        name: 'rawatib'
-                    },
-                    {
-                        data: 'dzikri',
-                        name: 'dzikri'
-                    },
-                    {
-                        data: 'puasa',
-                        name: 'puasa'
-                    },
-                    {
-                        data: 'infaq',
-                        name: 'infaq'
-                    },
-                    {
-                        data: null,
-                        name: null,
-                        render: function(data, type, row) {
-                            return `
-                                <button class="btn btn-sm btn-danger deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" 
-                                data-id_penialain="${row.id_aktifitas_amal}" data-kategori="aktivitas_amal">
-                                <i class="fas fa-trash"></i></button>
-                                `;
-                        }
-                    }
-                ],
-                drawCallback: function(settings) {
-                    var api = this.api();
-                    var count = api.data().count();
-                    $('#countdata-aktivitas_amal').text(count);
-                    if (count > 0) {
-                        $('#kirimBtn-aktivitas_amal').show()
-                    }
-                }
-            });
+            initializeDataTable(
+                '#datatables-ajax-karakter',
+                'nilai_karakter',
+                commonColumns.concat([
+                    { data: 'aqdh', name: 'aqdh' },
+                    { data: 'ibdh', name: 'ibdh' },
+                    { data: 'akhlak', name: 'akhlak' },
+                    { data: 'prbd', name: 'prbd' },
+                    { data: 'aqr', name: 'aqr' },
+                    { data: 'wwsn', name: 'wwsn' },
+                    { data: 'kwta', name: 'kwta' },
+                    { data: 'perkemahan', name: 'perkemahan' },
+                    { data: 'mbit', name: 'mbit' }
+                ]),
+                '#countdata-karakter',
+                '#kirimBtn-karakter',
+                'id_karakter',
+                'karakter'
+            );
+
+            initializeDataTable(
+                '#datatables-ajax-aktivitas_amal',
+                'nilai_amal',
+                commonColumns.concat([
+                    { data: 'sholat_wajib', name: 'sholat_wajib' },
+                    { data: 'tilawah', name: 'tilawah' },
+                    { data: 'tahajud', name: 'tahajud' },
+                    { data: 'duha', name: 'duha' },
+                    { data: 'rawatib', name: 'rawatib' },
+                    { data: 'dzikri', name: 'dzikri' },
+                    { data: 'puasa', name: 'puasa' },
+                    { data: 'infaq', name: 'infaq' }
+                ]),
+                '#countdata-aktivitas_amal',
+                '#kirimBtn-aktivitas_amal',
+                'id_aktifitas_amal',
+                'aktivitas_amal'
+            );
         });
+
 
 
         $(document).ready(function() {
@@ -1088,6 +1037,7 @@
         $('#addBtn').on('click', function() {
             $('#ModalLabel').text('TAMBAH PENILAIAN PESERTA BPI (KALI/PEKAN) ');
             $('#dataForm')[0].reset();
+            $('.select2').val(null).trigger('change');
             $('#formModal').modal('show');
         });
 

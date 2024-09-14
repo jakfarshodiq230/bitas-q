@@ -5,6 +5,7 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
 
 class AktifitasAmalModel extends Model
 {
@@ -16,6 +17,11 @@ class AktifitasAmalModel extends Model
     protected $fillable = [
         'id_aktifitas_amal', 'id_peserta_pbi', 'tanggal_penilaian_amal', 'status_amal', 'pekan_amal', 'ktr_amal', 'sholat_wajib', 'tilawah', 'tahajud', 'duha', 'rawatib', 'dzikri', 'puasa', 'infaq', 'id_user','deleted_at'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function NilaiAmal($periode, $tahun)  {
         
@@ -149,5 +155,25 @@ class AktifitasAmalModel extends Model
         // Execute the query and return the results
         return $query;
     }
+
+    public static function RataNilaiRapor($periode, $tahun, $siswa)
+    {
+        // Start the query
+        $query = DB::table('penilaian_aktifitas_amal_pbi')
+            ->join('peserta_pbi', 'penilaian_aktifitas_amal_pbi.id_peserta_pbi', '=', 'peserta_pbi.id_peserta_pbi')
+            ->select(
+                DB::raw('ROUND((SUM(sholat_wajib) + SUM(tilawah) + SUM(tahajud) + SUM(duha) + SUM(rawatib) + SUM(dzikri) + SUM(puasa) + SUM(infaq)) / (COUNT(*) * 8), 2) AS jumlah_amal')
+            )
+            ->where('peserta_pbi.id_periode', $periode)
+            ->where('peserta_pbi.id_tahun_ajaran', $tahun)
+            ->where('peserta_pbi.id_siswa', $siswa)
+            ->where('penilaian_aktifitas_amal_pbi.status_amal', 1)
+            ->first();
+        
+        // Return the result
+        return $query;
+    }
+
+    
     
 }

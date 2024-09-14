@@ -5,6 +5,7 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
 
 class RaporKegiatanModel extends Model
 {
@@ -16,6 +17,11 @@ class RaporKegiatanModel extends Model
     protected $fillable = [
         'id_rapor', 'id_tahun_ajaran', 'id_periode', 'id_siswa', 'id_kelas', 'id_guru', 'jenis_penilaian_kegiatan', 'surah_baru', 'surah_lama', 'n_j_baru', 'n_f_baru', 'n_k_baru', 'n_g_baru', 'n_m_baru', 'n_w_baru', 'n_j_lama', 'n_f_lama', 'n_k_lama', 'n_g_lama', 'n_m_lama', 'n_w_lama','id_user','deleted_at'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function DataPesertaRapor($tahun,$jenjang,$periode)  {
         

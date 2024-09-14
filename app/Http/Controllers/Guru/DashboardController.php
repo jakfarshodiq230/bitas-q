@@ -15,11 +15,14 @@ use App\Models\Admin\PenilaianSertifikasiModel;
 use App\Models\Admin\AktifitasAmalModel;
 use App\Models\Admin\BidangStudiModel;
 use App\Models\Admin\KarakterModel;
+use App\Models\Admin\PesertaPbiModel;
+use App\Models\Admin\SiswaModel;
+use App\Models\Admin\RaporBpiModel;
 class DashboardController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:guru');
+        $this->middleware('auth:guru,sanctum');
     }
     public function index(){
             $menu = 'home';
@@ -74,6 +77,94 @@ class DashboardController extends Controller
                 'nilai_bidang_studi' => $nilai_bidang_studi,
                 'nilai_karakter' => $nilai_karakter,
                 'nilai_amal' => $nilai_amal,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+
+    }
+
+    public function Perkembangan(){
+        $menu = 'perkembangan';
+        $submenu= 'perkembangan';
+        return view ('Guru/perkembangan/data_peserta',compact('menu','submenu'));
+    }
+
+    public function AjakDataPeserta() {
+        try {
+            $pesertta = PesertaPbiModel::PesrtaStatistikPerkembanganPbiGuru();
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => $pesertta,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+
+    }
+    
+    public function DetailPerkembangan($id){
+        $menu = 'perkembangan';
+        $submenu= 'perkembangan';
+        return view ('Guru/perkembangan/perkembangan',compact('menu','submenu','id'));
+    } 
+
+    public function AjaxDetailPerkembangan($id) {
+        try {
+            $peserta = SiswaModel::where('id_siswa',$id)->first();
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => [
+                    'peserta' => $peserta,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+    }
+
+    public function AjaxNilaiGrafik($id, Request $request) {
+        try {
+            $fields = explode(',', $request->input('fields'));
+            $grafik_nilai = RaporBpiModel::NilaiGrafikPerkembangan($id, $fields);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => [
+                    'grafik_nilai' => $grafik_nilai
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+    }
+
+    public function AjaxPeriodeGrafik($id) {
+        try {
+            $periode = RaporBpiModel::DataPeriodeGrafik($id);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => [
+                    'periode' => $periode
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+    }
+
+    public function DataAjaxGrafikDashbor($id,$periode){
+        
+        try {
+            $periode_cek = RaporBpiModel::where('id_rapor_pbi',$periode)->first();
+            $data_grafik_home = RaporBpiModel::RataGrafikHome($periode_cek->id_periode,$periode_cek->id_tahun_ajaran,$id);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan',
+                'data_grafik_home' => $data_grafik_home,
             ]);
         } catch (\Throwable $th) {
             return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);

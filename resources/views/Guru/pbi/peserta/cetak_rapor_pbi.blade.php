@@ -32,29 +32,30 @@ if (!function_exists('getAmal')) {
 
 
 ?>
-<br><br>
-    <table cellpadding="0">
+<div>
+    <br>
+    <table cellpadding="0" style="text-align: justify;">
         <tr >
             <td style="height: 10px;text-align:center;" width="100%"><b>LAPORAN HASIL BELAJAR BINA PRIBADI ISLAM (BPI) <br> TAHUN PELAJARAN {{ $nilai->nama_tahun_ajaran}}</b></td>
         </tr>
     </table>
-<br><br>
-<!-- identitas -->
-<table cellpadding="2" >
-    <tr>
-        <th width="15%">Nama</th>
-        <th width="50%">: <b> {{ strtoupper($nilai->nama_siswa) }}</b></th>
-        <th width="10%">Semester</th>
-        <th width="40%">: <b> {{ strtoupper($nilai->jenis_kegiatan)}}</b></th>
-    </tr>
-    <tr>
-        <th width="15%">Kelas/Program</th>
-        <th width="50%">: <b> {{ strtoupper($nilai->nama_kelas).' / BELAJAR BINA PRIBADI ISLAM (BPI)' }}</b></th>
-        <th width="10%">Periode</th>
-        <th width="40%">: <b> {{ strtoupper($nilai->nama_tahun_ajaran)}}</b></th>
-    </tr>
-</table>
-<br>
+    <br><br>
+    <!-- identitas -->
+    <table cellpadding="2" >
+        <tr>
+            <th width="15%">Nama</th>
+            <th width="58%">: <b> {{ strtoupper($nilai->nama_siswa) }}</b></th>
+            <th width="10%">Semester</th>
+            <th width="40%">: <b> {{ strtoupper($nilai->jenis_kegiatan)}}</b></th>
+        </tr>
+        <tr>
+            <th width="15%">Kelas/Program</th>
+            <th width="58%">: <b> {{ strtoupper($nilai->nama_kelas).' / BELAJAR BINA PRIBADI ISLAM (BPI)' }}</b></th>
+            <th width="10%">Periode</th>
+            <th width="40%">: <b> {{ strtoupper($nilai->nama_tahun_ajaran)}}</b></th>
+        </tr>
+    </table>
+</div>
 <!-- end tabel -->
 <div style="text-align: center;">
     <table id="tb-item" cellpadding="2">
@@ -155,6 +156,21 @@ if (!function_exists('getAmal')) {
             <td style="height: 20px;text-align:lefth" width="57%">Berwawasan luas</td>
             <td style="height: 20px; text-align:center">{{ getRating($nilai->wwsn)}}</td>
         </tr>
+        <tr>
+            <td style="height: 20px; text-align:center" width="7%">07</td>
+            <td style="height: 20px;text-align:lefth" width="57%">Karya Wisata/Tafakur Alam</td>
+            <td style="height: 20px; text-align:center">{{ getRating($nilai->kwta)}}</td>
+        </tr>
+        <tr>
+            <td style="height: 20px; text-align:center" width="7%">08</td>
+            <td style="height: 20px;text-align:lefth" width="57%">Perkemahan</td>
+            <td style="height: 20px; text-align:center">{{ getRating($nilai->perkemahan)}}</td>
+        </tr>
+        <tr>
+            <td style="height: 20px; text-align:center" width="7%">09</td>
+            <td style="height: 20px;text-align:lefth" width="57%">Malam Bina Iman dan Taqwa</td>
+            <td style="height: 20px; text-align:center">{{ getRating($nilai->mbit)}}</td>
+        </tr>
     </table>
     <br><br>
     <table id="tb-item" cellpadding="2">
@@ -204,13 +220,11 @@ if (!function_exists('getAmal')) {
             <td style="height: 20px; text-align:center">{{ getAmal($nilai->infaq)}}</td>
         </tr>
     </table>
-</div>
 
-<div style="text-align: center;">
     <?php $tanggal_periode = isset($nilai->tggl_periode) ? strftime('%d %B %Y', strtotime($nilai->tggl_periode)) : ''; ?>
-    <p style="text-align: right; margin-right: 5%;">
+    <p style="text-align: right; margin-right: 5%; margin: top 0;">
         Pekanbaru, {{ $tanggal_periode }}
-    </p><br><br>
+    </p>
 
     <table cellpadding="2" style="width: 100%;">
         <tr>
@@ -226,7 +240,7 @@ if (!function_exists('getAmal')) {
         </tr>
         <tr>
             <td colspan="3" style="height: 60px;">
-                <br><br><br><br><br>
+                <br><br><br><br>
             </td>
         </tr>
         <tr>

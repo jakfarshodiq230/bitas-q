@@ -87,7 +87,10 @@ class PenilaianPbiGuruController extends Controller
         try {
             
             // Validate incoming request data
-            if ($request->jenis_penilaian_kegiatan === 'bidang_studi') {
+            $validatedData = $request->validate([
+                'jenis_penilaian_kegiatan' => 'required|not_in:PILIH,other',
+            ]);
+            if ($validatedData['jenis_penilaian_kegiatan'] === 'bidang_studi') {
                 $validatedData = $request->validate([
                     'siswa' => 'required|not_in:PILIH,other',
                     'tanggal_penilaian_pbi' => 'required|date',
@@ -100,7 +103,7 @@ class PenilaianPbiGuruController extends Controller
                     'nilai_bidang_studi_fikrulislam' => 'required|numeric',
                     'keterangan_penilaian_pbi' => 'required|string',
                 ]);
-            } else if ($request->jenis_penilaian_kegiatan === 'karakter') {
+            } else if ($validatedData['jenis_penilaian_kegiatan'] === 'karakter') {
                 $validatedData = $request->validate([
                     'siswa' => 'required|not_in:PILIH,other',
                     'tanggal_penilaian_pbi' => 'required|date',
@@ -109,6 +112,10 @@ class PenilaianPbiGuruController extends Controller
                     'nilai_karakter_kepribadian' => 'required|numeric',
                     'nilai_karakter_pribadi' => 'required|numeric',
                     'nilai_karakter_mampu' => 'required|numeric',
+                    'nilai_karakter_wawasan' => 'required|numeric',
+                    'nilai_kwta' => 'required|numeric',
+                    'nilai_perkemahan' => 'required|numeric',
+                    'nilai_mbit' => 'required|numeric',
                     'nilai_karakter_wawasan' => 'required|numeric',
                     'keterangan_penilaian_pbi' => 'required|string',
                 ]);
@@ -130,7 +137,7 @@ class PenilaianPbiGuruController extends Controller
             
             // Prepare data for insertion
             $sesi_pekan = $request->sesi_periode;
-            if ($request->jenis_penilaian_kegiatan === 'bidang_studi') {
+            if ($validatedData['jenis_penilaian_kegiatan'] === 'bidang_studi') {
                 // Generate unique ID based on current date and count
                 $tanggal = now()->format('dmy');
                 $nomorUrut = BidangStudiModel::whereDate('created_at', now()->toDateString())->count() + 1;
@@ -158,7 +165,7 @@ class PenilaianPbiGuruController extends Controller
                 } else {
                     return response()->json(['error' => true, 'message' => 'Sudah Memenuhi Penilaian Perperiode']);
                 }
-            } else if ($request->jenis_penilaian_kegiatan === 'karakter'){
+            } else if ($validatedData['jenis_penilaian_kegiatan'] === 'karakter'){
                 $tanggal = now()->format('dmy');
                 $nomorUrut = KarakterModel::whereDate('created_at', now()->toDateString())->count() + 1;
                 $id = 'KRT' . '-' . $tanggal . '-' . $nomorUrut;
@@ -178,6 +185,9 @@ class PenilaianPbiGuruController extends Controller
                         'prbd' => $validatedData['nilai_karakter_pribadi'],
                         'aqr' => $validatedData['nilai_karakter_mampu'],
                         'wwsn' => $validatedData['nilai_karakter_wawasan'],
+                        'kwta' => $validatedData['nilai_kwta'],
+                        'perkemahan' => $validatedData['nilai_perkemahan'],
+                        'mbit' => $validatedData['nilai_mbit'],
                         'id_user' => session('user')['id'],
                     ];
                     $PenialaiSM = KarakterModel::create($data);
@@ -362,11 +372,9 @@ class PenilaianPbiGuruController extends Controller
             $nilai_amal = AktifitasAmalModel::NilaiAmalList($periode,$tahun,$siswa,$kelas);
             $peserta = PesertaPbiModel::DataPesertaPbiDetail($periode,$tahun,$siswa,$kelas);
             $id_peserta = PesertaPbiModel::where('id_periode',$periode)->where('id_tahun_ajaran',$tahun)->where('id_siswa',$siswa)->where('id_kelas',$kelas)->first();
-            $jumlah_bidang_studi = BidangStudiModel::where('id_peserta_pbi',$id_peserta['id_peserta_pbi'])->max('pekan_bidang_studi');
-            $jumlah_karakter = KarakterModel::where('id_peserta_pbi',$id_peserta['id_peserta_pbi'])->max('pekan_karakter');
-            $jumlah_amal = AktifitasAmalModel::where('id_peserta_pbi',$id_peserta['id_peserta_pbi'])->max('pekan_amal');
-            
-            
+            $jumlah_bidang_studi = BidangStudiModel::RataNilaiRapor($periode,$tahun,$siswa);
+            $jumlah_karakter = KarakterModel::RataNilaiRapor($periode,$tahun,$siswa);
+            $jumlah_amal = AktifitasAmalModel::RataNilaiRapor($periode,$tahun,$siswa);
             return response()->json([
                 'success' => true, 
                 'message' => 'Data Ditemukan',
@@ -443,6 +451,9 @@ class PenilaianPbiGuruController extends Controller
                     'nilai_karakter_pribadi' => 'required|numeric',
                     'nilai_karakter_mampu' => 'required|numeric',
                     'nilai_karakter_wawasan' => 'required|numeric',
+                    'nilai_kwta' => 'required|numeric',
+                    'nilai_perkemahan' => 'required|numeric',
+                    'nilai_mbit' => 'required|numeric',
                     'keterangan_penilaian_pbi' => 'required|string',
                 ]);
             }else{
@@ -485,6 +496,9 @@ class PenilaianPbiGuruController extends Controller
                     'prbd' => $validatedData['nilai_karakter_pribadi'],
                     'aqr' => $validatedData['nilai_karakter_mampu'],
                     'wwsn' => $validatedData['nilai_karakter_wawasan'],
+                    'kwta' => $validatedData['nilai_kwta'],
+                    'perkemahan' => $validatedData['nilai_perkemahan'],
+                    'mbit' => $validatedData['nilai_mbit'],
                 ];
                 $PenialaiSM = KarakterModel::where('id_karakter',$id)->update($data);
 

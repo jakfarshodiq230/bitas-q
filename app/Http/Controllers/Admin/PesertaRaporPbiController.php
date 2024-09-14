@@ -45,7 +45,7 @@ class PesertaRaporPbiController extends Controller
             ->where('id_tahun_ajaran', $tahun)
             ->first();
             $DataPesertaPeriode = PesertaPbiModel::DataPesertaRapor($tahun, $jenisRapor, $dataPeriode->tggl_awal_periode, $dataPeriode->tggl_akhir_periode);
-    
+
             // Convert stdClass objects to arrays
             $DataPesertaPeriode = json_decode(json_encode($DataPesertaPeriode), true);
     
@@ -62,18 +62,25 @@ class PesertaRaporPbiController extends Controller
                     'id_siswa' => $value['id_siswa'] ?? null,
                     'id_kelas' => $value['id_kelas'] ?? null,
                     'id_guru' => $value['id_guru'] ?? null,
+
                     'alquran' => $value['alquran'] ?? null,
                     'aqidah' => $value['aqidah'] ?? null,
+                    'ibadah' => $value['ibadah'] ?? null,
                     'hadits' => $value['hadits'] ?? null,
                     'sirah' => $value['sirah'] ?? null,
                     'tazkiyatun' => $value['tazkiyatun'] ?? null,
                     'fikrul' => $value['fikrul'] ?? null,
+
                     'aqdh' => $value['aqdh'] ?? null,
                     'ibdh' => $value['ibdh'] ?? null,
                     'akhlak' => $value['akhlak'] ?? null,
                     'prbd' => $value['prbd'] ?? null,
                     'aqr' => $value['aqr'] ?? null,
                     'wwsn' => $value['wwsn'] ?? null,
+                    'kwta' => $value['kwta'] ?? null,
+                    'perkemahan' => $value['perkemahan'] ?? null,
+                    'mbit' => $value['mbit'] ?? null,
+
                     'sholat_wajib' => $value['sholat_wajib'] ?? null,
                     'tilawah' => $value['tilawah'] ?? null,
                     'tahajud' => $value['tahajud'] ?? null,
@@ -82,7 +89,6 @@ class PesertaRaporPbiController extends Controller
                     'dzikri' => $value['dzikri'] ?? null,
                     'puasa' => $value['puasa'] ?? null,
                     'infaq' => $value['infaq'] ?? null,
-                    'id_user' => session('user')['id'],
                 ];
             
                 // Ensure necessary keys are present and valid before processing
@@ -96,7 +102,7 @@ class PesertaRaporPbiController extends Controller
             
                         if ($existingRecord) {
                             // Update the existing record
-                            $existingRecord->update($data);
+                            RaporBpiModel::where('id_rapor_pbi', $existingRecord->id_rapor_pbi)->update($data);
                         } else {
                             // Insert a new record
                             RaporBpiModel::create($data);

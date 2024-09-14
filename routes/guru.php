@@ -9,7 +9,7 @@ use App\Http\Controllers\Guru\PenilaianPbiGuruController;
 use App\Http\Controllers\Guru\PenilaianRaporPbiGuruController;
 use App\Http\Controllers\Guru\DashboardController As DashboardControllerGuru;
 
-Route::middleware('auth:guru')->group(function () {
+Route::middleware('auth:guru,sanctum')->group(function () {
 
     Route::prefix('guru/dashboard')->group(function () {
         Route::get('/', [DashboardControllerGuru::class, 'index'])->name('guru.home');
@@ -18,6 +18,13 @@ Route::middleware('auth:guru')->group(function () {
         Route::get('/ajax_statistik', [DashboardControllerGuru::class, 'AjaxStatistikTahun'])->name('guru.AjaxStatistikTahun');
         Route::get('/ajax_statistik_peserta/{id}', [DashboardControllerGuru::class, 'AjaxStatistikPeserta'])->name('guru.AjaxStatistikPeserta');
         Route::get('/ajax_data_statistik/{id}/{tahun}', [DashboardControllerGuru::class, 'AjaxDataStatistik'])->name('guru.AjaxDataStatistik');
+        Route::get('/perkembangan', [DashboardControllerGuru::class, 'Perkembangan'])->name('guru.Perkembangan');
+        Route::get('/perkembangan_peserta', [DashboardControllerGuru::class, 'AjakDataPeserta'])->name('guru.perkembangan.AjakDataPeserta');
+        Route::get('/detail_perkembangan_peserta/{id}', [DashboardControllerGuru::class, 'DetailPerkembangan'])->name('guru.perkembangan.DetailPerkembangan');
+        Route::get('/data_perkembangan_peserta/{id}', [DashboardControllerGuru::class, 'AjaxDetailPerkembangan'])->name('guru.perkembangan.AjaxDetailPerkembangan');
+        Route::get('/data_grafik/{id}', [DashboardControllerGuru::class, 'AjaxNilaiGrafik'])->name('guru.perkembangan.AjaxNilaiGrafik');
+        Route::get('/data_peridoe/{id}', [DashboardControllerGuru::class, 'AjaxPeriodeGrafik'])->name('guru.perkembangan.AjaxNilaiGrafik');
+        Route::get('/data_peridoe_grafik/{id}/{periode}', [DashboardControllerGuru::class, 'DataAjaxGrafikDashbor'])->name('guru.perkembangan.DataAjaxGrafikDashbor');
     });
 
     Route::prefix('guru/penilaian_kegiatan')->group(function () {

@@ -5,6 +5,7 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
 
 class BidangStudiModel extends Model
 {
@@ -16,6 +17,11 @@ class BidangStudiModel extends Model
     protected $fillable = [
         'id_bidang_studi', 'id_peserta_pbi', 'pekan_bidang_studi', 'tanggal_penilaian_bidang_studi', 'status_bidang_studi', 'ktr_bidang_studi', 'alquran', 'aqidah', 'ibadah', 'hadits', 'sirah', 'tazkiyatun', 'fikrul', 'id_user','deleted_at'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function NilaiBidangStudi($periode, $tahun)  {
         
@@ -149,6 +155,26 @@ class BidangStudiModel extends Model
         // Execute the query and return the results
         return $query;
     }
+
+    public static function RataNilaiRapor($periode, $tahun, $siswa)
+    {
+        // Start the query
+        $query = DB::table('penilaian_bidang_studi_pbi')
+            ->join('peserta_pbi', 'penilaian_bidang_studi_pbi.id_peserta_pbi', '=', 'peserta_pbi.id_peserta_pbi')
+            ->select(
+                DB::raw('ROUND((SUM(alquran) + SUM(aqidah) + SUM(ibadah) + SUM(hadits) + SUM(sirah) + SUM(tazkiyatun) + SUM(fikrul)) / (COUNT(*) * 7), 2) AS jumlah_bidang_studi')
+            )
+            ->where('peserta_pbi.id_periode', $periode)
+            ->where('peserta_pbi.id_tahun_ajaran', $tahun)
+            ->where('peserta_pbi.id_siswa', $siswa)
+            ->where('penilaian_bidang_studi_pbi.status_bidang_studi', 1)
+            ->first();
+
+        return $query;
+    }
+    
+    
+    
     
     
 

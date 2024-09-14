@@ -5,6 +5,7 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\ExcludePasswordScope;
 
 class PenilaianSertifikasiModel extends Model
 {
@@ -27,6 +28,11 @@ class PenilaianSertifikasiModel extends Model
         'deleted_at',
         'id_user'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludePasswordScope());
+    }
 
     public static function DataDetailNilaiPesertaSertifikasi($id)
     {

@@ -195,6 +195,9 @@
                                         <th>PRBD</th>
                                         <th>AQR</th>
                                         <th>WWSN</th>
+                                        <th>KWTA</th>
+                                        <th>PERKEMAHAN</th>
+                                        <th>MBIT</th>
                                         <th>ACTION</th>
                                     </tr>
                                 </thead>
@@ -207,6 +210,9 @@
                                         <th>PRBD</th>
                                         <th>AQR</th>
                                         <th>WWSN</th>
+                                        <th>KWTA</th>
+                                        <th>PERKEMAHAN</th>
+                                        <th>MBIT</th>
                                         <th>ACTION</th>
                                     </tr>
                                 </tfoot>
@@ -470,6 +476,49 @@
                                                         </select>
                                                         <div id="karakter_wawasan-error" class="invalid-feedback"></div>
                                                     </div>
+                                                    <div class="mb-3">
+                                                        <label>Karya Wisata/Tafakur Alam</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0"
+                                                            name="kwta" id="kwta" data-bs-toggle="select2"
+                                                            onchange="handleNilaiChange(this, $('select[name=\'nilai_kwta\']'))"
+                                                            required>
+                                                            <option>PILIH</option>
+                                                            <option value="sangat_baik">SANGAT BAIK</option>
+                                                            <option value="baik">BAIK</option>
+                                                            <option value="cukup">CUKUP</option>
+                                                            <option value="kurang">KURANG</option>
+                                                        </select>
+                                                        <div id="kwta-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Perkemahan</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0"
+                                                            name="perkemahan" id="perkemahan" data-bs-toggle="select2"
+                                                            onchange="handleNilaiChange(this, $('select[name=\'nilai_perkemahan\']'))"
+                                                            required>
+                                                            <option>PILIH</option>
+                                                            <option value="sangat_baik">SANGAT BAIK</option>
+                                                            <option value="baik">BAIK</option>
+                                                            <option value="cukup">CUKUP</option>
+                                                            <option value="kurang">KURANG</option>
+                                                        </select>
+                                                        <div id="perkemahan-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Malam Bina Iman dan Taqwa</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0"
+                                                            name="mbit" id="mbit" data-bs-toggle="select2"
+                                                            onchange="handleNilaiChange(this, $('select[name=\'nilai_mbit\']'))"
+                                                            required>
+                                                            <option>PILIH</option>
+                                                            <option value="sangat_baik">SANGAT BAIK</option>
+                                                            <option value="baik">BAIK</option>
+                                                            <option value="cukup">CUKUP</option>
+                                                            <option value="kurang">KURANG</option>
+                                                        </select>
+                                                        <div id="mbit-error" class="invalid-feedback"></div>
+                                                    </div>
+
                                                 </div>
 
                                                 <!-- keterangan aktivitas amal -->
@@ -674,6 +723,33 @@
                                                         </select>
                                                         <div id="nilai_karakter_wawasan-error" class="invalid-feedback"></div>
                                                     </div>
+                                                    <div class="mb-3">
+                                                        <label>Nilai Karya Wisata/Tafakur Alam</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0 "
+                                                            name="nilai_kwta" id="nilai_kwta"
+                                                            data-bs-toggle="select2" required>
+                                                            <option>PILIH</option>
+                                                        </select>
+                                                        <div id="nilai_kwta-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Nilai Perkemahan</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0 "
+                                                            name="nilai_perkemahan" id="nilai_perkemahan"
+                                                            data-bs-toggle="select2" required>
+                                                            <option>PILIH</option>
+                                                        </select>
+                                                        <div id="nilai_perkemahan-error" class="invalid-feedback"></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Nilai Malam Bina Iman dan Taqwa</label>
+                                                        <select class="form-control select2 mb-4 me-sm-2 mt-0 "
+                                                            name="nilai_mbit" id="nilai_mbit"
+                                                            data-bs-toggle="select2" required>
+                                                            <option>PILIH</option>
+                                                        </select>
+                                                        <div id="nilai_mbit-error" class="invalid-feedback"></div>
+                                                    </div>
                                                 </div>
 
                                                 <!-- keterangan aktivitas amal -->
@@ -824,29 +900,48 @@
         }
         // tabel
         $(document).ready(function() {
-            // profil
+            const baseUrl = "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan_all') }}";
+            const defaultFotoSiswaUrl = '{{ asset('assets/admin/img/avatars/avatar.jpg') }}';
+
+            function initializeDataTable(selector, dataSrc, columns) {
+                $(selector).DataTable({
+                    processing: true,
+                    serverSide: false,
+                    retrieve: false,
+                    destroy: true,
+                    responsive: true,
+                    ajax: {
+                        url: `${baseUrl}/${periode}/${tahun}/${id_siswa}/${id_kelas}`,
+                        dataSrc: dataSrc,
+                        error: function(xhr, error, thrown) {
+                            console.log("AJAX error:", error);
+                            console.log("Thrown error:", thrown);
+                        }
+                    },
+                    columns: columns,
+                    drawCallback: function(settings) {
+                        const api = this.api();
+                        const count = api.data().count();
+                        $(`${selector}-count`).text(count);
+                        if (count > 0) {
+                            $(`${selector}-kirim`).show();
+                        }
+                    }
+                });
+            }
+
+            // Profil
             $.ajax({
-                url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan_all') }}/" 
-                    + periode +
-                    '/' + tahun +
-                    '/' + id_siswa +
-                    '/' + id_kelas ,
+                url: `${baseUrl}/${periode}/${tahun}/${id_siswa}/${id_kelas}`,
                 type: 'GET',
                 success: function(data) {
-                    tahun_nama = data.peserta.nama_tahun_ajaran;
                     $('#kegiatan').text('BINA PRIBADI ISLAM (BPI)');
                     $('#tahun_ajaran').text(data.peserta.nama_tahun_ajaran.toUpperCase());
                     $('#pembimbing').text(data.peserta.nama_guru.toUpperCase());
                     $('#nama').text(data.peserta.nama_siswa.toUpperCase());
                     $('#kelas').text(data.peserta.nama_kelas.toUpperCase());
                     $('#kali_pekan').text(data.peserta.sesi_periode);
-                    if (data.peserta.foto_siswa != null) {
-                        var fotoSiswaUrl = "{{ url('storage') }}/" + data.peserta.foto_siswa;
-                        $('#avatarImg').attr('src', fotoSiswaUrl);
-                    } else {
-                        var fotoSiswaUrl = '{{ asset('assets/admin/img/avatars/avatar.jpg') }}'
-                        $('#avatarImg').attr('src', fotoSiswaUrl);
-                    }
+                    $('#avatarImg').attr('src', data.peserta.foto_siswa ? `{{ url('storage') }}/${data.peserta.foto_siswa}` : defaultFotoSiswaUrl);
                 },
                 error: function(response) {
                     Swal.fire({
@@ -857,60 +952,26 @@
                     });
                 }
             });
-            // tabel
-            $('#datatables-ajax-bidang_studi').DataTable({
-                processing: true,
-                serverSide: false,
-                retrieve: false,
-                destroy: true,
-                responsive: true,
-                ajax: {
-                    url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan_all') }}/" + periode +
-                        '/' + tahun +
-                        '/' + id_siswa +
-                        '/' + id_kelas ,
-                    dataSrc: "nilai_bidang_studi",
-                    error: function(xhr, error, thrown) {
-                        console.log("AJAX error:", error);
-                        console.log("Thrown error:", thrown);
-                    }
-                },
 
-                columns: [{
-                        "data": null,
-                        "name": "rowNumber",
-                        "render": function(data, type, row, meta) {
+            // Initialize DataTables
+            initializeDataTable(
+                '#datatables-ajax-bidang_studi',
+                'nilai_bidang_studi',
+                [
+                    {
+                        data: null,
+                        name: "rowNumber",
+                        render: function(data, type, row) {
                             return 'KALI/PEKAN ' + row.pekan_bidang_studi;
                         }
                     },
-                    {
-                        data: 'alquran',
-                        name: 'alquran'
-                    },
-                    {
-                        data: 'aqidah',
-                        name: 'aqidah'
-                    },
-                    {
-                        data: 'ibadah',
-                        name: 'ibadah'
-                    },
-                    {
-                        data: 'hadits',
-                        name: 'hadits'
-                    },
-                    {
-                        data: 'sirah',
-                        name: 'sirah'
-                    },
-                    {
-                        data: 'tazkiyatun',
-                        name: 'tazkiyatun'
-                    },
-                    {
-                        data: 'fikrul',
-                        name: 'fikrul'
-                    },
+                    { data: 'alquran', name: 'alquran' },
+                    { data: 'aqidah', name: 'aqidah' },
+                    { data: 'tazkiyatun', name: 'tazkiyatun' },
+                    { data: 'ibadah', name: 'ibadah' },
+                    { data: 'hadits', name: 'hadits' },
+                    { data: 'sirah', name: 'sirah' },
+                    { data: 'fikrul', name: 'fikrul' },
                     {
                         data: null,
                         name: null,
@@ -922,69 +983,32 @@
                                 <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" 
                                 data-id_penialain="${row.id_bidang_studi}" data-kategori="bidang_studi">
                                 <i class="fas fa-edit"></i></button>
-                                `;
+                            `;
                         }
                     }
-                ],
-                drawCallback: function(settings) {
-                    var api = this.api();
-                    var count = api.data().count();
-                    $('#countdata-bidang_studi').text(count);
-                    if (count > 0) {
-                        $('#kirimBtn-bidang_studi').show()
-                    }
-                }
-            });
+                ]
+            );
 
-            $('#datatables-ajax-karakter').DataTable({
-                processing: true,
-                serverSide: false,
-                retrieve: false,
-                destroy: true,
-                responsive: true,
-                ajax: {
-                    url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan_all') }}/" + periode +
-                        '/' + tahun +
-                        '/' + id_siswa +
-                        '/' + id_kelas ,
-                    dataSrc: "nilai_karakter",
-                    error: function(xhr, error, thrown) {
-                        console.log("AJAX error:", error);
-                        console.log("Thrown error:", thrown);
-                    }
-                },
-
-                columns: [{
-                        "data": null,
-                        "name": "rowNumber",
-                        "render": function(data, type, row, meta) {
+            initializeDataTable(
+                '#datatables-ajax-karakter',
+                'nilai_karakter',
+                [
+                    {
+                        data: null,
+                        name: "rowNumber",
+                        render: function(data, type, row) {
                             return 'KALI/PEKAN ' + row.pekan_karakter;
                         }
                     },
-                    {
-                        data: 'aqdh',
-                        name: 'aqdh'
-                    },
-                    {
-                        data: 'ibdh',
-                        name: 'ibdh'
-                    },
-                    {
-                        data: 'akhlak',
-                        name: 'akhlak'
-                    },
-                    {
-                        data: 'prbd',
-                        name: 'prbd'
-                    },
-                    {
-                        data: 'aqr',
-                        name: 'aqr'
-                    },
-                    {
-                        data: 'wwsn',
-                        name: 'wwsn'
-                    },
+                    { data: 'aqdh', name: 'aqdh' },
+                    { data: 'ibdh', name: 'ibdh' },
+                    { data: 'akhlak', name: 'akhlak' },
+                    { data: 'prbd', name: 'prbd' },
+                    { data: 'aqr', name: 'aqr' },
+                    { data: 'wwsn', name: 'wwsn' },
+                    { data: 'kwta', name: 'kwta' },
+                    { data: 'perkemahan', name: 'perkemahan' },
+                    { data: 'mbit', name: 'mbit' },
                     {
                         data: null,
                         name: null,
@@ -996,101 +1020,31 @@
                                 <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" 
                                 data-id_penialain="${row.id_karakter}" data-kategori="karakter">
                                 <i class="fas fa-edit"></i></button>
-                                `;
+                            `;
                         }
                     }
-                ],
-                drawCallback: function(settings) {
-                    var api = this.api();
-                    var count = api.data().count();
-                    $('#countdata-karakter').text(count);
-                    if (count > 0) {
-                        $('#kirimBtn-karakter').show()
-                    }
-                }
-            });
+                ]
+            );
 
-            $('#datatables-ajax-aktivitas_amal').DataTable({
-                processing: true,
-                serverSide: false,
-                retrieve: false,
-                destroy: true,
-                responsive: true,
-                ajax: {
-                    url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan_all') }}/" + periode +
-                        '/' + tahun +
-                        '/' + id_siswa +
-                        '/' + id_kelas ,
-                    dataSrc: "nilai_amal",
-                    error: function(xhr, error, thrown) {
-                        console.log("AJAX error:", error);
-                        console.log("Thrown error:", thrown);
-                    }
-                },
-
-                columns: [{
-                        "data": null,
-                        "name": "rowNumber",
-                        "render": function(data, type, row, meta) {
+            initializeDataTable(
+                '#datatables-ajax-aktivitas_amal',
+                'nilai_amal',
+                [
+                    {
+                        data: null,
+                        name: "rowNumber",
+                        render: function(data, type, row) {
                             return 'KALI/PEKAN ' + row.pekan_amal;
                         }
                     },
-                    {
-                        data: 'sholat_wajib',
-                        name: 'sholat_wajib',
-                        render: function(data, type, row) {
-                            return row.sholat_wajib + ' KALI';
-                        }
-                    },
-                    {
-                        data: 'tilawah',
-                        name: 'tilawah',
-                        render: function(data, type, row) {
-                            return row.tilawah + ' KALI';
-                        }
-                    },
-                    {
-                        data: 'tahajud',
-                        name: 'tahajud',
-                        render: function(data, type, row) {
-                            return row.tilawah + ' KALI';
-                        }
-                    },
-                    {
-                        data: 'duha',
-                        name: 'duha',
-                        render: function(data, type, row) {
-                            return row.duha + ' KALI';
-                        }
-                    },
-                    {
-                        data: 'rawatib',
-                        name: 'rawatib',
-                        render: function(data, type, row) {
-                            return row.rawatib + ' KALI';
-                        }
-                    },
-                    {
-                        data: 'dzikri',
-                        name: 'dzikri',
-                        render: function(data, type, row) {
-                            return row.dzikri + ' KALI';
-                        }
-                    },
-                    {
-                        data: 'puasa',
-                        name: 'puasa',
-                        render: function(data, type, row) {
-                            return row.puasa + ' KALI';
-                        }
-                    },
-                    {
-                        data: 'infaq',
-                        name: 'infaq',
-                        render: function(data, type, row) {
-                            return row.infaq + ' KALI';
-                        }
-                    },
+                    { data: 'sholat_wajib', name: 'sholat_wajib', render: function(data) { return data + ' KALI'; } },
+                    { data: 'tilawah', name: 'tilawah', render: function(data) { return data + ' HAL'; } },
+                    { data: 'tahajud', name: 'tahajud', render: function(data) { return data + ' KALI'; } },
+                    { data: 'duha', name: 'duha', render: function(data) { return data + ' KALI'; } },
+                    { data: 'rawatib', name: 'rawatib', render: function(data) { return data + ' KALI'; } },
+                    { data: 'dzikri', name: 'dzikri', render: function(data) { return data + ' KALI'; } },
+                    { data: 'puasa', name: 'puasa', render: function(data) { return data + ' KALI'; } },
+                    { data: 'infaq', name: 'infaq', render: function(data) { return data + ' KALI'; } },
                     {
                         data: null,
                         name: null,
@@ -1102,20 +1056,13 @@
                                 <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" 
                                 data-id_penialain="${row.id_aktifitas_amal}" data-kategori="aktivitas_amal">
                                 <i class="fas fa-edit"></i></button>
-                                `;
+                            `;
                         }
                     }
-                ],
-                drawCallback: function(settings) {
-                    var api = this.api();
-                    var count = api.data().count();
-                    $('#countdata-aktivitas_amal').text(count);
-                    if (count > 0) {
-                        $('#kirimBtn-aktivitas_amal').show()
-                    }
-                }
-            });
+                ]
+            );
         });
+
         // hapus
         $(document).on('click', '.deleteBtn', function() {
             var deleteBtn = $(this);
@@ -1257,7 +1204,7 @@
 
                                 // Update bidang studi fields
                                 const karakter = ['aqdh', 'ibdh', 'prbd', 'akhlak', 'aqr', 'wwsn'];
-                                const karakterNilai = ['aqidah', 'ibadah', 'kepribadian', 'pribadi', 'mampu', 'wawasan'];
+                                const karakterNilai = ['aqidah', 'ibadah', 'kepribadian', 'pribadi', 'mampu', 'wawasan','kwta','perkemahan','mbit'];
 
                                 karakter.forEach((karakterKey, index) => {
                                     updateSelectField(karakterNilai[index], response.data[karakterKey]);
@@ -1352,7 +1299,6 @@
                         $('.invalid-feedback').empty();
 
                         Object.keys(errors).forEach(function(key) {
-                            console.log(key);
                             let input = $("#" + key);
                             let errorDiv = $("#" + key + "-error");
 
@@ -1375,7 +1321,7 @@
         // grafik
         document.addEventListener("DOMContentLoaded", function() {
             // Fungsi untuk menampilkan persentase di tengah chart
-            function drawCenterText(chart) {
+            function drawCenterText(chart, value) {
                 var width = chart.chart.width,
                     height = chart.chart.height,
                     ctx = chart.chart.ctx;
@@ -1384,10 +1330,8 @@
                 ctx.font = fontSize + "em sans-serif";
                 ctx.textBaseline = "middle";
 
-                // Hitung persentase dari dataset pertama
-                var total = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                var value = chart.config.data.datasets[0].data[0];
-                var percentage = ((value / total) * 100).toFixed(0) + "%";
+                // Persentase sudah diambil dari value
+                var percentage = value + "%";
 
                 // Posisi teks
                 var textX = Math.round((width - ctx.measureText(percentage).width) / 2),
@@ -1402,19 +1346,21 @@
             Chart.plugins.register({
                 afterDraw: function(chart) {
                     if (chart.config.type === 'doughnut') {
-                        drawCenterText(chart);
+                        // Ambil value dari dataset pertama (yang diberikan ke fungsi createDoughnutChart)
+                        var value = chart.config.data.datasets[0].data[0];
+                        drawCenterText(chart, value);
                     }
                 }
             });
 
             // Fungsi untuk membuat doughnut chart dengan data
-            function createDoughnutChart(chartId, color, sesi, value, backgroundColor = "#E8EAED") {
+            function createDoughnutChart(chartId, color, value, backgroundColor = "#E8EAED") {
                 new Chart(document.getElementById(chartId), {
                     type: "doughnut",
                     data: {
-                        labels: ["KARAKTER", ""],
+                        labels: ["Value", ""],
                         datasets: [{
-                            data: [value, sesi - value],
+                            data: [value, 100 - value], // Total 100% untuk chart
                             backgroundColor: [color, backgroundColor],
                             borderColor: "transparent"
                         }]
@@ -1433,23 +1379,26 @@
                 });
             }
 
+            // Lakukan AJAX request untuk mendapatkan data
             $.ajax({
                 url: "{{ url('guru/penilaian_pbi/data_penilaian_kegiatan_all') }}/" 
                     + periode +
                     '/' + tahun +
                     '/' + id_siswa +
-                    '/' + id_kelas ,
+                    '/' + id_kelas,
                 method: 'GET',
-                success: function(response) {
-                    createDoughnutChart("chartjs-bidang_studi", window.theme.primary, response.peserta.sesi_periode, response.jumlah_bidang_studi);
-                    createDoughnutChart("chartjs-karakter", window.theme.warning, response.peserta.sesi_periode, response.jumlah_karakter);
-                    createDoughnutChart("chartjs-amal", window.theme.danger, response.peserta.sesi_periode, response.jumlah_amal);
+                success: function(response) {                    
+                    createDoughnutChart("chartjs-bidang_studi", window.theme.primary, response.jumlah_bidang_studi.jumlah_bidang_studi);
+                    createDoughnutChart("chartjs-karakter", window.theme.warning, response.jumlah_karakter.jumlah_karakter);
+                    createDoughnutChart("chartjs-amal", window.theme.danger, response.jumlah_amal.jumlah_amal);
                 },
                 error: function(xhr, status, error) {
                     console.error("Error fetching data:", error);
                 }
             });
         });
+
+
 
     </script>
 @endsection

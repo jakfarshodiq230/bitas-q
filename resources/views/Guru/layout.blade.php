@@ -59,6 +59,9 @@
                             <li class="sidebar-item {{ $submenu == 'statistik' ? 'active' : null }}"><a class='sidebar-link'
                                     href='{{ url('guru/dashboard/statistik') }}'>History</a>
                             </li>
+                            <li class="sidebar-item {{ $submenu == 'perkembangan' ? 'active' : null }}"><a class='sidebar-link'
+                                    href='{{ url('guru/dashboard/perkembangan') }}'>Perkembangan Bina Pribadi Islam (BPI)</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="sidebar-header">

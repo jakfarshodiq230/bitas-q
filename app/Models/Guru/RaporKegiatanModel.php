@@ -67,8 +67,6 @@ class RaporKegiatanModel extends Model
         ->get();
 
         return $data; // Return the result set
-    }
-
-    
+    }    
 
 }

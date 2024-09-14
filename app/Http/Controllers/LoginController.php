@@ -51,6 +51,7 @@ class LoginController extends Controller
                     'nama_user' => $user->nama_user,
                     'level_user' => 'admin',
                     'user_level' => $user->level_user,
+                    // 'token' => $user->createToken('BITAS-Q')->plainTextToken
                 ]);
                 return response()->json([
                     'success' => true,
@@ -75,6 +76,7 @@ class LoginController extends Controller
                     'id' => $guru->id_guru,
                     'nama_user' => $guru->nama_guru,
                     'level_user' => 'guru',
+                    // 'token' => $guru->createToken('BITAS-Q')->plainTextToken
                 ]);
                 return response()->json([
                     'success' => true,
@@ -99,6 +101,7 @@ class LoginController extends Controller
                     'id' => $siswa->id_siswa,
                     'nama_user' => $siswa->nama_siswa,
                     'level_user' => 'siswa',
+                    // 'token' => $siswa->createToken('BITAS-Q')->plainTextToken
                 ]);
                 return response()->json([
                     'success' => true,
