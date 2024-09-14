@@ -351,8 +351,8 @@
                                 text: item.nama_tahun_ajaran + ' ' + item.jenis_kegiatan.toUpperCase()
                             });
 
-                            if (item.status_tahun_ajaran === 1) {
-                                $option.attr('selected', 'selected');
+                            if (item.status_tahun_ajaran == 1) {
+                                $option.prop('selected', true);
                                 fetchChartData(item.id_rapor_pbi);
                             }
 
@@ -372,7 +372,6 @@
             // Handle change event for tahun_ajaran
             $('select[name="tahun_ajaran"]').on('change', function() {
                 var selectedValue = $(this).val();
-                console.log(selectedValue);
                 
                 if (selectedValue) {
                     fetchChartData(selectedValue);
