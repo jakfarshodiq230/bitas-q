@@ -390,11 +390,10 @@ class PenilaianRaporGuruController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        if ($nilai->foto_siswa != null) {
-            $imagePath = url('storage/' . $nilai->foto_siswa);
-        } else {
-            $imagePath = url('assets/admin/img/avatars/pas_foto.jpg');
-        }       
+        $imagePath = $nilai->foto_siswa 
+        ? asset('storage/' . $nilai->foto_siswa) 
+        : asset('assets/admin/img/avatars/pas_foto.jpg');
+         
          // Correctly define the image path
         $imageWidth = 30; // Set image width (3 cm)
         $imageHeight = 40; // Set image height (4 cm)

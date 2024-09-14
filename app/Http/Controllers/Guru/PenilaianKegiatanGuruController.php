@@ -464,11 +464,9 @@ class PenilaianKegiatanGuruController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        if (file_exists(public_path('storage/' . $identitas->foto_siswa))) {
-            $imagePath = public_path('storage/' . $identitas->foto_siswa);
-        } else {
-            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
-        }        
+        $imagePath = $identitas->foto_siswa 
+        ? asset('storage/' . $identitas->foto_siswa) 
+        : asset('assets/admin/img/avatars/pas_foto.jpg');      
          // Correctly define the image path
         $imageWidth = 30; // Set image width (3 cm)
         $imageHeight = 40; // Set image height (4 cm)
