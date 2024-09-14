@@ -176,7 +176,7 @@ class PenilaianRaporPbiGuruController extends Controller
         $pdf = new CustomPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         // Set document information
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('RAPOR KEGIATAN');
+        $pdf->SetTitle('RAPOR BINA PRIBADI ISLAM (BPI)');
 
         // Remove default header/footer
         $pdf->setPrintHeader(true); // Enable custom header
@@ -205,13 +205,7 @@ class PenilaianRaporPbiGuruController extends Controller
         
         // Print text using writeHTMLCell()
         $pdf->writeHTML($html, true, false, true, false, '');
-
-        // Center the image
-        if (file_exists(public_path('storage/' . $nilai->foto_siswa))) {
-            $imagePath = asset('storage/' . $nilai->foto_siswa);
-        } else {
-            $imagePath = asset('assets/admin/img/avatars/pas_foto.jpg');
-        }        
+      
         // Close and output PDF document
         $pdf->Output($nilai->nama_siswa.'.pdf', 'D'); // 'I' for inline display or 'D' for download
     }

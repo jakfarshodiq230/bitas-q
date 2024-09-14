@@ -575,9 +575,9 @@ class PenilaianPbiGuruController extends Controller
 
         // Center the image
         if (file_exists(public_path('storage/' . $peserta->foto_siswa))) {
-            $imagePath = asset('storage/' . $peserta->foto_siswa);
+            $imagePath = public_path('storage/' . $peserta->foto_siswa);
         } else {
-            $imagePath = asset('assets/admin/img/avatars/pas_foto.jpg');
+            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
         }    
  
          // Correctly define the image path
@@ -591,7 +591,7 @@ class PenilaianPbiGuruController extends Controller
            
 
         // Close and output PDF document
-        $pdf->Output($peserta->nama_siswa.'.pdf', 'D'); // 'I' for inline display or 'D' for download
+        $pdf->Output($peserta->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
     }
 
         

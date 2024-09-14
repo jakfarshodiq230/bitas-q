@@ -391,9 +391,9 @@ class PenilaianRaporGuruController extends Controller
 
         // Center the image
         if (file_exists(public_path('storage/' . $nilai->foto_siswa))) {
-            $imagePath = asset('storage/' . $nilai->foto_siswa);
+            $imagePath = public_path('storage/' . $nilai->foto_siswa);
         } else {
-            $imagePath = asset('assets/admin/img/avatars/pas_foto.jpg');
+            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
         }        
          // Correctly define the image path
         $imageWidth = 30; // Set image width (3 cm)
@@ -419,7 +419,7 @@ class PenilaianRaporGuruController extends Controller
         $pdf->Image($tempBarcodeFile, $x1, $y1, $imageWidth1, $imageHeight1, 'PNG', '', '', false, 300, '', false, false, 0, false, false, false);
 
         // Close and output PDF document
-        $pdf->Output($nilai->nama_siswa.'.pdf', 'D'); // 'I' for inline display or 'D' for download
+        $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
         unlink($tempBarcodeFile);
     }
 }
