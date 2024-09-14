@@ -79,7 +79,7 @@
                                                 data-target-input="nearest">
                                                 <input type="password" class="form-control " id="password" name="password"
                                                     data-target="#password-view" placeholder="PASSWORD" required/>
-                                                <div class="input-group-text" onclick="togglePasswordVisibility()"><i class="fas fa-eye" id="toggle-icon"></i></div>
+                                                <div class="input-group-text" ><i class="fas fa-eye" id="toggle-icon"></i></div>
                                             </div>
                                         </div>
 
