@@ -390,7 +390,7 @@ class PenilaianRaporGuruController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        if (file_exists(public_path('storage/' . $nilai->foto_siswa))) {
+        if ($nilai->foto_siswa != null) {
             $imagePath = public_path('storage/' . $nilai->foto_siswa);
         } else {
             $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
