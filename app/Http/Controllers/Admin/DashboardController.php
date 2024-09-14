@@ -81,7 +81,7 @@ class DashboardController extends Controller
     public function Histori(){
         $menu = 'home';
         $submenu= 'histori';
-        return view ('admin/home/histori',compact('menu','submenu'));
+        return view ('Admin/home/histori',compact('menu','submenu'));
     }
 
     public function AjaxHistoriTahun() {
