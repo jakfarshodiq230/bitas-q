@@ -537,7 +537,7 @@ class PenilaianPbiGuruController extends Controller
         $pdf = new CustomPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         // Set document information
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Bukti Pembelian');
+        $pdf->SetTitle('KARTU BINA PRIBADI ISLAM (BPI)');
 
         // Remove default header/footer
         $pdf->setPrintHeader(true); // Enable custom header
@@ -591,7 +591,7 @@ class PenilaianPbiGuruController extends Controller
            
 
         // Close and output PDF document
-        $pdf->Output($peserta->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
+        $pdf->Output($peserta->nama_siswa.'.pdf', 'D'); // 'I' for inline display or 'D' for download
     }
 
         

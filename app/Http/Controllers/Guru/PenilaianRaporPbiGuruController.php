@@ -176,7 +176,7 @@ class PenilaianRaporPbiGuruController extends Controller
         $pdf = new CustomPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         // Set document information
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Rapor Peserta');
+        $pdf->SetTitle('RAPOR KEGIATAN');
 
         // Remove default header/footer
         $pdf->setPrintHeader(true); // Enable custom header
@@ -213,6 +213,6 @@ class PenilaianRaporPbiGuruController extends Controller
             $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
         }        
         // Close and output PDF document
-        $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
+        $pdf->Output($nilai->nama_siswa.'.pdf', 'D'); // 'I' for inline display or 'D' for download
     }
 }

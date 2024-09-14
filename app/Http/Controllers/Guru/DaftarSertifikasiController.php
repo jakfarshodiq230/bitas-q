@@ -231,7 +231,7 @@ class DaftarSertifikasiController extends Controller
         // Print text using writeHTMLCell()
         $pdf->writeHTML($html, true, false, true, false, '');
         // Output PDF
-        $pdf->Output('sertifikat.pdf', 'I');
+        $pdf->Output('sertifikat.pdf', 'D');
     }
     
     

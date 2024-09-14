@@ -355,7 +355,7 @@ class PenilaianRaporGuruController extends Controller
         $pdf = new CustomPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         // Set document information
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Bukti Pembelian');
+        $pdf->SetTitle('RAPOR KEGIATAN');
 
         // Remove default header/footer
         $pdf->setPrintHeader(true); // Enable custom header
@@ -390,8 +390,8 @@ class PenilaianRaporGuruController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        if (file_exists(public_path('storage/siswa/' . $nilai->foto_siswa))) {
-            $imagePath = public_path('storage/siswa/' . $nilai->foto_siswa);
+        if (file_exists(public_path('storage/' . $nilai->foto_siswa))) {
+            $imagePath = public_path('storage/' . $nilai->foto_siswa);
         } else {
             $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
         }        
@@ -419,7 +419,7 @@ class PenilaianRaporGuruController extends Controller
         $pdf->Image($tempBarcodeFile, $x1, $y1, $imageWidth1, $imageHeight1, 'PNG', '', '', false, 300, '', false, false, 0, false, false, false);
 
         // Close and output PDF document
-        $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
+        $pdf->Output($nilai->nama_siswa.'.pdf', 'D'); // 'I' for inline display or 'D' for download
         unlink($tempBarcodeFile);
     }
 }
