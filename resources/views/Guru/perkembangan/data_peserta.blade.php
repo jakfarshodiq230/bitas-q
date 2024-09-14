@@ -74,7 +74,7 @@
                         render: function (data, type, row) {
                             return `
                                 <button class="btn btn-sm btn-primary pesertaBtn me-1" data-id_peserta="${row.id_siswa}">
-                                    <i class="fas fa-users"></i> Lihat Perkembangan
+                                    <i class="fas fa-users"></i> LIHAT PERKEMBANGAN 
                                 </button>
                             `;
                         }
