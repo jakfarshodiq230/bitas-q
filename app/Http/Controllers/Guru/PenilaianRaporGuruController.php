@@ -391,7 +391,7 @@ class PenilaianRaporGuruController extends Controller
 
         // Center the image
         if ($nilai->foto_siswa != null) {
-            $imagePath = public_path('storage/' . $nilai->foto_siswa);
+            $imagePath = Storage::disk('public')->url($nilai->foto_siswa);
         } else {
             $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
         }        
