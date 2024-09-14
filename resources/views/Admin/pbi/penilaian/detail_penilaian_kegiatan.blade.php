@@ -399,7 +399,7 @@
                         data: 'status_bidang_studi',
                         name: 'status_bidang_studi',
                         render: function(data, type, row) {
-                            return row.status_bidang_studi === 1 
+                            return row.status_bidang_studi == 1 
                                 ? '<span class="badge bg-success me-1">DIPADANKAN</span>' 
                                 : '<span class="badge bg-danger me-1">BELUM DIPADANKAN</span>';
                         }
