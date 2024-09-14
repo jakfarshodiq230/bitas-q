@@ -390,11 +390,11 @@ class PenilaianRaporGuruController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        if ($nilai->foto_siswa != null) {
-            $imagePath = 'https://bitas-q.shodiqsolution.site/storage/siswa/shodiq-1726294030.jpg';
+        if (file_exists(url('storage/' . $nilai->foto_siswa))) {
+            $imagePath = url('storage/' . $nilai->foto_siswa);
         } else {
-            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
-        }        
+            $imagePath = url('assets/admin/img/avatars/pas_foto.jpg');
+        }       
          // Correctly define the image path
         $imageWidth = 30; // Set image width (3 cm)
         $imageHeight = 40; // Set image height (4 cm)
