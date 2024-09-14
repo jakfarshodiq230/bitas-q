@@ -391,7 +391,7 @@ class PenilaianRaporGuruController extends Controller
 
         // Center the image
         if ($nilai->foto_siswa != null) {
-            $imagePath = Storage::disk('public')->url($nilai->foto_siswa);
+            $imagePath = 'https://bitas-q.shodiqsolution.site/storage/siswa/shodiq-1726294030.jpg';
         } else {
             $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
         }        
