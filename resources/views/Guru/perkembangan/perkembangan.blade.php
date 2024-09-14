@@ -103,7 +103,7 @@
                                     @csrf
                                     <div class="row">
                                         <div class="mb-3 col-md-12 col-xl-12">
-                                            <label for="inputEmail4">Tahun Ajaran</label>
+                                            <label for="inputEmail4">PERIODE PEMBELAJARAN</label>
                                             <select class="form-control select2 mb-4 me-sm-2 mt-0"
                                                 name="tahun_ajaran" data-bs-toggle="select2" required>
                                                 <option>PILIH</option>
