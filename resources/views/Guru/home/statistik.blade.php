@@ -625,7 +625,10 @@
                             data: 'total_nilai_sertifikasi',
                             name: 'total_nilai_sertifikasi',
                             render: function(data, type, row) {
-                                return row.total_nilai_sertifikasi.toFixed(0) + ' ( '+categorizeAverageScore(row.total_nilai_sertifikasi)+' )' ;
+                                var score = parseFloat(row.total_nilai_sertifikasi) || 0; // Convert to number or default to 0
+                                var formattedScore = score.toFixed(0); // Ensure it's a number before using toFixed
+                                var category = categorizeAverageScore(score);
+                                return formattedScore + ' ( ' + category + ' )';
                             }
                         }
                     ],
