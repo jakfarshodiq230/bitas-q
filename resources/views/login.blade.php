@@ -85,7 +85,7 @@
 
                                         <div class="form-group">
                                             <div class="mb-2">
-                                                <img id="captcha-image" src="{{ captcha_src('characters') }}" alt="captcha">
+                                                <img id="captcha-image" src="{{ captcha_src('math') }}" alt="captcha">
                                                 <a href="#" onclick="event.preventDefault(); refreshCaptcha();">Refresh Captcha</a>
                                             </div>
                                             <input type="text" name="captcha" class="form-control" required>
@@ -121,7 +121,7 @@
         $('.alert').hide();
         function refreshCaptcha() {
             const captchaImg = document.getElementById('captcha-image');
-            captchaImg.src = '{{ captcha_src('characters') }}' + '?' + Math.random();
+            captchaImg.src = '{{ captcha_src('math') }}' + '?' + Math.random();
         }
         $(document).ready(function() {
             $('#formLogin').on('submit', function(event) {
