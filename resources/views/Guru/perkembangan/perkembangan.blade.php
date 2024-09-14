@@ -353,6 +353,7 @@
 
                             if (item.status_tahun_ajaran === 1) {
                                 $option.attr('selected', 'selected');
+                                fetchChartData(item.id_rapor_pbi);
                             }
 
                             $select.append($option);
