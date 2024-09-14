@@ -318,7 +318,6 @@
         }
 
         $(document).ready(function() {
-        // Fetch participant details via AJAX
             $.ajax({
                 url: `{{ url('guru/penilaian_rapor_pbi/ajax_detail_peserta') }}/${id}/${peserta}/${tahun}/${jenjang}/${periode}`,
                 type: 'GET',
@@ -339,22 +338,35 @@
                     const rataBaru = [
                         data.alquran, data.aqidah, data.ibadah, data.hadits, 
                         data.sirah, data.tazkiyatun, data.fikrul
-                    ].reduce((sum, val) => sum + (val || 0), 0) / 7;
+                    ].reduce((sum, val) => sum + (parseFloat(val) || 0), 0) / 7;
 
                     $('#rata_rata').text(`${rataBaru.toFixed(2)} ( ${getRating(rataBaru)} )`);
 
+                    // Update fields with 2 decimal places
                     ['alquran', 'aqidah', 'ibadah', 'hadits', 'sirah', 'tazkiyatun', 'fikrul'].forEach(field => {
-                        $(`#${field}`).text((data[field] || 0).toFixed(2));
+                        let value = parseFloat(data[field]);
+                        if (isNaN(value)) {
+                            value = 0;
+                        }
+                        $(`#${field}`).text(value.toFixed(2));
                     });
 
                     // Update other ratings
                     ['aqdh', 'ibdh', 'akhlak', 'prbd', 'aqr', 'wwsn','kwta', 'perkemahan', 'mbit'].forEach(field => {
-                        $(`#${field}`).text(formatRataLama(data[field], getRating(data[field])));
+                        let value = parseFloat(data[field]);
+                        if (isNaN(value)) {
+                            value = 0;
+                        }
+                        $(`#${field}`).text(formatRataLama(value, getRating(value)));
                     });
 
                     // Update Amal fields
                     ['sholat_wajib', 'tilawah', 'tahajud', 'duha', 'rawatib', 'dzikri', 'puasa', 'infaq'].forEach(field => {
-                        $(`#${field}`).text(formatRataLamaAmal(data[field], getAmal(data[field])));
+                        let value = parseFloat(data[field]);
+                        if (isNaN(value)) {
+                            value = 0;
+                        }
+                        $(`#${field}`).text(formatRataLamaAmal(value, getAmal(value)));
                     });
                 },
                 error: function(xhr, status, error) {
