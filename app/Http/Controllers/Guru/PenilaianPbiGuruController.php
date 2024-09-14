@@ -575,9 +575,9 @@ class PenilaianPbiGuruController extends Controller
 
         // Center the image
         if (file_exists(public_path('storage/' . $peserta->foto_siswa))) {
-            $imagePath = public_path('storage/' . $peserta->foto_siswa);
+            $imagePath = asset('storage/' . $peserta->foto_siswa);
         } else {
-            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
+            $imagePath = asset('assets/admin/img/avatars/pas_foto.jpg');
         }    
  
          // Correctly define the image path
