@@ -121,7 +121,7 @@
         $('.alert').hide();
         function refreshCaptcha() {
             const captchaImg = document.getElementById('captcha-image');
-            captchaImg.src = '{{ captcha_src('math') }}' + '?' + Math.random();
+            captchaImg.src = '{{ captcha_src("math") }}' + '?' + Math.random();
         }
         $(document).ready(function() {
             $('#formLogin').on('submit', function(event) {
