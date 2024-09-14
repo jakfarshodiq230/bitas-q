@@ -346,11 +346,18 @@
 
                         // Append new options
                         $.each(response.data.periode, function(index, item) {
-                            $select.append($('<option>', {
+                            var $option = $('<option>', {
                                 value: item.id_rapor_pbi,
-                                text: item.nama_tahun_ajaran + ' ' + item.jenis_kegiatan
-                            }));
+                                text: item.nama_tahun_ajaran + ' ' + item.jenis_kegiatan.toUpperCase()
+                            });
+
+                            if (item.status_tahun_ajaran === 1) {
+                                $option.attr('selected', 'selected');
+                            }
+
+                            $select.append($option);
                         });
+
 
                         // Reinitialize Select2
                         $select.select2();
