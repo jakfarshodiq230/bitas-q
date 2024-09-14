@@ -632,7 +632,7 @@
                             data: 'total_nilai_sertifikasi',
                             name: 'total_nilai_sertifikasi',
                             render: function(data, type, row) {
-                                return row.total_nilai_sertifikasi.toFixed(0) + ' ( '+categorizeAverageScore(row.total_nilai_sertifikasi)+' )' ;
+                                return row.total_nilai_sertifikasi + ' ( '+categorizeAverageScore(row.total_nilai_sertifikasi)+' )' ;
                             }
                         }
                     ],
