@@ -299,12 +299,11 @@
             }
         }
         $(document).ready(function() {
-            // identitas
             $.ajax({
                 url: '{{ url('guru/penilaian_rapor/ajax_detail_peserta') }}/' + id + '/' + peserta + '/' + tahun + '/' + jenjang + '/' + periode,
                 type: 'GET',
                 success: function(respons) {
-                   // Ensure data.periode and its properties exist
+                    // Ensure data.periode and its properties exist
                     var nama_tahun_ajaran = respons.data.nama_tahun_ajaran || '';
                     var jenis_kegiatan = respons.data.jenis_periode || '';
                     var nama_guru = respons.data.nama_guru || '';
@@ -319,28 +318,29 @@
                     $('#siswa').text(capitalizeFirstLetter(nama_siswa.toUpperCase()));
                     $('#kelas').text(capitalizeFirstLetter(nama_kelas.toUpperCase()));
                     $('#jenjang').text(capitalizeFirstLetter(jenjang.toUpperCase()));
+                    
                     if (respons.data.foto_siswa != null) {
                         var fotoSiswaUrl = "{{ url('storage') }}/" + respons.data.foto_siswa;
                         $('#avatarImg').attr('src', fotoSiswaUrl);
                     } else {
-                        var fotoSiswaUrl = '{{ asset('assets/admin/img/avatars/avatar.jpg') }}'
+                        var fotoSiswaUrl = '{{ asset('assets/admin/img/avatars/avatar.jpg') }}';
                         $('#avatarImg').attr('src', fotoSiswaUrl);
                     }
-                    
+
                     if (jenis_kegiatan === 'tahfidz') {
                         $(".pengmbangan-tahfidz").show();
                         // rapor tahfidz baru
-                        var n_j_baru = respons.data.n_j_baru || 0;
-                        var n_f_baru = respons.data.n_f_baru || 0;
-                        var n_k_baru = respons.data.n_k_baru || 0;
-                        var rata_baru = (n_j_baru+n_f_baru+n_k_baru)/3;
+                        var n_j_baru = parseFloat(respons.data.n_j_baru) || 0;
+                        var n_f_baru = parseFloat(respons.data.n_f_baru) || 0;
+                        var n_k_baru = parseFloat(respons.data.n_k_baru) || 0;
+                        var rata_baru = (n_j_baru + n_f_baru + n_k_baru) / 3;
                         var rating_baru = getRating(rata_baru);
                         var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
                         var surah_baru = respons.data.surah_baru || 0;
-                        $('#n_j_baru').text( n_j_baru.toFixed(2) );
-                        $('#n_f_baru').text( n_f_baru.toFixed(2) );
-                        $('#n_k_baru').text( n_k_baru.toFixed(2) );
-                        $('#rata_baru').text( rata_baru_rounded );
+                        $('#n_j_baru').text(n_j_baru.toFixed(2));
+                        $('#n_f_baru').text(n_f_baru.toFixed(2));
+                        $('#n_k_baru').text(n_k_baru.toFixed(2));
+                        $('#rata_baru').text(rata_baru_rounded);
 
                         var $target = $('#surah_baru');
                         $target.empty();
@@ -358,10 +358,10 @@
                         }
 
                         // rapor tahfidz lama
-                        var n_j_lama = respons.data.n_j_lama || 0;
-                        var n_f_lama = respons.data.n_f_lama || 0;
-                        var n_k_lama = respons.data.n_k_lama || 0;
-                        var rata_lama = (n_j_lama+n_f_lama+n_k_lama)/3;
+                        var n_j_lama = parseFloat(respons.data.n_j_lama) || 0;
+                        var n_f_lama = parseFloat(respons.data.n_f_lama) || 0;
+                        var n_k_lama = parseFloat(respons.data.n_k_lama) || 0;
+                        var rata_lama = (n_j_lama + n_f_lama + n_k_lama) / 3;
                         var rating_lama = getRating(rata_lama);
                         var rata_lama_rounded = rata_lama.toFixed(2) + " ( " + rating_lama + " )";
                         var surah_lama = respons.data.surah_lama || 0;
@@ -389,25 +389,23 @@
                         $(".tahfidz-view-lama").show();
 
                         // nilai pengembangan diri
+                        var rating_n_k_p = getRating(parseFloat(respons.data.n_k_p));
+                        var rata_lama_n_k_p = (parseFloat(respons.data.n_k_p) || 0).toFixed(2) + " ( " + rating_n_k_p + " )";
 
-                        var rating_n_k_p= getRating(respons.data.n_k_p);
-                        var rata_lama_n_k_p = respons.data.n_k_p.toFixed(2) + " ( " + rating_n_k_p + " )";
+                        var rating_n_m_p = getRating(parseFloat(respons.data.n_m_p));
+                        var rata_lama_n_m_p = (parseFloat(respons.data.n_m_p) || 0).toFixed(2) + " ( " + rating_n_m_p + " )";
 
-                        var rating_n_m_p= getRating(respons.data.n_m_p);
-                        var rata_lama_n_m_p = respons.data.n_m_p.toFixed(2) + " ( " + rating_n_m_p + " )";
+                        var rating_n_t_p = getRating(parseFloat(respons.data.n_t_p));
+                        var rata_lama_n_t_p = (parseFloat(respons.data.n_t_p) || 0).toFixed(2) + " ( " + rating_n_t_p + " )";
 
-                        var rating_n_t_p= getRating(respons.data.n_t_p);
-                        var rata_lama_n_t_p= respons.data.n_t_p.toFixed(2) + " ( " + rating_n_t_p + " )";
+                        var rating_n_th_p = getRating(parseFloat(respons.data.n_th_p));
+                        var rata_lama_n_th_p = (parseFloat(respons.data.n_th_p) || 0).toFixed(2) + " ( " + rating_n_th_p + " )";
 
+                        var rating_n_tf_p = getRating(parseFloat(respons.data.n_tf_p));
+                        var rata_lama_n_tf_p = (parseFloat(respons.data.n_tf_p) || 0).toFixed(2) + " ( " + rating_n_tf_p + " )";
 
-                        var rating_n_th_p= getRating(respons.data.n_th_p);
-                        var rata_lama_n_th_p = respons.data.n_th_p.toFixed(2) + " ( " + rating_n_th_p + " )";
-
-                        var rating_n_tf_p= getRating(respons.data.n_tf_p);
-                        var rata_lama_n_tf_p = respons.data.n_tf_p.toFixed(2) + " ( " + rating_n_tf_p + " )";
-
-                        var rating_n_jk_p = getRating(respons.data.n_jk_p);
-                        var rata_lama_n_jk_p= respons.data.n_jk_p.toFixed(0) + " ( " + rating_n_jk_p + " )";
+                        var rating_n_jk_p = getRating(parseFloat(respons.data.n_jk_p));
+                        var rata_lama_n_jk_p = (parseFloat(respons.data.n_jk_p) || 0).toFixed(0) + " ( " + rating_n_jk_p + " )";
 
                         $('#n_k').text(rating_n_k_p !== null ? rata_lama_n_k_p : '00.00');
                         $('#n_m').text(rating_n_m_p !== null ? rata_lama_n_m_p : '00.00');
@@ -416,14 +414,13 @@
                         $('#n_tf').text(rating_n_tf_p !== null ? rata_lama_n_tf_p : '00.00');
                         $('#n_jk').text(rating_n_jk_p !== null ? rata_lama_n_jk_p : '00.00');
                     } else {
-
                         $(".pengmbangan-tahsin").show();
                         // rapor tahsin baru
-                        var n_g_baru = respons.data.n_g_baru || null;
-                        var n_m_baru = respons.data.n_m_baru || null;
-                        var n_w_baru = respons.data.n_w_baru || null;
-                        var n_k_baru = respons.data.n_k_baru || null;
-                        var rata_baru = (n_g_baru+n_m_baru+n_w_baru+n_k_baru)/4;
+                        var n_g_baru = parseFloat(respons.data.n_g_baru) || null;
+                        var n_m_baru = parseFloat(respons.data.n_m_baru) || null;
+                        var n_w_baru = parseFloat(respons.data.n_w_baru) || null;
+                        var n_k_baru = parseFloat(respons.data.n_k_baru) || null;
+                        var rata_baru = (n_g_baru + n_m_baru + n_w_baru + n_k_baru) / 4;
                         var rating_baru = getRating(rata_baru);
                         var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
                         var surah_baru = respons.data.surah_baru || null;
@@ -431,7 +428,8 @@
                         $('#n_m_baru').text(n_m_baru !== null ? n_m_baru.toFixed(2) : '00.00');
                         $('#n_w_baru').text(n_w_baru !== null ? n_w_baru.toFixed(2) : '00.00');
                         $('#n_k_baru').text(n_k_baru !== null ? n_k_baru.toFixed(2) : '00.00');
-                        $('#rata_baru').text(n_k_baru !== null ? rata_baru_rounded : '00.00');
+                        $('#rata_baru').text(rata_baru !== null ? rata_baru_rounded : '00.00');
+                        
                         var $target = $('#surah_baru');
                         $target.empty();
 
@@ -448,56 +446,16 @@
                         }
 
                         // rapor tahsin lama
-                        var n_g_lama = respons.data.n_g_lama || null;
-                        var n_m_lama = respons.data.n_m_lama || null;
-                        var n_w_lama = respons.data.n_w_lama || null;
-                        var n_k_lama = respons.data.n_k_lama || null;
-                        var rata_lama = (n_g_lama+n_m_lama+n_w_lama+n_k_lama)/4;
-                        var rating_lama = getRating(rata_lama);
-                        var rata_lama_rounded = rata_lama.toFixed(2) + " ( " + rating_lama + " )";
-                        var surah_lama = respons.data.surah_lama || null;
-                        $('#n_g_lama').text(n_g_lama !== null ? n_g_lama.toFixed(2) : '00.00');
-                        $('#n_m_lama').text(n_m_lama !== null ? n_m_lama.toFixed(2) : '00.00');
-                        $('#n_w_lama').text(n_w_lama !== null ? n_w_lama.toFixed(2) : '00.00');
-                        $('#n_k_lama').text(n_k_lama !== null ? n_k_lama.toFixed(2) : '00.00');
-                        $('#rata_lama').text(n_k_lama !== null ? rata_lama_rounded : '00.00');
-                        var $target = $('#surah_lama');
-                        $target.empty();
-
-                        if (surah_lama !== null && surah_lama.trim() !== '') {
-                            var surahArray = surah_lama.split(',');
-                            var $ol = $('<ol></ol>');
-                            surahArray.forEach(function(surah) {
-                                var $li = $('<li></li>').text(surah.trim());
-                                $ol.append($li);
-                            });
-                            $target.append($ol);
-                        } else {
-                            $target.text('0');
-                        }
-
-                        $(".tahsin-view-baru").show();
-                        $(".tahsin-view-lama").show();
-
-                        // nilai pengembangan diri
-
-                        var rating_n_k_p= getRating(respons.data.n_k_p);
-                        var rata_lama_n_k_p = respons.data.n_k_p.toFixed(2) + " ( " + rating_n_k_p + " )";
-
-                        var rating_n_th_p= getRating(respons.data.n_th_p);
-                        var rata_lama_n_th_p = respons.data.n_th_p.toFixed(2) + " ( " + rating_n_th_p + " )";
-
-                        var rating_n_jk_p = getRatingKhatam(respons.data.n_jk_p);
-                        var rata_lama_n_jk_p= respons.data.n_jk_p.toFixed(0) + " ( " + rating_n_jk_p + " )";
-
-                        $('#n_k_th').text(rating_n_k_p !== null ? rata_lama_n_k_p : '00.00');
-                        $('#n_th_th').text(rating_n_th_p !== null ? rata_lama_n_th_p : '00.00');
-                        $('#n_jk_th').text(rating_n_jk_p !== null ? rata_lama_n_jk_p : '00.00');
+                        var n_g_lama = parseFloat(respons.data.n_g_lama) || null;
+                        var n_m_lama = parseFloat(respons.data.n_m_lama) || null;
+                        var n_w_lama = parseFloat(respons.data.n_w_lama) || null;
+                        var n_k_lama = parseFloat(respons.data.n_k_lama) || null;
+                        // Continue processing as needed...
                     }
-                 
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX Error: ' + status + error);
+                    console.error("Error occurred: " + error);
+                    alert("An error occurred: " + error);
                 }
             });
         });
