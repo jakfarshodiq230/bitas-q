@@ -341,6 +341,10 @@
                     method: 'GET',
                     dataType: 'json',
                     success: function(response) {
+
+                        if (response.data.periode.status_tahun_ajaran === 1) {
+                            fetchChartData(response.data.periode.id_rapor_pbi);
+                        }
                         var $select = $('select[name="tahun_ajaran"]');
                         $select.empty().append('<option value="">PILIH</option>');
 

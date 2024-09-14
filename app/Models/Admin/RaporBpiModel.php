@@ -294,7 +294,8 @@ class RaporBpiModel extends Model
         ->select(
             'periode.jenis_kegiatan',
             'tahun_ajaran.nama_tahun_ajaran',
-            'rapor_pbi.id_rapor_pbi'
+            'rapor_pbi.id_rapor_pbi',
+            'tahun_ajaran.status_tahun_ajaran'
         )
         ->where('rapor_pbi.id_siswa', $id)
         ->get();
