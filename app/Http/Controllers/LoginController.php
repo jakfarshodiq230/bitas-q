@@ -69,7 +69,7 @@ class LoginController extends Controller
         // Attempt authentication for 'guru' guard
         if (Auth::guard('guru')->attempt($credentials_guru)) {
             $guru = Auth::guard('guru')->user();
-            if ($guru->status_guru === 1) {
+            if ($guru->status_guru = 1) {
                 $request->session()->regenerate();
                 $this->storeAccessInfo($request);
                 $request->session()->put('user', [
@@ -94,7 +94,7 @@ class LoginController extends Controller
         // Attempt authentication for 'siswa' guard
         if (Auth::guard('siswa')->attempt($credentials_siswa)) {
             $siswa = Auth::guard('siswa')->user();
-            if ($siswa->status_siswa === 1) {
+            if ($siswa->status_siswa = 1) {
                 $request->session()->regenerate();
                 $this->storeAccessInfo($request);
                 $request->session()->put('user', [
