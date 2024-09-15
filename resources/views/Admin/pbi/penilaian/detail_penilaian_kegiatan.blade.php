@@ -579,7 +579,7 @@
                 // Hitung persentase dari dataset pertama
                 var total = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
                 var value = chart.config.data.datasets[0].data[0];
-                var percentage = ((value / total) * 100).toFixed(0) + "%";
+                var percentage = total > 0 ? ((value / total) * 100).toFixed(0) + "%" : "0%";
 
                 // Posisi teks
                 var textX = Math.round((width - ctx.measureText(percentage).width) / 2),
