@@ -251,7 +251,7 @@ class PesertaSertifikasiController extends Controller
         $juz_sertif = 'Telah Mengikuti Ujian Hafalan '.$identitas->juz_periode.' Juz';
         $nilai_sertif = 'Dan Dinyatakan Lulus Dengan Predikat '.$nilai_ktr['grade'];
         // Set background image
-        $backgroundImagePath = public_path('storage/sertifikat/' . $identitas->file_periode);
+        $backgroundImagePath = asset('storage/sertifikat/' . $identitas->file_periode);
         $pdf->Image($backgroundImagePath, 0, 0, 330.2, 215.9, '', '', '', false, 300, '', false, false, 0);
 
         // Set font
