@@ -13,7 +13,7 @@ class CustomPdf extends TCPDF
         $kop = KopModel::first();
         
         // Define the image file path
-        $image_file = asset('storage/kop/' . $kop->image_kop); // Path to the logo file
+        $image_file = public_path('storage/kop/' . $kop->image_kop); // Path to the logo file
         
         // Header positioning
         $pageWidth = 210; // A4 width in mm
