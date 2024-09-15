@@ -88,10 +88,10 @@ class AlquranControllerSiswa extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        if (file_exists(public_path('storage/' . $nilai->foto_siswa))) {
-            $imagePath = public_path('storage/' . $nilai->foto_siswa);
+        if (file_exists(asset('storage/' . $nilai->foto_siswa))) {
+            $imagePath = asset('storage/' . $nilai->foto_siswa);
         } else {
-            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
+            $imagePath = asset('assets/admin/img/avatars/pas_foto.jpg');
         }        
          // Correctly define the image path
         $imageWidth = 30; // Set image width (3 cm)
