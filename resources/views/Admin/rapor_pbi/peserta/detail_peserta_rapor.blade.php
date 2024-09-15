@@ -342,10 +342,10 @@
                         data.sirah, data.tazkiyatun, data.fikrul
                     ].reduce((sum, val) => sum + (val || 0), 0) / 7;
 
-                    $('#rata_rata').text(`${rataBaru.toFixed(2)} ( ${getRating(rataBaru)} )`);
+                    $('#rata_rata').text(`${rataBaru} ( ${getRating(rataBaru)} )`);
 
                     ['alquran', 'aqidah', 'ibadah', 'hadits', 'sirah', 'tazkiyatun', 'fikrul'].forEach(field => {
-                        $(`#${field}`).text((data[field] || 0).toFixed(2));
+                        $(`#${field}`).text((data[field] || 0));
                     });
 
                     // Update other ratings
