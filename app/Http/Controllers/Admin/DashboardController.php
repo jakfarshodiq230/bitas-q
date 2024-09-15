@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin\TahunAjaranModel;
 use App\Models\Admin\PeriodeModel;
 use App\Models\Admin\SiswaModel;
-use App\Models\Admin\AdminModel;
+use App\Models\Admin\GuruModel;
 use App\Models\Admin\KelasModel;
 use App\Models\Admin\LogAksesModel;
 use App\Models\Admin\PesertaKegiatan;
@@ -33,7 +33,7 @@ class DashboardController extends Controller
 
     public function AjaxDataPeriode() {
         $Peserta = SiswaModel::whereNull('deleted_at')->count();
-        $Admin = AdminModel::whereNull('deleted_at')->count();
+        $Guru = GuruModel::whereNull('deleted_at')->count();
         $Tahsin = PeriodeModel::where('judul_periode','setoran')->where('jenis_periode','tahsin')->whereNull('deleted_at')->count();
         $Tahfidz = PeriodeModel::where('judul_periode','setoran')->where('jenis_periode','tahfidz')->whereNull('deleted_at')->count();
         $Sertifikasi = PeriodeModel::where('judul_periode','sertifikasi')->whereNull('deleted_at')->count();
@@ -45,7 +45,7 @@ class DashboardController extends Controller
             'success' => true, 
             'message' => 'Data Ditemukan', 
             'peserta' => $Peserta,
-            'Admin' => $Admin,
+            'guru' => $Guru,
             'tahsin' => $Tahsin,
             'tahfidz' => $Tahfidz,
             'sertifikasi' => $Sertifikasi,
@@ -91,8 +91,8 @@ class DashboardController extends Controller
     }
 
     public function AjaxHistoriPeserta($tahun) {
-        $Admin = session('user')['level_user'] === 'Admin' ? session('user')['id'] : null;
-        $peserta = PesertaKegiatan::DataDashbordAdmin($tahun,$Admin);
+        $guru = session('user')['level_user'] === 'guru' ? session('user')['id'] : null;
+        $peserta = PesertaKegiatan::DataDashbordGuru($tahun,$guru);
         return response()->json($peserta);
     }
 
