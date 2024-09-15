@@ -36,6 +36,13 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::get('/ajax_histori', [DashboardControllerAdmin::class, 'AjaxHistoriTahun'])->name('dashboard.AjaxHistoriTahun');
         Route::get('/ajax_histori_peserta/{id}', [DashboardControllerAdmin::class, 'AjaxHistoriPeserta'])->name('dashboard.AjaxHistoriPeserta');
         Route::get('/ajax_data_histori/{id}/{tahun}', [DashboardControllerAdmin::class, 'AjaxDataHistori'])->name('dashboard.AjaxDataHistori');
+        Route::get('/perkembangan', [DashboardControllerAdmin::class, 'Perkembangan'])->name('dashboard.Perkembangan');
+        Route::get('/perkembangan_peserta', [DashboardControllerAdmin::class, 'AjakDataPeserta'])->name('dashboard.perkembangan.AjakDataPeserta');
+        Route::get('/detail_perkembangan_peserta/{id}', [DashboardControllerAdmin::class, 'DetailPerkembangan'])->name('dashboard.perkembangan.DetailPerkembangan');
+        Route::get('/data_perkembangan_peserta/{id}', [DashboardControllerAdmin::class, 'AjaxDetailPerkembangan'])->name('dashboard.perkembangan.AjaxDetailPerkembangan');
+        Route::get('/data_grafik/{id}', [DashboardControllerAdmin::class, 'AjaxNilaiGrafik'])->name('dashboard.perkembangan.AjaxNilaiGrafik');
+        Route::get('/data_peridoe/{id}', [DashboardControllerAdmin::class, 'AjaxPeriodeGrafik'])->name('dashboard.perkembangan.AjaxNilaiGrafik');
+        Route::get('/data_peridoe_grafik/{id}/{periode}', [DashboardControllerAdmin::class, 'DataAjaxGrafikDashbor'])->name('dashboard.perkembangan.DataAjaxGrafikDashbor');
     });
 
     Route::prefix('admin')->controller(SetingMailController::class)->group(function () {
@@ -153,6 +160,7 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::get('penilaian_pbi/data_penilaian_pbi/{periode}/{tahun}', 'AjaxData');
         Route::get('penilaian_pbi/data_detail_periode_penilaian_pbi/{tahun}/{periode}/{siswa}/{guru}/{kelas}', 'DataDetailPenilaianKegiatan');
         Route::get('penilaian_pbi/data_penilaian_pbi_all/{tahun}/{periode}/{siswa}/{guru}/{kelas}', 'AjaxDataDetailPenilaianKegiatan');
+        Route::get('penilaian_pbi/data_peridoe_grafik/{id}/{periode}/{tahun}', 'DataAjaxGrafikDashbor');
     });
 
     Route::prefix('admin')->controller(PesertaPbiController::class)->group(function () {

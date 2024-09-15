@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin\TahunAjaranModel;
 use App\Models\Admin\PeriodeModel;
 use App\Models\Admin\SiswaModel;
-use App\Models\Admin\GuruModel;
+use App\Models\Admin\AdminModel;
 use App\Models\Admin\KelasModel;
 use App\Models\Admin\LogAksesModel;
 use App\Models\Admin\PesertaKegiatan;
@@ -16,6 +16,7 @@ use App\Models\Admin\PenilaianSertifikasiModel;
 use App\Models\Admin\AktifitasAmalModel;
 use App\Models\Admin\BidangStudiModel;
 use App\Models\Admin\KarakterModel;
+use App\Models\Admin\PesertaPbiModel;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -32,7 +33,7 @@ class DashboardController extends Controller
 
     public function AjaxDataPeriode() {
         $Peserta = SiswaModel::whereNull('deleted_at')->count();
-        $Guru = GuruModel::whereNull('deleted_at')->count();
+        $Admin = AdminModel::whereNull('deleted_at')->count();
         $Tahsin = PeriodeModel::where('judul_periode','setoran')->where('jenis_periode','tahsin')->whereNull('deleted_at')->count();
         $Tahfidz = PeriodeModel::where('judul_periode','setoran')->where('jenis_periode','tahfidz')->whereNull('deleted_at')->count();
         $Sertifikasi = PeriodeModel::where('judul_periode','sertifikasi')->whereNull('deleted_at')->count();
@@ -44,7 +45,7 @@ class DashboardController extends Controller
             'success' => true, 
             'message' => 'Data Ditemukan', 
             'peserta' => $Peserta,
-            'guru' => $Guru,
+            'Admin' => $Admin,
             'tahsin' => $Tahsin,
             'tahfidz' => $Tahfidz,
             'sertifikasi' => $Sertifikasi,
@@ -90,8 +91,8 @@ class DashboardController extends Controller
     }
 
     public function AjaxHistoriPeserta($tahun) {
-        $guru = session('user')['level_user'] === 'guru' ? session('user')['id'] : null;
-        $peserta = PesertaKegiatan::DataDashbordGuru($tahun,$guru);
+        $Admin = session('user')['level_user'] === 'Admin' ? session('user')['id'] : null;
+        $peserta = PesertaKegiatan::DataDashbordAdmin($tahun,$Admin);
         return response()->json($peserta);
     }
 
@@ -120,5 +121,93 @@ class DashboardController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
         }
+    }
+
+    public function Perkembangan(){
+        $menu = 'perkembangan';
+        $submenu= 'perkembangan';
+        return view ('Admin/perkembangan/data_peserta',compact('menu','submenu'));
+    }
+
+    public function AjakDataPeserta() {
+        try {
+            $pesertta = PesertaPbiModel::PesrtaStatistikPerkembanganPbiAll();
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => $pesertta,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+
+    }
+    
+    public function DetailPerkembangan($id){
+        $menu = 'perkembangan';
+        $submenu= 'perkembangan';
+        return view ('Admin/perkembangan/perkembangan',compact('menu','submenu','id'));
+    } 
+
+    public function AjaxDetailPerkembangan($id) {
+        try {
+            $peserta = SiswaModel::where('id_siswa',$id)->first();
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => [
+                    'peserta' => $peserta,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+    }
+
+    public function AjaxNilaiGrafik($id, Request $request) {
+        try {
+            $fields = explode(',', $request->input('fields'));
+            $grafik_nilai = RaporBpiModel::NilaiGrafikPerkembangan($id, $fields);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => [
+                    'grafik_nilai' => $grafik_nilai
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+    }
+
+    public function AjaxPeriodeGrafik($id) {
+        try {
+            $periode = RaporBpiModel::DataPeriodeGrafik($id);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan', 
+                'data' => [
+                    'periode' => $periode
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+    }
+
+    public function DataAjaxGrafikDashbor($id,$periode){
+        
+        try {
+            $periode_cek = RaporBpiModel::where('id_rapor_pbi',$periode)->first();
+            $data_grafik_home = RaporBpiModel::RataGrafikHome($periode_cek->id_periode,$periode_cek->id_tahun_ajaran,$id);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan',
+                'data_grafik_home' => $data_grafik_home,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+
     }
 }

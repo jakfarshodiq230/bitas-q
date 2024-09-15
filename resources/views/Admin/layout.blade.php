@@ -75,6 +75,9 @@
                             <li class="sidebar-item {{ $submenu == 'log' ? 'active' : null }}"><a
                                     class='sidebar-link' href='{{ url('admin/dashboard/log') }}'>Akses Login</a>
                             </li>
+                            <li class="sidebar-item {{ $submenu == 'perkembangan' ? 'active' : null }}"><a class='sidebar-link'
+                                    href='{{ url('admin/dashboard/perkembangan') }}'>Perkembangan Bina Pribadi Islam (BPI)</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="sidebar-header">

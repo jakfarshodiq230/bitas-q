@@ -97,7 +97,7 @@
                                 <div class="col-12 col-lg-4">
                                     <div class="card ">
                                         <div class="card-header">
-                                            <h5 class="card-title text-center">BIDANG STUDI</h5>
+                                            <h5 class="card-title text-center">PROGRES PENILAIN BIDANG STUDI</h5>
                                         </div>
                                         <div class="card-body">
                                             <div class="parent-container">
@@ -110,7 +110,7 @@
                                 <div class="col-12 col-lg-4">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title text-center">KARAKTER</h5>
+                                            <h5 class="card-title text-center">PROGRES PENILAIN KARAKTER</h5>
                                         </div>
                                         <div class="card-body">
                                             <div class="parent-container">
@@ -123,7 +123,7 @@
                                 <div class="col-12 col-lg-4">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title text-center">AKTIVITAS AMAL</h5>
+                                            <h5 class="card-title text-center">PROGRES PENILAIN AKTIVITAS</h5>
                                         </div>
                                         <div class="card-body">
                                             <div class="parent-container">
@@ -589,18 +589,27 @@
                 ctx.fillText(percentage, textX, textY);
                 ctx.save();
             }
-
-            // Registrasi plugin untuk semua doughnut charts
+            
+            // Register plugin for all doughnut charts
             Chart.plugins.register({
                 afterDraw: function(chart) {
                     if (chart.config.type === 'doughnut') {
-                        drawCenterText(chart);
+                        var sesi = chart.options.sesi || 100;
+                        var value = chart.options.value;
+
+                        // Log sesi and value to the console
+                        console.log('Sesi:', sesi);
+                        console.log('Value:', value);
+
+                        sesi = sesi === 0 ? drawCenterText2(chart, value) : drawCenterText(chart);
                     }
                 }
             });
 
-            // Fungsi untuk membuat doughnut chart dengan data
+            // Function to create doughnut chart with data
             function createDoughnutChart(chartId, color, sesi, value, backgroundColor = "#E8EAED") {
+                sesi = sesi === 0 ? 100 : sesi;
+
                 new Chart(document.getElementById(chartId), {
                     type: "doughnut",
                     data: {
@@ -614,17 +623,21 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutoutPercentage: 65,
+                        cutoutPercentage: 65, // Use cutoutPercentage for Chart.js 2.x
                         legend: {
                             display: false
                         },
                         tooltips: {
                             enabled: false // Disable tooltips
-                        }
+                        },
+                        sesi: sesi,
+                        value: value
                     }
                 });
             }
 
+
+            
             $.ajax({
                 url: "{{ url('admin/penilaian_pbi/data_penilaian_pbi_all') }}/" + tahun +
                         '/' + periode +
@@ -641,6 +654,7 @@
                     console.error("Error fetching data:", error);
                 }
             });
+            
         });
 
 

@@ -434,6 +434,20 @@ class PesertaPbiModel extends Model
         return $data; // Return the result set
     }
 
+    public static function PesrtaStatistikPerkembanganPbiAll()
+    {
+        $data = DB::table('rapor_pbi')
+            ->join('siswa', 'rapor_pbi.id_siswa', '=', 'siswa.id_siswa')
+            ->select(
+                'siswa.nama_siswa',
+                'rapor_pbi.id_siswa',
+            )
+            ->groupBy('rapor_pbi.id_siswa')
+            ->get();
+    
+        return $data; // Return the result set
+    }
+
    
     
 }

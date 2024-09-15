@@ -16,6 +16,7 @@ use App\Models\Admin\KelasModel;
 use App\Models\Admin\BidangStudiModel;
 use App\Models\Admin\KarakterModel;
 use App\Models\Admin\AktifitasAmalModel;
+use App\Models\Admin\RaporBpiModel;
 
 class PenilaianPbiController extends Controller
 {
@@ -123,6 +124,21 @@ class PenilaianPbiController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
         }
+    }
+
+    public function DataAjaxGrafikDashbor($id,$periode,$tahun){
+        try {
+            $periode_cek = RaporBpiModel::where('id_siswa',$id)->where('id_tahun_ajaran',$tahun)->first();
+            $data_grafik_home = RaporBpiModel::RataGrafikHome($periode_cek->id_periode,$periode_cek->id_tahun_ajaran,$id);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Data Ditemukan',
+                'data_grafik_home' => $data_grafik_home,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+
     }
         
 }
