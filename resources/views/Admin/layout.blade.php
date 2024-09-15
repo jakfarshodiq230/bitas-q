@@ -214,38 +214,41 @@
                         </ul>
                     </li>
 
-                    <li class="sidebar-header">
-                        Seting
-                    </li>
-                    <li class="sidebar-item {{ $menu == 'seting' ? 'active' : null }}">
-                        <a data-bs-target="#ui-seting" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle me-2 fas fa-fw fa-cog"></i> <span
-                                class="align-middle">Seting</span>
-                        </a>
-                        <ul id="ui-seting" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-                            <li class="sidebar-item {{ $submenu == 'kop' ? 'active' : null }}"><a
-                                    class='sidebar-link' href='{{ url('admin/kop') }}'>Kop</a>
-                            </li>
-                            <li class="sidebar-item {{ $submenu == 'email' ? 'active' : null }}"><a
-                                    class='sidebar-link' href='{{ url('admin/mail') }}'>Mail</a>
-                            </li>
-                        </ul>
-                    </li>
+                    @if($levelUser === '2')
+                        <li class="sidebar-header">
+                            Seting
+                        </li>
+                        <li class="sidebar-item {{ $menu == 'seting' ? 'active' : null }}">
+                            <a data-bs-target="#ui-seting" data-bs-toggle="collapse" class="sidebar-link collapsed">
+                                <i class="align-middle me-2 fas fa-fw fa-cog"></i> <span
+                                    class="align-middle">Seting</span>
+                            </a>
+                            <ul id="ui-seting" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+                                <li class="sidebar-item {{ $submenu == 'kop' ? 'active' : null }}"><a
+                                        class='sidebar-link' href='{{ url('admin/kop') }}'>Kop</a>
+                                </li>
+                                <li class="sidebar-item {{ $submenu == 'email' ? 'active' : null }}"><a
+                                        class='sidebar-link' href='{{ url('admin/mail') }}'>Mail</a>
+                                </li>
+                            </ul>
+                        </li>
+                    
+                        <li class="sidebar-header">
+                            Users
+                        </li>
+                        <li class="sidebar-item {{ $menu == 'user' ? 'active' : null }}">
+                            <a data-bs-target="#ui-user" data-bs-toggle="collapse" class="sidebar-link collapsed">
+                                <i class="align-middle me-2 fas fa-fw fa-users"></i> <span
+                                    class="align-middle">Users</span>
+                            </a>
+                            <ul id="ui-user" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+                                <li class="sidebar-item {{ $submenu == 'user' ? 'active' : null }}"><a
+                                        class='sidebar-link' href='{{ url('admin/users') }}'>Users</a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li class="sidebar-header">
-                        Users
-                    </li>
-                    <li class="sidebar-item {{ $menu == 'user' ? 'active' : null }}">
-                        <a data-bs-target="#ui-user" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle me-2 fas fa-fw fa-users"></i> <span
-                                class="align-middle">Users</span>
-                        </a>
-                        <ul id="ui-user" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-                            <li class="sidebar-item {{ $submenu == 'user' ? 'active' : null }}"><a
-                                    class='sidebar-link' href='{{ url('admin/users') }}'>Users</a>
-                            </li>
-                        </ul>
-                    </li>
+                    @endif
                     
 
                     <li class="sidebar-header">

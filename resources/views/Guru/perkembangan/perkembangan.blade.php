@@ -61,7 +61,7 @@
     <div class="container-fluid">
         <div class="header">
             <h1 class="header-title" id="judul_header">
-                STATISTIK PERKEMBANGAN PESERTA
+                STATISTIK PERKEMBANGAN PESERTA BINA PRIBADI ISLAM (BPI)
             </h1>
         </div>
         <div class="row">
@@ -218,9 +218,9 @@
             const fieldTitles = {
                 'alquran': 'ALQURAN', 'aqidah': 'AQIDAH', 'ibadah': 'IBADAH',
                 'hadits': 'HADITS', 'sirah': 'SIRAH', 'tazkiyatun': 'TAZKIYATUN',
-                'fikrul': 'FIKRUL', 'aqdh': 'AQDH', 'ibdh': 'IBDH', 'akhlak': 'AKHLAK',
-                'prbd': 'PRBD', 'aqr': 'AQR', 'wwsn': 'WWSN', 'kwta': 'KWTA',
-                'perkemahan': 'PERKEMAHAN', 'mbit': 'MBIT', 'sholat_wajib': 'SHOLAT WAJIB',
+                'fikrul': 'FIKRUL', 'aqdh': 'AQIDAH YANG LURUS', 'ibdh': 'IBADAH YANG BENAR', 'akhlak': 'KEPRIBADIAN YANG MATANG & BERAKHLAK MULIA',
+                'prbd': 'PRIBADI YANG SUNGGUH-SUNGGUH, DISIPLIN & MAMPU MENGENDALIKAN DIRI', 'aqr': 'MAMPU MEMBACA, MENGHAFAl, & MEMAHAMI AL-QURAN', 'wwsn': 'BERWAWASAN LUAS', 'kwta': 'KARYA WISATA/TAFAKUR ALAM',
+                'perkemahan': 'PERKEMAHAN', 'mbit': 'MALAM BINA IMAN & TAQWA', 'sholat_wajib': 'SHOLAT WAJIB',
                 'tilawah': 'TILAWAH', 'tahajud': 'TAHAJUD', 'duha': 'DUHA',
                 'rawatib': 'RAWATIB', 'dzikri': 'DZIKRI', 'puasa': 'PUASA', 'infaq': 'INFAQ'
             };
