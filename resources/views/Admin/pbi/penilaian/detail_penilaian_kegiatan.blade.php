@@ -461,7 +461,7 @@
                         data: 'status_karakter',
                         name: 'status_karakter',
                         render: function(data, type, row) {
-                            return row.status_karakter === 1 
+                            return row.status_karakter == 1 
                                 ? '<span class="badge bg-success me-1">DIPADANKAN</span>' 
                                 : '<span class="badge bg-danger me-1">BELUM DIPADANKAN</span>';
                         }
@@ -555,7 +555,7 @@
                         data: 'status_amal',
                         name: 'status_amal',
                         render: function(data, type, row) {
-                            return row.status_amal === 1 
+                            return row.status_amal == 1 
                                 ? '<span class="badge bg-success me-1">DIPADANKAN</span>' 
                                 : '<span class="badge bg-danger me-1">BELUM DIPADANKAN</span>';
                         }
@@ -632,7 +632,7 @@
                         '/' + guru +
                         '/' + id_kelas ,
                 method: 'GET',
-                success: function(response) {                    
+                success: function(response) {
                     createDoughnutChart("chartjs-bidang_studi", window.theme.primary, response.peserta.sesi_periode, response.jumlah_bidang_studi);
                     createDoughnutChart("chartjs-karakter", window.theme.warning, response.peserta.sesi_periode, response.jumlah_karakter);
                     createDoughnutChart("chartjs-amal", window.theme.danger, response.peserta.sesi_periode, response.jumlah_amal);
@@ -642,6 +642,7 @@
                 }
             });
         });
+
 
     </script>
 @endsection
