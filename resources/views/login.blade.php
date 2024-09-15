@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="BITAS-Q merupakan sistem manajemen sederhana dalam memajemen Penilaian Amalan Islami">
-    <meta name="author" content="Bootlab">
+    <meta name="description" content="Bina Pribadi Islam (PBI), Tahfidz, Tahsin, Materikulasi, Muraja'ah Al-Qur'an">
+    <meta name="author" content="shodiq">
 
     <title>BITAS-Q</title>
     <style>
