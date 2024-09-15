@@ -295,7 +295,7 @@
             }
             if(rata_baru >= 20 && rata_baru <= 100){
                 return "Sangat Baik";
-            }else if(rata_baru >= 11 && rata_baru <=20){
+            }else if(rata_baru >= 11 && rata_baru <=19){
                 return "Baik";
             }else if(rata_baru >= 1 && rata_baru <= 10){
                 return "Cukup";

@@ -117,7 +117,11 @@
                             </li>
                         </ul>
                     </li>
-
+                    <li class="sidebar-item {{ $menu == 'panduan' ? 'active' : null }}">
+						<a class='sidebar-link' href='{{ url('guru/dashboard/panduan')}}'>
+							<i class="align-middle me-2 fas fa-fw fa-book"></i> <span class="align-middle">Panduan Penggunaan</span>
+						</a>
+					</li>
                     <li class="sidebar-header">
                         Logout
                     </li>

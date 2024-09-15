@@ -171,4 +171,10 @@ class DashboardController extends Controller
         }
 
     }
+
+    public function PanduanUser(){
+        $menu = 'panduan';
+        $submenu= 'panduan';
+        return view ('Guru/panduan/panduan',compact('menu','submenu'));
+    }
 }

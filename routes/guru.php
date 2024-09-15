@@ -25,6 +25,7 @@ Route::middleware('auth:guru,sanctum')->group(function () {
         Route::get('/data_grafik/{id}', [DashboardControllerGuru::class, 'AjaxNilaiGrafik'])->name('guru.perkembangan.AjaxNilaiGrafik');
         Route::get('/data_peridoe/{id}', [DashboardControllerGuru::class, 'AjaxPeriodeGrafik'])->name('guru.perkembangan.AjaxNilaiGrafik');
         Route::get('/data_peridoe_grafik/{id}/{periode}', [DashboardControllerGuru::class, 'DataAjaxGrafikDashbor'])->name('guru.perkembangan.DataAjaxGrafikDashbor');
+        Route::get('/panduan', [DashboardControllerGuru::class, 'PanduanUser'])->name('guru.PanduanUser');
     });
 
     Route::prefix('guru/penilaian_kegiatan')->group(function () {
