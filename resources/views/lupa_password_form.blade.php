@@ -35,10 +35,10 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="m-sm-4">
-                                    <div class="text-center">
+                                    <!-- <div class="text-center">
                                         <img src="{{ asset('assets/admin/img/avatars/logo.png') }}" alt="BITAS-Q"
                                             class="img-fluid rounded-circle" width="132" height="132" />
-                                    </div>
+                                    </div> -->
                                     <div class="text-center mt-2">
                                         <p class="lead">
                                             MASUKAN PASSWORD BARU
