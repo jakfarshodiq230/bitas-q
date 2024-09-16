@@ -329,13 +329,13 @@
                         var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
                         var surah_baru = respons.data.surah_baru || 0;
 
-                        $('#alquran').text( alquran.toFixed(2) );
-                        $('#aqidah').text( aqidah.toFixed(2) );
-                        $('#ibadah').text( ibadah.toFixed(2) );
-                        $('#hadits').text( hadits.toFixed(2) );
-                        $('#sirah').text( sirah.toFixed(2) );
-                        $('#tazkiyatun').text( tazkiyatun.toFixed(2) );
-                        $('#fikrul').text( fikrul.toFixed(2) );
+                        $('#alquran').text( parseFloat(alquran).toFixed(2) );
+                        $('#aqidah').text( parseFloat(aqidah).toFixed(2) );
+                        $('#ibadah').text( parseFloat(ibadah).toFixed(2) );
+                        $('#hadits').text( parseFloat(hadits).toFixed(2) );
+                        $('#sirah').text( parseFloat(sirah).toFixed(2) );
+                        $('#tazkiyatun').text( parseFloat(tazkiyatun).toFixed(2) );
+                        $('#fikrul').text( parseFloat(fikrul).toFixed(2) );
                         $('#rata_rata').text( rata_baru_rounded );
 
 
