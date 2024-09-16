@@ -281,7 +281,7 @@ class SiswaController extends Controller
                     'tanggal_daftar' => $siswa_cek->created_at,
                 ];
                 Mail::to($siswa_cek->email_siswa)->send(new SendMailSiswa($PesanEmail));
-                
+                SiswaModel::where('nisn_siswa',$id)->update($data);
                 return response()->json(['success' => true, 'message' => 'Berhasil Reset Password']);
             } else {
                 return response()->json(['success' => true, 'message' => 'Gagal Reset Password']);

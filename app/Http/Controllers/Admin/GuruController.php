@@ -316,7 +316,7 @@ class GuruController extends Controller
                     'tanggal_daftar' => $guru->created_at,
                 ];
                 Mail::to($guru->email_guru)->send(new SendMailGuru($PesanEmail));
-                
+                GuruModel::where('nik_guru',$id)->update($data);
                 return response()->json(['success' => true, 'message' => 'Berhasil Reset Password']);
             } else {
                 return response()->json(['success' => true, 'message' => 'Gagal Reset Password']);

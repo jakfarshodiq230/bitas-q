@@ -77,6 +77,11 @@
     {{-- isi --}}
     <table>
         <tr>
+            <th class="label">NISN</th>
+            <td class="colon">:</td>
+            <td class="isi_label">{{$data['nisn_siswa']}}</td>
+        </tr>
+        <tr>
             <th class="label">Nama</th>
             <td class="colon">:</td>
             <td class="isi_label">{{$data['nama_siswa']}}</td>
@@ -94,7 +99,7 @@
         <tr>
             <th class="label">Tempat/Tanggal Lahir</th>
             <td class="colon">:</td>
-            <td class="isi_label">{{$data['tanggal_lahir_siswa'].'/'.$data['tempat_lahir_siswa']}}</td>
+            <td class="isi_label">{{$data['tempat_lahir_siswa'].'/'.$data['tanggal_lahir_siswa']}}</td>
         </tr>
         <tr>
             <th class="label">Jenis Kelamin</th>
@@ -104,7 +109,7 @@
         <tr>
             <th class="label">Username</th>
             <td class="colon">:</td>
-            <td class="isi_label">{{$data['email_siswa']}}</td>
+            <td class="isi_label">{{$data['nisn_siswa']}}</td>
         </tr>
         <tr>
             <th class="label">Password</th>

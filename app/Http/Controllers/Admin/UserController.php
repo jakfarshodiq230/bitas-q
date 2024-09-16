@@ -84,7 +84,7 @@ class UserController extends Controller
 
             $link = 'link';
 
-            $data_pesan = $this->createMessageData($request,'daftar', 'PENDAFTARAN AKUN MY TAHFIDZ', $request->password,$link);
+            $data_pesan = $this->createMessageData($request,'daftar', 'PENDAFTARAN AKUN ', $request->password,$link);
             $sendEmail = Mail::to($request->email)->send(new SendEmailPendaftaran($data_pesan));
 
             if ($sendEmail) {
@@ -127,9 +127,9 @@ class UserController extends Controller
     
             if (isset($validatedData['password'])) {
                 $data['password'] = Hash::make($validatedData['password']);
-                $data_pesan = $this->createMessageData($request,'update', "PASSWORD BARU AKUN MY TAHFIDZ", $request->password);
+                $data_pesan = $this->createMessageData($request,'update', "PASSWORD BARU AKUN ", $request->password);
             } else {
-                $data_pesan = $this->createMessageData($request,'update', 'PEMBARUI AKUN MY TAHFIDZ');
+                $data_pesan = $this->createMessageData($request,'update', 'PEMBARUI AKUN ');
             }
     
             //Send the email
