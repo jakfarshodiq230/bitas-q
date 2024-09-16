@@ -199,8 +199,8 @@ class PesertaSertifikasiModel extends Model
                 'tahun_ajaran.nama_tahun_ajaran', // periode
                 'siswa.nama_siswa', // nama
                 'kelas.nama_kelas', // kelas
-                'pembimbing.nama_guru', // pembimbing
-                'penguji.nama_guru', // penguji
+                'pembimbing.nama_guru as pembimbing', // pembimbing
+                'penguji.nama_guru as penguji', // penguji
                 'periode.jenis_periode', // sertifikasi
                 DB::raw('CONCAT(surah_mulai.namaLatin, "[", IFNULL(penilaian_sertifikasi.ayat_awal, ""), "] s/d ", IFNULL(surah_akhir.namaLatin, ""), "[", IFNULL(penilaian_sertifikasi.ayat_akhir, ""), "]") as surah'),
                 'penilaian_sertifikasi.nilai_sertifikasi', // nilai

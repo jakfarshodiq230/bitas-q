@@ -28,7 +28,7 @@ class SendEmailVerifikasi extends Mailable
      */
     public function build()
     {
-        return $this->subject('PENDAFTARAN AKUN APKIS')
+        return $this->subject('PENDAFTARAN AKUN')
                     ->view('Admin.user.emailVerifikasi') // Sesuaikan dengan path template email Anda
                     ->with(['data' => $this->data]); // Mengirimkan data ke view
     }

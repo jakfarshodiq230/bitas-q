@@ -17,6 +17,7 @@ use App\Models\Admin\AktifitasAmalModel;
 use App\Models\Admin\BidangStudiModel;
 use App\Models\Admin\KarakterModel;
 use App\Models\Admin\PesertaPbiModel;
+use App\Models\Admin\RaporBpiModel;
 use Carbon\Carbon;
 
 class DashboardController extends Controller

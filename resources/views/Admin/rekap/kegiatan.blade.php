@@ -117,12 +117,18 @@
                                         Swal.close();
                                     } else {
                                         $('.siswa').val(null).trigger('change');
+                                        Swal.fire({
+                                            title: 'Error',
+                                            text: 'No students found.',
+                                            icon: 'error',
+                                            confirmButtonText: 'OK'
+                                        });
                                     }
                                 },
-                                error: function(xhr, status, error) {
+                                error: function() {
                                     Swal.fire({
                                         title: 'Error',
-                                        text: 'Failed to load data siswa',
+                                        text: 'Failed to load data siswa.',
                                         icon: 'error',
                                         confirmButtonText: 'OK'
                                     });
@@ -131,10 +137,10 @@
                         }
                     });
                 },
-                error: function(xhr, status, error) {
+                error: function() {
                     Swal.fire({
                         title: 'Error',
-                        text: 'Failed to load data tahun',
+                        text: 'Failed to load data periode and kelas.',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
@@ -158,9 +164,30 @@
                     option.textContent = formatText(item);
                     selectElement.appendChild(option);
                 });
+
                 $(selectElement).select2();
+
+                // Tambahkan logika untuk mengaktifkan/menonaktifkan tombol download atau save berdasarkan input
+                function checkInputs() {
+                    const selectPeriode = document.querySelector('select[name="periode"]');
+                    const selectKelas = document.querySelector('select[name="kelas"]');
+                    if (
+                        selectPeriode.value.trim() === 'PILIH' || 
+                        selectKelas.value.trim() === 'PILIH' || 
+                        selectPeriode.value.trim() === '' || 
+                        selectKelas.value.trim() === ''
+                    ) {
+                        downloadBtn.disabled = true;
+                    } else {
+                        downloadBtn.disabled = false;
+                    }
+                }
+
+                $(selectElement).on('change', checkInputs);
+                checkInputs();
             }
         });
+
 
         // save dan update data
         $('#downloadBtn').on('click', function() {

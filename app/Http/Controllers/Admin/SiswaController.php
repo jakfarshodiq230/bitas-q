@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Imports\SiswaImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Admin\SiswaModel;
+use App\Mail\SendMailSiswa;
 
 
 class SiswaController extends Controller
@@ -256,7 +257,39 @@ class SiswaController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => true, 'message' => $e->getMessage()]);
         }
-        
-}
+    }
+
+    public function ResetPassword($id){
+        try {
+            $siswa_cek = SiswaModel::where('nisn_siswa',$id)->first();
+            if ($siswa_cek) {
+                $date = new \DateTime($siswa_cek->tanggal_lahir_siswa);
+                $formatTanggal = $date->format('dmY');
+                $data = [
+                    'password' =>  Hash::make($formatTanggal),
+                ];
+
+                $PesanEmail = [
+                    'nisn_siswa' => $siswa_cek->nisn_siswa,
+                    'nama_siswa' => $siswa_cek->nama_siswa,
+                    'tanggal_lahir_siswa' => $siswa_cek->tanggal_lahir_siswa,
+                    'tempat_lahir_siswa' => $siswa_cek->tempat_lahir_siswa,
+                    'jenis_kelamin_siswa' => $siswa_cek->jenis_kelamin_siswa,
+                    'no_hp_siswa' => $siswa_cek->no_hp_siswa,
+                    'email_siswa' => $siswa_cek->email_siswa,
+                    'password' =>  $formatTanggal,
+                    'tanggal_daftar' => $siswa_cek->created_at,
+                ];
+                Mail::to($siswa_cek->email_guru)->send(new SendMailGuru($PesanEmail));
+                
+                return response()->json(['success' => true, 'message' => 'Berhasil Reset Password']);
+            } else {
+                return response()->json(['success' => true, 'message' => 'Gagal Reset Password']);
+            }
+            
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $e->getMessage()]);
+        }
+    }
         
 }

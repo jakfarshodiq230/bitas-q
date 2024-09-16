@@ -65,7 +65,9 @@ class RekapController extends Controller
                 return Excel::download($export, $filename);
             }
                       
-        } catch (\Exception $e) {
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        }catch (\Exception $e) {
             return response()->json([
                 'exception' => $e->getMessage(),
                 'idPeriode' => $idPeriode,
@@ -76,7 +78,7 @@ class RekapController extends Controller
 
     public function kegiatan(){
         $menu = 'rekap';
-        $submenu= 'rekap-rapor';
+        $submenu= 'rekap-kegiatan';
         return view ('Admin/rekap/kegiatan',compact('menu','submenu'));
     }
 
@@ -90,7 +92,9 @@ class RekapController extends Controller
                 'kelas' => $kelas,
             ];
             return response()->json($response, Response::HTTP_OK);
-        } catch (\Exception $e) {
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        }catch (\Exception $e) {
             return response()->json([
                 'error' => 'No result'
             ], Response::HTTP_FORBIDDEN);
@@ -105,7 +109,9 @@ class RekapController extends Controller
                 'siswa' => $siswa,
             ];
             return response()->json($response, Response::HTTP_OK);
-        } catch (\Exception $e) {
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        }catch (\Exception $e) {
             return response()->json([
                 'error' => 'No result'
             ], Response::HTTP_FORBIDDEN);
@@ -119,7 +125,9 @@ class RekapController extends Controller
             $filename = 'Kegiatan' . date('Y-m-d') . '.xlsx';
             return Excel::download($export, $filename);
             
-        } catch (\Exception $e) {
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        }catch (\Exception $e) {
             return response()->json([
                 'exception' => $e->getMessage(),
                 'idPeriode' => $idPeriode,

@@ -28,7 +28,7 @@ class SendLupaPassword extends Mailable
      */
     public function build()
     {
-        return $this->subject('LUPA PASSWORD AKUN MY-TAHFIDZ')
+        return $this->subject('LUPA PASSWORD AKUN')
                     ->view('Admin.users.emailPassword') // Sesuaikan dengan path template email Anda
                     ->with(['data' => $this->data]); // Mengirimkan data ke view
     }

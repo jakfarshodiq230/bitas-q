@@ -94,26 +94,29 @@
                                                         </div>
                                                         <div class="mb-3 error-placeholder">
                                                             <label>Guru</label>
-                                                            <select class="form-control select2 " name="guru"
+                                                            <select class="form-control select2 " name="guru" id="guru"
                                                                 data-bs-toggle="select2" required>
                                                                 <option>PILIH</option>
                                                             </select>
+                                                            <div id="guru-error" class="invalid-feedback"></div>
                                                         </div>
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="mb-3">
                                                             <label>Peserta</label>
-                                                            <select class="form-control select2 " name="peserta"
+                                                            <select class="form-control select2 " name="peserta" id="peserta"
                                                                 data-bs-toggle="select2" required>
                                                                 <option>PILIH</option>
                                                             </select>
+                                                            <div id="peserta-error" class="invalid-feedback"></div>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label>Kelas</label>
-                                                            <select class="form-control select2 " name="kelas"
+                                                            <select class="form-control select2 " name="kelas" id="kelas"
                                                                 data-bs-toggle="select2" required>
                                                                 <option>PILIH</option>
                                                             </select>
+                                                            <div id="kelas-error" class="invalid-feedback"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -123,7 +126,8 @@
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Batal</button>
                                                 <button type="button" id="saveBtn"
-                                                    class="btn btn-primary">Simpan</button>
+                                                    class="btn btn-primary"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                                    Simpan</button>
                                             </div>
                                         </form>
                                     </div>
@@ -282,80 +286,92 @@
         $('#addBtn').on('click', function() {
             $('#ModalLabel').text('TAMBAH PESERTA BINA PRIBADI ISLAM (BPI)');
             $('#dataForm')[0].reset();
+            $('.select2').val(null).trigger('change');
             $('#formModal').modal('show');
         });
 
         // editData
         $(document).on('click', '.editBtn', function() {
             var id = $(this).data('id');
-            // Open the edit modal and populate it with data
-            $.ajax({
-                url: '{{ url('admin/peserta_pbi/edit_peserta_pbi') }}/' +
-                    id, // URL to fetch data for the selected row
-                type: 'GET',
-                success: function(data) {
-                    $('#formModal').modal('show');
-                    // Populate the modal fields with the data
-                    $('#dataForm input[name="id_peserta_pbi"]').val(data.data.id_peserta_pbi);
-                    // Function to populate select options
-                    function populateSelectGuru(select, options) {
-                        select.empty();
-                        select.append('<option>PILIH</option>');
-                        $.each(options, function(key, value) {
-                            select.append('<option value="' + value.id_guru + '">' + value
-                                .nama_guru.toUpperCase() +
-                                '</option>');
-                        });
-                    }
+            Swal.fire({
+                title: 'Edit Data',
+                text: 'Apakah Anda Ingin Edit Data Ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya edit data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ url('admin/peserta_pbi/edit_peserta_pbi') }}/' +
+                            id, // URL to fetch data for the selected row
+                        type: 'GET',
+                        success: function(data) {
+                            $('#formModal').modal('show');
+                            // Populate the modal fields with the data
+                            $('#dataForm input[name="id_peserta_pbi"]').val(data.data.id_peserta_pbi);
+                            // Function to populate select options
+                            function populateSelectGuru(select, options) {
+                                select.empty();
+                                select.append('<option>PILIH</option>');
+                                $.each(options, function(key, value) {
+                                    select.append('<option value="' + value.id_guru + '">' + value
+                                        .nama_guru.toUpperCase() +
+                                        '</option>');
+                                });
+                            }
 
-                    function populateSelectPeserta(select, options) {
-                        select.empty();
-                        select.append('<option>PILIH</option>');
-                        $.each(options, function(key, value) {
-                            select.append('<option value="' + value.id_siswa + '">' + value
-                                .nama_siswa.toUpperCase() +
-                                '</option>');
-                        });
-                    }
+                            function populateSelectPeserta(select, options) {
+                                select.empty();
+                                select.append('<option>PILIH</option>');
+                                $.each(options, function(key, value) {
+                                    select.append('<option value="' + value.id_siswa + '">' + value
+                                        .nama_siswa.toUpperCase() +
+                                        '</option>');
+                                });
+                            }
 
-                    function populateSelectKelas(select, options) {
-                        select.empty();
-                        select.append('<option>PILIH</option>');
-                        $.each(options, function(key, value) {
-                            select.append('<option value="' + value.id_kelas + '">' + value
-                                .nama_kelas.toUpperCase() +
-                                '</option>');
-                        });
-                    }
+                            function populateSelectKelas(select, options) {
+                                select.empty();
+                                select.append('<option>PILIH</option>');
+                                $.each(options, function(key, value) {
+                                    select.append('<option value="' + value.id_kelas + '">' + value
+                                        .nama_kelas.toUpperCase() +
+                                        '</option>');
+                                });
+                            }
 
-                    // Populate guru select
-                    var guruSelect = $('select[name="guru"]');
-                    populateSelectGuru(guruSelect, data.data_guru);
-                    if (data.data.id_guru) {
-                        guruSelect.val(data.data.id_guru);
-                    }
+                            // Populate guru select
+                            var guruSelect = $('select[name="guru"]');
+                            populateSelectGuru(guruSelect, data.data_guru);
+                            if (data.data.id_guru) {
+                                guruSelect.val(data.data.id_guru);
+                            }
 
-                    // Populate peserta select
-                    var pesertaSelect = $('select[name="peserta"]');
-                    populateSelectPeserta(pesertaSelect, data.data_siswa);
-                    if (data.data.id_siswa) {
-                        pesertaSelect.val(data.data.id_siswa);
-                    }
+                            // Populate peserta select
+                            var pesertaSelect = $('select[name="peserta"]');
+                            populateSelectPeserta(pesertaSelect, data.data_siswa);
+                            if (data.data.id_siswa) {
+                                pesertaSelect.val(data.data.id_siswa);
+                            }
 
-                    // Populate kelas select
-                    var kelasSelect = $('select[name="kelas"]');
-                    populateSelectKelas(kelasSelect, data.data_kelas);
-                    if (data.data.id_kelas) {
-                        kelasSelect.val(data.data.id_kelas);
-                    }
+                            // Populate kelas select
+                            var kelasSelect = $('select[name="kelas"]');
+                            populateSelectKelas(kelasSelect, data.data_kelas);
+                            if (data.data.id_kelas) {
+                                kelasSelect.val(data.data.id_kelas);
+                            }
 
-                },
-                error: function(response) {
-                    Swal.fire({
-                        title: response.success ? 'Success' : 'Error',
-                        text: response.message,
-                        icon: response.success ? 'success' : 'error',
-                        confirmButtonText: 'OK'
+                        },
+                        error: function(response) {
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
                     });
                 }
             });
@@ -363,6 +379,7 @@
 
         // save dan update data
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this);
             var id = $('#id_peserta_pbi').val();
             var url = '{{ url('admin/peserta_pbi/store_peserta_pbi') }}';
 
@@ -371,6 +388,10 @@
             }
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true);
+
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -388,16 +409,30 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
-
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', true);
                 },
-                error: function(response) {
-                    Swal.fire({
-                        title: response.success ? 'Success' : 'Error',
-                        text: response.message,
-                        icon: response.success ? 'success' : 'error',
-                        confirmButtonText: 'OK'
-                    });
+                error: function(xhr) {
+                    let response = xhr.responseJSON;
+                    if (response) {
+                        let errors = response; // Use the response directly, which contains the errors
+                        $('.form-control').removeClass('is-invalid').removeClass('is-valid');
+                        $('.invalid-feedback').empty();
 
+                        Object.keys(errors).forEach(function(key) {
+                            let input = $("#" + key);
+                            let errorDiv = $("#" + key + "-error");
+                            
+                            input.addClass("is-invalid");
+                            errorDiv.html('<strong>' + errors[key][0] + '</strong>'); 
+
+                            if (input.hasClass("select2-hidden-accessible")) {
+                                input.parent().addClass("is-invalid");
+                            }
+                        });
+                    }
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 }
             });
         });

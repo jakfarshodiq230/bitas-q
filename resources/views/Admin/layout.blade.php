@@ -65,6 +65,7 @@
                             <i class="align-middle me-2 fas fa-fw fa-tachometer"></i> <span
                                 class="align-middle">Dashboard</span>
                         </a>
+
                         <ul id="main" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item {{ $submenu == 'home' ? 'active' : null }}"><a class='sidebar-link'
                                     href='{{ url('admin/dashboard') }}'>Default</a>
@@ -266,13 +267,13 @@
                 <a class="sidebar-toggle d-flex me-2">
                     <i class="hamburger align-self-center"></i>
                 </a>
-
+                <span class="text-white">SMA SHODIQ SOLUTION SCHOOL</span>
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown ms-lg-2 active">
                             <a class="nav-link dropdown-toggle position-relative" href="#" id="userDropdown"
                                 data-bs-toggle="dropdown">
-                                <i class="align-middle fas fa-user"></i>
+                                <i class="align-middle fas fa-user"></i> |
                                 {{ ucfirst(session('user')['nama_user']) }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -292,7 +293,7 @@
                     <div class="row text-muted">
                         <div class="col-12 text-end">
                             <p class="mb-0">
-                                BITAS-Q &copy; {{ date('Y') }}
+                                BITAS-Q SMA SHODIQ SOLUTION SCHOOL &copy; {{ date('Y') }}
                             </p>
                         </div>
                     </div>

@@ -60,22 +60,20 @@
         $('.select2').val(null).trigger('change');
         $('#dataForm')[0].reset();
         // tahun ajaran
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectElements = [
-                document.querySelector('select[name="periode"]'),
-                document.querySelector('select[name="kelas"]'),
-            ];
-            const downloadBtn = document.querySelector('#downloadBtn');
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectPeriode = document.querySelector('select[name="periode"]');
+            const selectKelas = document.querySelector('select[name="kelas"]');
+            const saveBtn = document.querySelector('#downloadBtn');
 
             $.ajax({
                 url: '{{ url('admin/rekap/rapor/periode') }}',
                 type: 'GET',
                 dataType: 'json',
-                success: function(response) {
-                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ ${item.jenis_periode === 'pbi' ? 'BPI':item.jenis_periode.toUpperCase()} ${item.jenis_kegiatan.toUpperCase()} ]`);
+                success: function (response) {
+                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ ${item.jenis_periode === 'pbi' ? 'BPI' : item.jenis_periode.toUpperCase()} ${item.jenis_kegiatan.toUpperCase()} ]`);
                     populateSelect('kelas', response.kelas, item => item.nama_kelas.toUpperCase());
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     Swal.fire({
                         title: 'Error',
                         text: 'Failed to load data tahun',
@@ -95,7 +93,26 @@
                 });
                 $(selectElement).select2();
             }
+
+            function checkInputs() {
+                if (
+                    selectPeriode.value.trim() === 'PILIH' || 
+                    selectKelas.value.trim() === 'PILIH' || 
+                    selectPeriode.value.trim() === '' || 
+                    selectKelas.value.trim() === ''
+                ) {
+                    saveBtn.disabled = true;
+                } else {
+                    saveBtn.disabled = false;
+                }
+            }
+
+            $(selectPeriode).on('change', checkInputs);
+            $(selectKelas).on('change', checkInputs);
+
+            checkInputs();
         });
+
         // save dan update data
         $('#downloadBtn').on('click', function() {
             var idPeriode = $('#periode').val();

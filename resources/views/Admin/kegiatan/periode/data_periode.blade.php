@@ -49,7 +49,8 @@
                                             </div>
                                             <div class="col-12">
                                                 <button type="button" id="saveBtn"
-                                                    class="btn btn-primary mb-2 me-sm-2">Simpan</button>
+                                                    class="btn btn-primary mb-2 me-sm-2"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                                    Simpan</button>
                                             </div>
                                     </form>
                                 </div>
@@ -212,38 +213,49 @@
         // editData
         $(document).on('click', '.editBtn', function() {
             var id = $(this).data('id');
-            // Open the edit modal and populate it with data
-            $.ajax({
-                url: '{{ url('admin/periode/edit_periode') }}/' +
-                    id, // URL to fetch data for the selected row
-                type: 'GET',
-                success: function(data) {
-                    saveBtn.disabled = false;
-                    // Populate the modal fields with the data
-                    $('#dataForm input[name="id_periode"]').val(data.data.id_periode);
-                    $('select[name="tahun_ajaran"] option').each(function() {
-                        // Check if the value of the option matches tahun_awal
-                        if ($(this).val() === data.data.id_tahun_ajaran) {
-                            // Set the selected attribute of the matching option
-                            $(this).prop('selected', true);
+            Swal.fire({
+                title: 'Edit Data',
+                text: 'Apakah Anda Ingin Edit Data Ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya edit data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ url('admin/periode/edit_periode') }}/' +
+                            id, // URL to fetch data for the selected row
+                        type: 'GET',
+                        success: function(data) {
+                            saveBtn.disabled = false;
+                            // Populate the modal fields with the data
+                            $('#dataForm input[name="id_periode"]').val(data.data.id_periode);
+                            $('select[name="tahun_ajaran"] option').each(function() {
+                                // Check if the value of the option matches tahun_awal
+                                if ($(this).val() === data.data.id_tahun_ajaran) {
+                                    // Set the selected attribute of the matching option
+                                    $(this).prop('selected', true);
+                                }
+                            });
+                            $('select[name="tahun_ajaran"]').select2();
+                            $('select[name="kegiatan"] option').each(function() {
+                                // Check if the value of the option matches tahun_awal
+                                if ($(this).val() === data.data.jenis_periode) {
+                                    // Set the selected attribute of the matching option
+                                    $(this).prop('selected', true);
+                                }
+                            });
+                            $('select[name="kegiatan"]').select2();
+                        },
+                        error: function(response) {
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
                         }
-                    });
-                    $('select[name="tahun_ajaran"]').select2();
-                    $('select[name="kegiatan"] option').each(function() {
-                        // Check if the value of the option matches tahun_awal
-                        if ($(this).val() === data.data.jenis_periode) {
-                            // Set the selected attribute of the matching option
-                            $(this).prop('selected', true);
-                        }
-                    });
-                    $('select[name="kegiatan"]').select2();
-                },
-                error: function(response) {
-                    Swal.fire({
-                        title: response.success ? 'Success' : 'Error',
-                        text: response.message,
-                        icon: response.success ? 'success' : 'error',
-                        confirmButtonText: 'OK'
                     });
                 }
             });
@@ -251,6 +263,7 @@
 
         // save dan update data
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this);
             var id = $('#id_periode').val();
             var url = '{{ url('admin/periode/store_periode') }}';
 
@@ -259,6 +272,9 @@
             }
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true);
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -275,7 +291,8 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
-                    
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', true);
                 },
                 error: function(response) {
                     $('.select2').val(null).trigger('change');
@@ -285,7 +302,8 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
-
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 }
             });
         });

@@ -150,7 +150,9 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Batal</button>
-                                        <button type="button" id="saveBtn" class="btn btn-primary">Simpan</button>
+                                        <button type="button" id="saveBtn" class="btn btn-primary">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                        Simpan</button>
                                     </div>
                                 </form>
                             </div>
@@ -312,10 +314,15 @@
 
         // save button
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this); 
             url = '{{ url('guru/daftar_sertifikasi/store_daftar') }}';
             
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true)
+
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -334,7 +341,8 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
-
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false)
                 },
                 error: function(xhr) {
                     let response = xhr.responseJSON;
@@ -356,6 +364,8 @@
                             }
                         });
                     }
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false)
                 }
             });
         });

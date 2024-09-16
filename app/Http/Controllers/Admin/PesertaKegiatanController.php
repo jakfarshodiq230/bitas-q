@@ -94,11 +94,11 @@ class PesertaKegiatanController extends Controller
         try {
             // Validate incoming request data
             $validatedData = $request->validate([
-                'id_tahun_ajaran' => 'required|string',
-                'id_periode' => 'required|string',
-                'peserta' => 'required|string',
-                'kelas' => 'required|string',
-                'guru' => 'required|string',
+                'id_tahun_ajaran' => 'required|string|not_in:PILIH,other',
+                'id_periode' => 'required|string|not_in:PILIH,other',
+                'peserta' => 'required|string|not_in:PILIH,other',
+                'kelas' => 'required|string|not_in:PILIH,other',
+                'guru' => 'required|string|not_in:PILIH,other',
             ]);
 
             $CekData = PesertaKegiatan::where('id_tahun_ajaran', $validatedData['id_tahun_ajaran'])
@@ -141,7 +141,9 @@ class PesertaKegiatanController extends Controller
                 }
             }
     
-        } catch (\Exception $e) {
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        }catch (\Exception $e) {
             // Handle any exceptions that occur during validation or data insertion
             return response()->json(['error' => true, 'message' => $e->getMessage()]);
         }

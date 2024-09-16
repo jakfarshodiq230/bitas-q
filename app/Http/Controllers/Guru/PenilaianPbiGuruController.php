@@ -90,7 +90,7 @@ class PenilaianPbiGuruController extends Controller
             $validatedData = $request->validate([
                 'jenis_penilaian_kegiatan' => 'required|not_in:PILIH,other',
             ]);
-            if ($validatedData['jenis_penilaian_kegiatan'] === 'bidang_studi') {
+            if (isset($validatedData['jenis_penilaian_kegiatan']) && $validatedData['jenis_penilaian_kegiatan'] === 'bidang_studi') {
                 $validatedData = $request->validate([
                     'siswa' => 'required|not_in:PILIH,other',
                     'tanggal_penilaian_pbi' => 'required|date',
@@ -103,7 +103,7 @@ class PenilaianPbiGuruController extends Controller
                     'nilai_bidang_studi_fikrulislam' => 'required|numeric',
                     'keterangan_penilaian_pbi' => 'required|string',
                 ]);
-            } else if ($validatedData['jenis_penilaian_kegiatan'] === 'karakter') {
+            } else if (isset($validatedData['jenis_penilaian_kegiatan']) && $validatedData['jenis_penilaian_kegiatan'] === 'karakter') {
                 $validatedData = $request->validate([
                     'siswa' => 'required|not_in:PILIH,other',
                     'tanggal_penilaian_pbi' => 'required|date',
@@ -137,7 +137,7 @@ class PenilaianPbiGuruController extends Controller
             
             // Prepare data for insertion
             $sesi_pekan = $request->sesi_periode;
-            if ($validatedData['jenis_penilaian_kegiatan'] === 'bidang_studi') {
+            if (isset($validatedData['jenis_penilaian_kegiatan']) && $validatedData['jenis_penilaian_kegiatan'] === 'bidang_studi') {
                 // Generate unique ID based on current date and count
                 $tanggal = now()->format('dmy');
                 $nomorUrut = BidangStudiModel::whereDate('created_at', now()->toDateString())->count() + 1;
@@ -165,7 +165,7 @@ class PenilaianPbiGuruController extends Controller
                 } else {
                     return response()->json(['error' => true, 'message' => 'Sudah Memenuhi Penilaian Perperiode']);
                 }
-            } else if ($validatedData['jenis_penilaian_kegiatan'] === 'karakter'){
+            } else if (isset($validatedData['jenis_penilaian_kegiatan']) && $validatedData['jenis_penilaian_kegiatan'] === 'karakter'){
                 $tanggal = now()->format('dmy');
                 $nomorUrut = KarakterModel::whereDate('created_at', now()->toDateString())->count() + 1;
                 $id = 'KRT' . '-' . $tanggal . '-' . $nomorUrut;

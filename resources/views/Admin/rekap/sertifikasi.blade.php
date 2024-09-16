@@ -54,53 +54,56 @@
         $('#dataForm')[0].reset();
         // tahun ajaran
         document.addEventListener('DOMContentLoaded', function() {
-            const selectElements = [
-                document.querySelector('select[name="periode"]'),
-                document.querySelector('select[name="kelas"]'),
-            ];
-            const downloadBtn = document.querySelector('#downloadBtn');
+    const selectPeriode = document.querySelector('select[name="periode"]');
+    const downloadBtn = document.querySelector('#downloadBtn');
 
-            $.ajax({
-                url: '{{ url('admin/rekap/sertifikasi/periode_sertifikasi') }}',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ ${item.judul_periode.toUpperCase()} ${item.jenis_periode.toUpperCase()} ]`);
+    $.ajax({
+        url: '{{ url('admin/rekap/sertifikasi/periode_sertifikasi') }}',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            populateSelect('periode', response.periode, item => 
+                `${item.nama_tahun_ajaran} [ ${item.judul_periode.toUpperCase()} ${item.jenis_periode.toUpperCase()} ${item.juz_periode} ]`
+            );
 
-                    $('#periode, #kelas').on('change', function() {
-                        let periodeSelected = $('#periode').val();
-
-                        if (periodeSelected === 'PILIH') {
-                            Swal.fire({
-                                title: 'Warning',
-                                text: 'Please select',
-                                icon: 'warning',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    });
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Failed to load data tahun',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
+            // Add event listener to handle the 'change' event
+            $(selectPeriode).on('change', function() {
+                checkInputs();
             });
+        },
+        error: function(xhr, status, error) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load data tahun',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
 
-            function populateSelect(name, data, formatText) {
-                const selectElement = document.querySelector(`select[name="${name}"]`);
-                data.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.id_periode ;
-                    option.textContent = formatText(item);
-                    selectElement.appendChild(option);
-                });
-                $(selectElement).select2();
-            }
+    function populateSelect(name, data, formatText) {
+        const selectElement = document.querySelector(`select[name="${name}"]`);
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id_periode;
+            option.textContent = formatText(item);
+            selectElement.appendChild(option);
         });
+        $(selectElement).select2();
+    }
+
+    function checkInputs() {
+        if (selectPeriode.value.trim() === 'PILIH' || selectPeriode.value.trim() === '') {
+            downloadBtn.disabled = true;
+        } else {
+            downloadBtn.disabled = false;
+        }
+    }
+
+    // Initial check
+    checkInputs();
+});
+
         // save dan update data
         $('#downloadBtn').on('click', function() {
             var idPeriode = $('#periode').val();

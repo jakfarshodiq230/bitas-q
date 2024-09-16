@@ -71,7 +71,7 @@
                                 row.nama_tahun_ajaran.slice(1);
                             var jenis_periode = row.jenis_periode.toUpperCase();
                             var formatted_string = nama_tahun_ajaran + ' [ ' 
-                            + jenis_periode +' '+ row.juz_periode + ' ] ';
+                            + jenis_periode +' '+ row.juz_periode + ' JUZ ] ';
                             return formatted_string;
                         }
 

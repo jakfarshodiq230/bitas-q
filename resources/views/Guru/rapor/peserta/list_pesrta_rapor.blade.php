@@ -392,7 +392,9 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Batal</button>
-                                        <button type="button" id="saveBtn" class="btn btn-primary">Simpan</button>
+                                        <button type="button" id="saveBtn" class="btn btn-primary">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                        Simpan</button>
                                     </div>
                                 </form>
                             </div>
@@ -552,7 +554,6 @@
                 url: '{{ url('guru/penilaian_rapor/ajax_list_peserta') }}/' + tahun + '/' + jenjang + '/' + periode,
                 method: 'GET',
                 success: function(data) {
-                    console.log(data);
                     var select = $('select[name="siswa_penilaian"]');
                     select.empty().append('<option value="">PILIH</option>');
 
@@ -625,7 +626,6 @@
                 url: '{{ url('guru/penilaian_rapor/ajax_list_peserta') }}/' + tahun + '/' + jenjang + '/' + periode,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                    // Ensure data.periode and its properties exist
                     var periode = data.periode || {};
                     var nama_tahun_ajaran = periode.nama_tahun_ajaran || '';
@@ -918,6 +918,7 @@
 
         // save button
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this); 
             var id_pengembangan_diri = $('#id_pengembangan_diri').val();
             var url;
             if(id_pengembangan_diri){
@@ -928,6 +929,10 @@
             
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true);
+
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -950,7 +955,8 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
-
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 },
                 error: function(xhr) {
                     let response = xhr.responseJSON;
@@ -960,7 +966,6 @@
                         $('.invalid-feedback').empty();
 
                         Object.keys(errors).forEach(function(key) {
-                            console.log(key);
                             let input = $("#" + key);
                             let errorDiv = $("#" + key + "-error");
 
@@ -972,6 +977,8 @@
                             }
                         });
                     }
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 }
             });
         });
@@ -985,7 +992,6 @@
             var jenjang = $(this).data('jenjang');
             var periode = $(this).data('periode');
             var url= '{{ url('guru/penilaian_rapor/ajax_delete_penilaian_pengembangan') }}/' + id + '/'+ idRapor + '/'+ peserta + '/'+ tahun + '/' + jenjang + '/' + periode;
-            console.log(idRapor);
             // Make an Ajax call to delete the record
             Swal.fire({
                 title: 'Hapus Data',

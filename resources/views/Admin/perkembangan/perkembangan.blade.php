@@ -189,7 +189,7 @@
     <script>
         var id = '{{ $id }}';
         $.ajax({
-            url: `{{ url('guru/dashboard/data_perkembangan_peserta') }}/${id}`,
+            url: `{{ url('admin/dashboard/data_perkembangan_peserta') }}/${id}`,
             type: 'GET',
             success: function(respons) {
                 const data = respons.data;                  
@@ -286,7 +286,7 @@
                 document.getElementById('next-btn').disabled = (currentPage + 1) * chartsPerPage >= charts.length;
             }
 
-            fetch(`{{ url('guru/dashboard/data_grafik') }}/${siswaId}?fields=${selectedFields.join(',')}`)
+            fetch(`{{ url('admin/dashboard/data_grafik') }}/${siswaId}?fields=${selectedFields.join(',')}`)
                 .then(response => response.json())
                 .then(data => {
                     if (!data.success || !data.data || !data.data.grafik_nilai) {
@@ -337,7 +337,7 @@
             // Fetch data and populate the select element
             function fetchPeriodeData(id) {
                 $.ajax({
-                    url: '{{ url('guru/dashboard/data_peridoe') }}/' + id, // Replace with your API endpoint
+                    url: '{{ url('admin/dashboard/data_peridoe') }}/' + id, // Replace with your API endpoint
                     method: 'GET',
                     dataType: 'json',
                     success: function(response) {
@@ -433,7 +433,7 @@
             // Fetch chart data based on selected tahun_ajaran
             function fetchChartData(selectedValue) {
                 $.ajax({
-                    url: "{{ url('guru/dashboard/data_peridoe_grafik') }}/" + id + '/' + selectedValue,
+                    url: "{{ url('admin/dashboard/data_peridoe_grafik') }}/" + id + '/' + selectedValue,
                     method: 'GET',
                     success: function(response) {                        
                         createDoughnutChart("chartjs-bidang_studi", window.theme.primary, response.data_grafik_home.total_bidang_studi);

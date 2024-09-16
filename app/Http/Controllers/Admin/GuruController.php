@@ -25,7 +25,7 @@ class GuruController extends Controller
         return view ('Admin/guru/data_guru',compact('menu','submenu'));
     }
     public function AjaxData(Request $request) {
-            $Dataguru = guruModel::whereNull('deleted_at')->get();
+            $Dataguru = GuruModel::whereNull('deleted_at')->get();
         
         if ($Dataguru == true) {
             return response()->json(['success' => true, 'message' => 'Data Ditemukan', 'data' => $Dataguru]);
@@ -36,7 +36,7 @@ class GuruController extends Controller
 
     public function editData($id)
     {
-        $Dataguru = guruModel::where('nik_guru',$id)->first();
+        $Dataguru = GuruModel::where('nik_guru',$id)->first();
         if ($Dataguru == true) {
             return response()->json(['success' => true, 'message' => 'Data Ditemukan', 'data' => $Dataguru]);
         }else{
@@ -62,7 +62,7 @@ class GuruController extends Controller
     
             // Generate unique ID based on current date and count
             $tanggal = now()->format('dmy');
-            $nomorUrut = guruModel::whereDate('created_at', now()->toDateString())->count() + 1;
+            $nomorUrut = GuruModel::whereDate('created_at', now()->toDateString())->count() + 1;
             $id = 'GR' . '-' . $tanggal . '-' . $nomorUrut;
     
             if ($request->hasFile('foto_guru')) {
@@ -96,7 +96,7 @@ class GuruController extends Controller
 
     
             // Store data into database
-            $guru = guruModel::create($data);
+            $guru = GuruModel::create($data);
     
             // Check if data was successfully stored
             if ($guru) {
@@ -143,7 +143,7 @@ class GuruController extends Controller
             ]);
     
             // Cek apakah data guru ada
-            $guruCek = guruModel::where('id_guru', $id)->first();
+            $guruCek = GuruModel::where('id_guru', $id)->first();
             if (!$guruCek) {
                 return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
             }
@@ -177,7 +177,7 @@ class GuruController extends Controller
             $data['password'] = Hash::make($formatTanggal);
     
             // Update data guru di database
-            $updateResult = guruModel::where('id_guru', $id)->update($data);
+            $updateResult = GuruModel::where('id_guru', $id)->update($data);
     
             // Cek apakah update berhasil
             if ($updateResult) {
@@ -198,7 +198,7 @@ class GuruController extends Controller
     public function deleteData($id)
     {
         try {
-            $guru = guruModel::where('nik_guru',$id);
+            $guru = GuruModel::where('nik_guru',$id);
 
             $data = [
                 'status_guru' => 3,
@@ -216,7 +216,7 @@ class GuruController extends Controller
     public function statusData($id, $status)
     {
         try {
-            $guru = guruModel::where('nik_guru',$id); // Cari guru berdasarkan ID
+            $guru = GuruModel::where('nik_guru',$id); // Cari guru berdasarkan ID
 
             $guru->update(['status_guru' => $status]); // Update status periode guru
 
@@ -239,7 +239,7 @@ class GuruController extends Controller
         $file = $request->file('file_guru');
     
         try {
-            Excel::import(new guruImport, $file);
+            Excel::import(new GuruImport, $file);
     
             return response()->json(['success' => true, 'message' => 'Berhasil Import Data']);
         } catch (\Exception $e) {
@@ -252,11 +252,11 @@ class GuruController extends Controller
             $validatedData = $request->validate([
                 'status_guru' => 'required|string|max:255'
             ]);
-            $Dataguru = guruModel::whereNull('deleted_at')->get();
+            $Dataguru = GuruModel::whereNull('deleted_at')->get();
 
             if ($Dataguru == true) {
                 foreach ($Dataguru as $key => $value) {
-                    guruModel::where('id_guru',$value->id_guru)->update([
+                    GuruModel::where('id_guru',$value->id_guru)->update([
                         'status_guru' => $validatedData['status_guru']
                     ]);
                 }
@@ -272,7 +272,7 @@ class GuruController extends Controller
     public function SendEmail($id)
     {
         try {
-            $guru = guruModel::where('nik_guru',$id)->first();
+            $guru = GuruModel::where('nik_guru',$id)->first();
             $date = new \DateTime($guru->tanggal_lahir_guru);
             $formatTanggal = $date->format('dmY');
             $PesanEmail = [
@@ -296,7 +296,7 @@ class GuruController extends Controller
 
     public function ResetPassword($id){
         try {
-            $guru = guruModel::where('nik_guru',$id)->first();
+            $guru = GuruModel::where('nik_guru',$id)->first();
             if ($guru) {
                 $date = new \DateTime($guru->tanggal_lahir_guru);
                 $formatTanggal = $date->format('dmY');

@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendEmailUpdatePass extends Mailable
+class SendMailSiswa extends Mailable
 {
     use Queueable, SerializesModels;
     
@@ -28,8 +28,8 @@ class SendEmailUpdatePass extends Mailable
      */
     public function build()
     {
-        return $this->subject('LUPA PASSWORD AKUN')
-                    ->view('Admin.users.emailUpdatePass') // Sesuaikan dengan path template email Anda
+        return $this->subject('DAFTAR AKUN SISWA')
+                    ->view('Admin.siswa.email_siswa') // Sesuaikan dengan path template email Anda
                     ->with(['data' => $this->data]); // Mengirimkan data ke view
     }
 

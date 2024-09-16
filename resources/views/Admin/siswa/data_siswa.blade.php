@@ -157,7 +157,9 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Batal</button>
-                                            <button type="button" id="saveBtn" class="btn btn-primary">Simpan</button>
+                                            <button type="button" id="saveBtn" class="btn btn-primary">
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                            Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -384,12 +386,14 @@
                                     <button class="btn btn-sm btn-danger updateBtn0 me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Update Status Tidak Aktif" data-id="${row.nisn_siswa}"><i class="fas fa-power-off"></i></button>
                                     <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" data-id="${row.nisn_siswa}"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-secondary deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" data-id="${row.nisn_siswa}"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-success resetBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password" data-id="${row.nisn_siswa}"><i class="fas fa-sync"></i></button>
                                 `;
                             } else {
                                 return `
                                     <button class="btn btn-sm btn-success updateBtn1 me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Update Status Aktif" data-id="${row.nisn_siswa}"><i class="fas fa-power-off"></i></button>
                                     <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" data-id="${row.nisn_siswa}"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-secondary deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" data-id="${row.nisn_siswa}"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-success resetBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password" data-id="${row.nisn_siswa}"><i class="fas fa-sync"></i></button>
                                 `;
                             }
                         }
@@ -403,45 +407,57 @@
             $('#ModalLabel').text('Tambah Siswa');
             $('#dataForm')[0].reset();
             $('#formModal').modal('show');
+            $('.select2').val(null).trigger('change');
         });
 
         // editData
         $(document).on('click', '.editBtn', function() {
             $('#ModalLabel').text('Edit Siswa');
             var id = $(this).data('id');
-            // Open the edit modal and populate it with data
-            $.ajax({
-                url: '{{ url('admin/siswa/edit_siswa') }}/' + id, // URL to fetch data for the selected row
-                type: 'GET',
-                success: function(data) {
-                    // Populate the modal fields with the data
-                    $('#formModal input[name="id_siswa"]').val(data.data.id_siswa);
-                    $('#formModal input[name="nisn_siswa"]').val(data.data.nisn_siswa);
-                    $('#formModal input[name="nama_siswa"]').val(data.data.nama_siswa);
-                    $('#formModal input[name="tanggal_lahir_siswa"]').val(data.data
-                        .tanggal_lahir_siswa);
-                    $('#formModal input[name="tempat_lahir_siswa"]').val(data.data.tempat_lahir_siswa);
-                    $('#formModal input[name="jenis_kelamin_siswa"]').each(function() {
-                        if ($(this).val() == data.data.jenis_kelamin_siswa) {
-                            $(this).prop('checked',
-                                true); // Check the radio button with matching value
-                        } else {
-                            $(this).prop('checked', false); // Uncheck other radio buttons
+            Swal.fire({
+                title: 'Edit Data',
+                text: 'Apakah Anda Ingin Edit Data Ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya edit data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ url('admin/siswa/edit_siswa') }}/' + id, 
+                        type: 'GET',
+                        success: function(data) {
+                            // Populate the modal fields with the data
+                            $('#formModal input[name="id_siswa"]').val(data.data.id_siswa);
+                            $('#formModal input[name="nisn_siswa"]').val(data.data.nisn_siswa);
+                            $('#formModal input[name="nama_siswa"]').val(data.data.nama_siswa);
+                            $('#formModal input[name="tanggal_lahir_siswa"]').val(data.data
+                                .tanggal_lahir_siswa);
+                            $('#formModal input[name="tempat_lahir_siswa"]').val(data.data.tempat_lahir_siswa);
+                            $('#formModal input[name="jenis_kelamin_siswa"]').each(function() {
+                                if ($(this).val() == data.data.jenis_kelamin_siswa) {
+                                    $(this).prop('checked',
+                                        true); // Check the radio button with matching value
+                                } else {
+                                    $(this).prop('checked', false); // Uncheck other radio buttons
+                                }
+                            });
+                            $('#formModal input[name="no_hp_siswa"]').val(data.data.no_hp_siswa);
+                            $('#formModal input[name="email_siswa"]').val(data.data.email_siswa);
+                            $('#formModal input[name="tahun_masuk_siswa"]').val(data.data.tahun_masuk_siswa);
+                            //$('#formModal input[name="foto_siswa"]').val(data.data.foto_siswa);
+                            $('#formModal').modal('show');
+                        },
+                        error: function(response) {
+                            $('#formModal').modal('hide');
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
                         }
-                    });
-                    $('#formModal input[name="no_hp_siswa"]').val(data.data.no_hp_siswa);
-                    $('#formModal input[name="email_siswa"]').val(data.data.email_siswa);
-                    $('#formModal input[name="tahun_masuk_siswa"]').val(data.data.tahun_masuk_siswa);
-                    //$('#formModal input[name="foto_siswa"]').val(data.data.foto_siswa);
-                    $('#formModal').modal('show');
-                },
-                error: function(response) {
-                    $('#formModal').modal('hide');
-                    Swal.fire({
-                        title: response.success ? 'Success' : 'Error',
-                        text: response.message,
-                        icon: response.success ? 'success' : 'error',
-                        confirmButtonText: 'OK'
                     });
                 }
             });
@@ -449,6 +465,7 @@
 
         // save dan update data
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this);
             var id = $('#id_siswa').val();
             var url = '{{ url('admin/siswa/store_siswa') }}';
 
@@ -458,6 +475,9 @@
             
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true);
 
             $.ajaxSetup({
                 headers: {
@@ -483,6 +503,9 @@
                         icon: response.success === true ? 'success' : response.error === true ? 'error' : '',
                         confirmButtonText: 'OK'
                     });
+
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 },
                 error: function(xhr) {
                     let response = xhr.responseJSON;
@@ -503,10 +526,11 @@
                             }
                         });
                     }
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 }
             });
         });
-
 
         // delete 
         $(document).on('click', '.deleteBtn', function() {
@@ -716,6 +740,57 @@
                 complete: function() {
                     progressBar.remove();
                     $('#formModalSeting').modal('hide');
+                }
+            });
+        });
+
+        $(document).on('click', '.resetBtn', function() {
+            var id = $(this).data('id');
+            // Make an Ajax call to delete the record
+            Swal.fire({
+                title: 'Resert Password',
+                text: 'Apakah Anda Ingin reset password data ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya reset password data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we reset the password',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    $.ajax({
+                        url: '{{ url('admin/siswa/reset_password_siswa') }}/' +
+                            id, // URL to delete data for the selected row
+                        type: 'GET',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Reload the table data
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                            $('#datatables-ajax').DataTable().ajax.reload();
+                        },
+                        error: function(response) {
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
                 }
             });
         });

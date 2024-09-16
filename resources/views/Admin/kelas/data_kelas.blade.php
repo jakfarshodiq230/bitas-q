@@ -35,7 +35,8 @@
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <button type="button" id="saveBtn" class="btn btn-primary mb-2">Simpan</button>
+                                            <button type="button" id="saveBtn" class="btn btn-primary mb-2"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                            Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -162,22 +163,33 @@
         // editData
         $(document).on('click', '.editBtn', function() {
             var id = $(this).data('id');
-            // Open the edit modal and populate it with data
-            $.ajax({
-                url: '{{ url('admin/kelas/edit_kelas') }}/' + id, // URL to fetch data for the selected row
-                type: 'GET',
-                success: function(data) {
-                    saveBtn.disabled = false;
-                    // Populate the modal fields with the data
-                    $('#dataForm input[name="id_kelas"]').val(data.data.id_kelas);
-                    $('#dataForm input[name="nama_kelas"]').val(data.data.nama_kelas);
-                },
-                error: function(response) {
-                    Swal.fire({
-                        title: response.success ? 'Success' : 'Error',
-                        text: response.message,
-                        icon: response.success ? 'success' : 'error',
-                        confirmButtonText: 'OK'
+            Swal.fire({
+                title: 'Edit Data',
+                text: 'Apakah Anda Ingin Edit Data Ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya edit data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ url('admin/kelas/edit_kelas') }}/' + id, // URL to fetch data for the selected row
+                        type: 'GET',
+                        success: function(data) {
+                            saveBtn.disabled = false;
+                            // Populate the modal fields with the data
+                            $('#dataForm input[name="id_kelas"]').val(data.data.id_kelas);
+                            $('#dataForm input[name="nama_kelas"]').val(data.data.nama_kelas);
+                        },
+                        error: function(response) {
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
                     });
                 }
             });
@@ -185,6 +197,7 @@
 
         // save dan update data
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this);
             var id = $('#id_kelas').val();
             var url = '{{ url('admin/kelas/store_kelas') }}';
 
@@ -193,6 +206,10 @@
             }
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true);
+
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -200,6 +217,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    
                     $('#dataForm')[0].reset();
                     $('#datatables-ajax').DataTable().ajax.reload();
                     Swal.fire({
@@ -208,7 +226,8 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
-
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', true);
                 },
                 error: function(response) {
                     Swal.fire({
@@ -217,7 +236,8 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
-
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 }
             });
         });

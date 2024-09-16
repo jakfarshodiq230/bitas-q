@@ -145,7 +145,9 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Batal</button>
-                                            <button type="button" id="saveBtn" class="btn btn-primary">Simpan</button>
+                                            <button type="button" id="saveBtn" class="btn btn-primary">
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                            Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -358,6 +360,7 @@
         $('#addBtn').on('click', function() {
             $('#ModalLabel').text('Tambah guru');
             $('#dataForm')[0].reset();
+            $('.select2').val(null).trigger('change');
             $('#formModal').modal('show');
         });
 
@@ -365,38 +368,49 @@
         $(document).on('click', '.editBtn', function() {
             $('#ModalLabel').text('Edit guru');
             var id = $(this).data('id');
-            // Open the edit modal and populate it with data
-            $.ajax({
-                url: '{{ url('admin/guru/edit_guru') }}/' + id, // URL to fetch data for the selected row
-                type: 'GET',
-                success: function(data) {
-                    // Populate the modal fields with the data
-                    $('#formModal input[name="id_guru"]').val(data.data.id_guru);
-                    $('#formModal input[name="nik_guru"]').val(data.data.nik_guru);
-                    $('#formModal input[name="nama_guru"]').val(data.data.nama_guru);
-                    $('#formModal input[name="tanggal_lahir_guru"]').val(data.data
-                        .tanggal_lahir_guru);
-                    $('#formModal input[name="tempat_lahir_guru"]').val(data.data.tempat_lahir_guru);
-                    $('#formModal input[name="jenis_kelamin_guru"]').each(function() {
-                        if ($(this).val() == data.data.jenis_kelamin_guru) {
-                            $(this).prop('checked',
-                                true); // Check the radio button with matching value
-                        } else {
-                            $(this).prop('checked', false); // Uncheck other radio buttons
+            Swal.fire({
+                title: 'Edit Data',
+                text: 'Apakah Anda Ingin Edit Data Ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya edit data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ url('admin/guru/edit_guru') }}/' + id, // URL to fetch data for the selected row
+                        type: 'GET',
+                        success: function(data) {
+                            // Populate the modal fields with the data
+                            $('#formModal input[name="id_guru"]').val(data.data.id_guru);
+                            $('#formModal input[name="nik_guru"]').val(data.data.nik_guru);
+                            $('#formModal input[name="nama_guru"]').val(data.data.nama_guru);
+                            $('#formModal input[name="tanggal_lahir_guru"]').val(data.data
+                                .tanggal_lahir_guru);
+                            $('#formModal input[name="tempat_lahir_guru"]').val(data.data.tempat_lahir_guru);
+                            $('#formModal input[name="jenis_kelamin_guru"]').each(function() {
+                                if ($(this).val() == data.data.jenis_kelamin_guru) {
+                                    $(this).prop('checked',
+                                        true); // Check the radio button with matching value
+                                } else {
+                                    $(this).prop('checked', false); // Uncheck other radio buttons
+                                }
+                            });
+                            $('#formModal input[name="no_hp_guru"]').val(data.data.no_hp_guru);
+                            $('#formModal input[name="email_guru"]').val(data.data.email_guru);
+                            //$('#formModal input[name="foto_guru"]').val(data.data.foto_guru);
+                            $('#formModal').modal('show');
+                        },
+                        error: function(response) {
+                            $('#formModal').modal('hide');
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
                         }
-                    });
-                    $('#formModal input[name="no_hp_guru"]').val(data.data.no_hp_guru);
-                    $('#formModal input[name="email_guru"]').val(data.data.email_guru);
-                    //$('#formModal input[name="foto_guru"]').val(data.data.foto_guru);
-                    $('#formModal').modal('show');
-                },
-                error: function(response) {
-                    $('#formModal').modal('hide');
-                    Swal.fire({
-                        title: response.success ? 'Success' : 'Error',
-                        text: response.message,
-                        icon: response.success ? 'success' : 'error',
-                        confirmButtonText: 'OK'
                     });
                 }
             });
@@ -404,6 +418,7 @@
 
         // save dan update data
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this);
             var id = $('#id_guru').val();
             var url = '{{ url('admin/guru/store_guru') }}';
 
@@ -413,6 +428,9 @@
             
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true);
 
             $.ajax({
                 url: url,
@@ -430,6 +448,9 @@
                         icon: response.success ? 'success' : 'error',
                         confirmButtonText: 'OK'
                     });
+
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 },
                 error: function(xhr) {
                     let response = xhr.responseJSON;
@@ -445,6 +466,8 @@
                             errorDiv.html('<strong>' + errors[key][0] + '</strong>'); 
                         });
                     }
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 }
             });
         });

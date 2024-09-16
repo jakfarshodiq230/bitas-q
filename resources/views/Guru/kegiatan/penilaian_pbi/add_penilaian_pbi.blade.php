@@ -786,7 +786,10 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Batal</button>
-                                        <button type="button" id="saveBtn" class="btn btn-primary">Simpan</button>
+                                        <button type="button" id="saveBtn" class="btn btn-primary">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                        Simpan
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -1043,9 +1046,15 @@
 
         // save dan update data
         $('#saveBtn').on('click', function() {
+            var $saveBtn = $(this);
             var url = '{{ url('guru/penilaian_pbi/store_penilaian') }}';
             var form = $('#dataForm')[0];
             var formData = new FormData(form);
+
+            // Show the spinner and disable the button to prevent multiple submissions
+            $saveBtn.find('.spinner-border').show();
+            $saveBtn.prop('disabled', true);
+
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -1068,6 +1077,8 @@
                         confirmButtonText: 'OK'
                     });
 
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 },
                 error: function(xhr) {
                     let response = xhr.responseJSON;
@@ -1089,9 +1100,12 @@
                             }
                         });
                     }
+                    $saveBtn.find('.spinner-border').hide();
+                    $saveBtn.prop('disabled', false);
                 }
             });
         });
+
 
         // delete 
         $(document).on('click', '.deleteBtn', function() {
