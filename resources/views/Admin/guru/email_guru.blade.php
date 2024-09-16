@@ -72,7 +72,7 @@
 </head>
 
 <body>
-    <span class="kalimat_pembuka">Pendaftaran akun MY-TAHFIDZ anda sebagai berikut</span>
+    <span class="kalimat_pembuka">Pendaftaran akun anda sebagai berikut</span>
     <br><br>
     {{-- isi --}}
     <table>
