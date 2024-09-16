@@ -12,7 +12,7 @@ use App\Imports\SiswaImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Admin\SiswaModel;
 use App\Mail\SendMailSiswa;
-
+use Illuminate\Support\Facades\Mail;
 
 class SiswaController extends Controller
 {
@@ -280,7 +280,7 @@ class SiswaController extends Controller
                     'password' =>  $formatTanggal,
                     'tanggal_daftar' => $siswa_cek->created_at,
                 ];
-                Mail::to($siswa_cek->email_guru)->send(new SendMailGuru($PesanEmail));
+                Mail::to($siswa_cek->email_siswa)->send(new SendMailSiswa($PesanEmail));
                 
                 return response()->json(['success' => true, 'message' => 'Berhasil Reset Password']);
             } else {
@@ -288,7 +288,7 @@ class SiswaController extends Controller
             }
             
         } catch (\Throwable $th) {
-            return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $e->getMessage()]);
+            return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $th->getMessage()]);
         }
     }
         

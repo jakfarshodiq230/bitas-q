@@ -323,7 +323,7 @@ class GuruController extends Controller
             }
             
         } catch (\Throwable $th) {
-            return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $e->getMessage()]);
+            return response()->json(['error' => true, 'message' => 'Gagal Kirim Data: ' . $th->getMessage()]);
         }
     }
         
