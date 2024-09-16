@@ -61,6 +61,7 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::put('siswa/status_siswa/{id}/{status}', 'statusData');
         Route::post('siswa/import_siswa', 'importExcel');
         Route::post('siswa/seting_siswa', 'setingData');
+        Route::get('siswa/reset_password_siswa/{id}', 'ResetPassword');
     });
 
     Route::prefix('admin')->controller(GuruController::class)->group(function () {
@@ -130,6 +131,7 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::delete('peserta/delete_peserta/{id}', 'deleteData');
         Route::put('peserta/status_peserta/{id}/{status}', 'statusData');
         Route::put('peserta/status_peserta_all/{tahun}/{periode}/{status}', 'statusDataAll');
+        
     });
 
     Route::prefix('admin')->controller(PenilaianKegiatanController::class)->group(function () {
