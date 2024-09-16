@@ -42,13 +42,13 @@ class LoginController extends Controller
             if (Auth::guard($guard)->attempt($credentials[$guard])) {
                 $user = Auth::guard($guard)->user();
                 $verified = ($guard == 'users' && $user->email_verified_at) || ($guard != 'users' && $user->{'status_' . $guard} == 1);
-    
+                $guard = $guard == 'users' ? 'admin' :$guard;
                 if ($verified) {
                     $request->session()->regenerate();
                     $this->storeAccessInfo($request);
                     $request->session()->put('user', [
-                        'id' => $user->id,
-                        'nama_user' => $user->{'nama_' . $guard},
+                        'id' => $user->id ?? $user->id_guru ?? $user->id_siswa,
+                        'nama_user' => $user->nama_user ?? $user->nama_guru ?? $user->nama_siswa,
                         'level_user' => $guard
                     ]);
     
