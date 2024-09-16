@@ -286,12 +286,11 @@
         }
 
         $(document).ready(function() {
-            // identitas
             $.ajax({
                 url: '{{ url('siswa/bpi/ajax-nilai') }}/' + periode,
                 type: 'GET',
                 success: function(respons) {
-                   // Ensure data.periode and its properties exist
+                    // Ensure data.periode and its properties exist
                     var nama_tahun_ajaran = respons.data.nama_tahun_ajaran || '';
                     var jenis_kegiatan = respons.data.jenis_periode || '';
                     var nama_guru = respons.data.nama_guru || '';
@@ -306,104 +305,73 @@
                     $('#siswa').text(capitalizeFirstLetter(nama_siswa.toUpperCase()));
                     $('#kelas').text(capitalizeFirstLetter(nama_kelas.toUpperCase()));
                     $('#jenjang').text(capitalizeFirstLetter(jenjang.toUpperCase()));
+
+                    // Handle student photo
                     if (respons.data.foto_siswa != null) {
                         var fotoSiswaUrl = "{{ url('storage') }}/" + respons.data.foto_siswa;
                         $('#avatarImg').attr('src', fotoSiswaUrl);
                     } else {
-                        var fotoSiswaUrl = '{{ asset('assets/admin/img/avatars/avatar.jpg') }}'
+                        var fotoSiswaUrl = '{{ asset('assets/admin/img/avatars/avatar.jpg') }}';
                         $('#avatarImg').attr('src', fotoSiswaUrl);
                     }
-                    
-                        // rapor tahfidz baru
-                        var alquran = respons.data.alquran || 0;
-                        var aqidah = respons.data.aqidah || 0;
-                        var ibadah = respons.data.ibadah || 0;
-                        var hadits = respons.data.hadits || 0;
-                        var sirah = respons.data.sirah || 0;
-                        var tazkiyatun = respons.data.tazkiyatun || 0;
-                        var fikrul = respons.data.fikrul || 0;
 
-                        var rata_baru = (alquran+aqidah+ibadah+hadits+sirah+tazkiyatun+fikrul)/7;
-                        var rating_baru = getRating(rata_baru);
+                    // Rapor Tahfidz Baru
+                    var alquran = parseFloat(respons.data.alquran) || 0;
+                    var aqidah = parseFloat(respons.data.aqidah) || 0;
+                    var ibadah = parseFloat(respons.data.ibadah) || 0;
+                    var hadits = parseFloat(respons.data.hadits) || 0;
+                    var sirah = parseFloat(respons.data.sirah) || 0;
+                    var tazkiyatun = parseFloat(respons.data.tazkiyatun) || 0;
+                    var fikrul = parseFloat(respons.data.fikrul) || 0;
 
-                        var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
-                        var surah_baru = respons.data.surah_baru || 0;
+                    var rata_baru = (alquran + aqidah + ibadah + hadits + sirah + tazkiyatun + fikrul) / 7;
+                    var rating_baru = getRating(rata_baru);
 
-                        $('#alquran').text( parseFloat(alquran).toFixed(2) );
-                        $('#aqidah').text( parseFloat(aqidah).toFixed(2) );
-                        $('#ibadah').text( parseFloat(ibadah).toFixed(2) );
-                        $('#hadits').text( parseFloat(hadits).toFixed(2) );
-                        $('#sirah').text( parseFloat(sirah).toFixed(2) );
-                        $('#tazkiyatun').text( parseFloat(tazkiyatun).toFixed(2) );
-                        $('#fikrul').text( parseFloat(fikrul).toFixed(2) );
-                        $('#rata_rata').text( rata_baru_rounded );
+                    var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
+                    $('#alquran').text(alquran.toFixed(2));
+                    $('#aqidah').text(aqidah.toFixed(2));
+                    $('#ibadah').text(ibadah.toFixed(2));
+                    $('#hadits').text(hadits.toFixed(2));
+                    $('#sirah').text(sirah.toFixed(2));
+                    $('#tazkiyatun').text(tazkiyatun.toFixed(2));
+                    $('#fikrul').text(fikrul.toFixed(2));
+                    $('#rata_rata').text(rata_baru_rounded);
 
+                    // Nilai Karakter
+                    function formatNilaiKarakter(key, id) {
+                        var rating = getRating(respons.data[key]);
+                        var rata_lama = formatValue(respons.data[key], 2) + " ( " + rating + " )";
+                        $('#' + id).text(rating !== null ? rata_lama : '00.00');
+                    }
 
-                        // nilai karakter
-                        var rating_aqdh = getRating(respons.data.aqdh);
-                        var rata_lama_aqdh = formatValue(respons.data.aqdh, 2) + " ( " + rating_aqdh + " )";
-                        $('#aqdh').text(rating_aqdh !== null ? rata_lama_aqdh : '00.00');
+                    formatNilaiKarakter('aqdh', 'aqdh');
+                    formatNilaiKarakter('ibdh', 'ibdh');
+                    formatNilaiKarakter('akhlak', 'akhlak');
+                    formatNilaiKarakter('prbd', 'prbd');
+                    formatNilaiKarakter('aqr', 'aqr');
+                    formatNilaiKarakter('wwsn', 'wwsn');
 
-                        var rating_ibdh = getRating(respons.data.ibdh);
-                        var rata_lama_ibdh = formatValue(respons.data.ibdh, 2) + " ( " + rating_ibdh + " )";
-                        $('#ibdh').text(rating_ibdh !== null ? rata_lama_ibdh : '00.00');
+                    // Nilai Aktivitas Amal
+                    function formatNilaiAmal(key, id) {
+                        var rating = getAmal(respons.data[key]);
+                        var rata_lama = respons.data[key] + " ( " + rating + " )";
+                        $('#' + id).text(rating !== null ? rata_lama : '00.00');
+                    }
 
-                        var rating_akhlak = getRating(respons.data.akhlak);
-                        var rata_lama_akhlak = formatValue(respons.data.akhlak, 2) + " ( " + rating_akhlak + " )";
-                        $('#akhlak').text(rating_akhlak !== null ? rata_lama_akhlak : '00.00');
-
-                        var rating_prbd = getRating(respons.data.prbd);
-                        var rata_lama_prbd= formatValue(respons.data.prbd, 2) + " ( " + rating_prbd + " )";
-                        $('#prbd').text(rating_prbd !== null ? rata_lama_prbd : '00.00');
-
-                        var rating_aqr = getRating(respons.data.aqr);
-                        var rata_lama_aqr= formatValue(respons.data.aqr, 2) + " ( " + rating_aqr + " )";
-                        $('#aqr').text(rating_aqr!== null ? rata_lama_aqr : '00.00');
-
-                        var rating_wwsn = getRating(respons.data.wwsn);
-                        var rata_lama_wwsn= formatValue(respons.data.wwsn, 2) + " ( " + rating_wwsn + " )";
-                        $('#wwsn').text(rating_wwsn!== null ? rata_lama_wwsn : '00.00');
-
-
-                        // nilai aktivitas amal
-                        var rating_sholat_wajib= getAmal(respons.data.sholat_wajib);
-                        var rata_lama_sholat_wajib = respons.data.sholat_wajib + " ( " + rating_sholat_wajib + " )";
-                        $('#sholat_wajib').text(rating_sholat_wajib !== null ? rata_lama_sholat_wajib : '00.00');
-
-                        var rating_tilawah= getAmal(respons.data.tilawah);
-                        var rata_lama_tilawah = respons.data.tilawah + " ( " + rating_tilawah+ " )";
-                        $('#tilawah').text(rating_tilawah !== null ? rata_lama_tilawah : '00.00');
-
-                        var rating_tahajud= getAmal(respons.data.tahajud);
-                        var rata_lama_tahajud= respons.data.tahajud + " ( " + rating_tahajud+ " )";
-                        $('#tahajud').text(rating_tahajud !== null ? rata_lama_tahajud : '00.00');
-
-                        var rating_duha= getAmal(respons.data.duha);
-                        var rata_lama_duha= respons.data.duha + " ( " + rating_duha+ " )";
-                        $('#duha').text(rating_duha !== null ? rata_lama_duha : '00.00');
-
-                        var rating_rawatib= getAmal(respons.data.rawatib);
-                        var rata_lama_rawatib= respons.data.rawatib + " ( " + rating_rawatib+ " )";
-                        $('#rawatib').text(rating_rawatib!== null ? rata_lama_rawatib: '00.00');
-
-                        var rating_dzikri= getAmal(respons.data.dzikri);
-                        var rata_lama_dzikri= respons.data.dzikri+ " ( " + rating_dzikri+ " )";
-                        $('#dzikri').text(rating_dzikri!== null ? rata_lama_dzikri: '00.00');
-
-                        var rating_puasa= getAmal(respons.data.puasa);
-                        var rata_lama_puasa= respons.data.puasa + " ( " + rating_puasa+ " )";
-                        $('#puasa').text(rating_puasa!== null ? rata_lama_puasa: '00.00');
-
-                        var rating_infaq= getAmal(respons.data.infaq);
-                        var rata_lama_infaq= respons.data.infaq+ " ( " + rating_infaq+ " )";
-                        $('#infaq').text(rating_infaq!== null ? rata_lama_infaq: '00.00');
-
-                 
+                    formatNilaiAmal('sholat_wajib', 'sholat_wajib');
+                    formatNilaiAmal('tilawah', 'tilawah');
+                    formatNilaiAmal('tahajud', 'tahajud');
+                    formatNilaiAmal('duha', 'duha');
+                    formatNilaiAmal('rawatib', 'rawatib');
+                    formatNilaiAmal('dzikri', 'dzikri');
+                    formatNilaiAmal('puasa', 'puasa');
+                    formatNilaiAmal('infaq', 'infaq');
                 },
                 error: function(xhr, status, error) {
                     console.error('AJAX Error: ' + status + error);
                 }
             });
         });
+
     </script>
 @endsection
