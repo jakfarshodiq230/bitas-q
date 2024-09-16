@@ -266,9 +266,10 @@
         }
 
         function formatValue(value, decimals) {
-            if (value === null) return '-'; // Handle null or undefined values
-            return value.toFixed(decimals);
+            if (value === null || isNaN(parseFloat(value))) return '-';
+            return parseFloat(value).toFixed(decimals);
         }
+
 
         function getAmal(rata_baru) {
             if (rata_baru == null) {
