@@ -28,101 +28,49 @@ class LoginController extends Controller
 
     public function authenticate(Request $request)
     {
-        $validator = $request->validate([
+        $request->validate([
             'captcha' => 'required|captcha'
         ]);
-
-        // Prepare credentials for each guard
-        $credentials_user = ['email' => $request->input('username'), 'password' => $request->input('password')];
-        $credentials_guru = ['nik_guru' => $request->input('username'), 'password' => $request->input('password')];
-        $credentials_siswa = ['nisn_siswa' => $request->input('username'), 'password' => $request->input('password')];
-
-        $agent = new Agent();
-        $agent->setUserAgent($request->header('User-Agent'));
-
-        // Attempt authentication for 'users' guard
-        if (Auth::guard('users')->attempt($credentials_user)) {
-            $user = Auth::guard('users')->user();
-            if ($user->email_verified_at !== null) {
-                $request->session()->regenerate();
-                $this->storeAccessInfo($request);
-                $request->session()->put('user', [
-                    'id' => $user->id,
-                    'nama_user' => $user->nama_user,
-                    'level_user' => 'admin',
-                    'user_level' => $user->level_user,
-                    // 'token' => $user->createToken('BITAS-Q')->plainTextToken
-                ]);
-                return response()->json([
-                    'success' => true,
-                    'redirect' => '/admin/dashboard'
-                ]);
-            } else {
+    
+        $credentials = [
+            'users' => ['email' => $request->username, 'password' => $request->password],
+            'guru' => ['nik_guru' => $request->username, 'password' => $request->password],
+            'siswa' => ['nisn_siswa' => $request->username, 'password' => $request->password]
+        ];
+    
+        foreach (['users', 'guru', 'siswa'] as $guard) {
+            if (Auth::guard($guard)->attempt($credentials[$guard])) {
+                $user = Auth::guard($guard)->user();
+                $verified = ($guard == 'users' && $user->email_verified_at) || ($guard != 'users' && $user->{'status_' . $guard} == 1);
+    
+                if ($verified) {
+                    $request->session()->regenerate();
+                    $this->storeAccessInfo($request);
+                    $request->session()->put('user', [
+                        'id' => $user->id,
+                        'nama_user' => $user->{'nama_' . $guard},
+                        'level_user' => $guard
+                    ]);
+    
+                    return response()->json([
+                        'success' => true,
+                        'redirect' => "/$guard/dashboard"
+                    ]);
+                }
+    
                 return response()->json([
                     'error' => true,
-                    'message' => 'Akun belum verifikasi.',
+                    'message' => 'Akun belum verifikasi atau terblokir.',
                     'redirect' => '/'
                 ]);
             }
         }
-
-        // Attempt authentication for 'guru' guard
-        if (Auth::guard('guru')->attempt($credentials_guru)) {
-            $guru = Auth::guard('guru')->user();
-            if ($guru->status_guru = 1) {
-                $request->session()->regenerate();
-                $this->storeAccessInfo($request);
-                $request->session()->put('user', [
-                    'id' => $guru->id_guru,
-                    'nama_user' => $guru->nama_guru,
-                    'level_user' => 'guru',
-                    // 'token' => $guru->createToken('BITAS-Q')->plainTextToken
-                ]);
-                return response()->json([
-                    'success' => true,
-                    'redirect' => '/guru/dashboard'
-                ]);
-            } else {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'Akun terblokir.',
-                    'redirect' => '/'
-                ]);
-            }
-        }
-
-        // Attempt authentication for 'siswa' guard
-        if (Auth::guard('siswa')->attempt($credentials_siswa)) {
-            $siswa = Auth::guard('siswa')->user();
-            if ($siswa->status_siswa = 1) {
-                $request->session()->regenerate();
-                $this->storeAccessInfo($request);
-                $request->session()->put('user', [
-                    'id' => $siswa->id_siswa,
-                    'nama_user' => $siswa->nama_siswa,
-                    'level_user' => 'siswa',
-                    // 'token' => $siswa->createToken('BITAS-Q')->plainTextToken
-                ]);
-                return response()->json([
-                    'success' => true,
-                    'redirect' => '/siswa/dashboard'
-                ]);
-            } else {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'Akun belum verifikasi.',
-                    'redirect' => '/'
-                ]);
-            }
-        }
-
-        // If none of the attempts succeed, return JSON with redirect to '/'
+    
         return response()->json([
             'error' => true,
             'message' => 'Username atau password salah.',
             'redirect' => '/'
         ]);
-        
     }
     
     
