@@ -379,7 +379,12 @@
             }
 
             function formatRating(value) {
-                return value ? value.toFixed(2) + " ( " + getRating(value) + " )" : '00.00';
+                var numericValue = parseFloat(value); // Convert to a number
+                if (!isNaN(numericValue)) {
+                    return numericValue.toFixed(2) + " ( " + getRating(numericValue) + " )";
+                } else {
+                    return '00.00'; // Fallback for non-numeric or invalid values
+                }
             }
 
             function capitalizeFirstLetter(string) {
