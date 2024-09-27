@@ -52,7 +52,15 @@
 						</a>
 					</li>
                     <li class="sidebar-header">
-                        Kegiatan
+                        Mandiri Bina Pribadi Islam (BPI)
+                    </li>
+                    <li class="sidebar-item {{ $menu == 'mandiri_bpi' ? 'active' : null }}">
+						<a class='sidebar-link' href='{{ url('siswa/mandiri_bpi')}}'>
+							<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">Mandiri Bina Pribadi Islam (BPI)</span>
+						</a>
+					</li>
+                    <li class="sidebar-header">
+                        Hasil Penbelajaran dan Pembinaan Kegiatan
                     </li>
                     <li class="sidebar-item {{ $menu == 'kegiatan' ? 'active' : null }}">
 						<a class='sidebar-link' href='{{ url('siswa/kegiatan')}}'>
