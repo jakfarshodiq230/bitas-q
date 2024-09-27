@@ -478,14 +478,17 @@
 
                         // nilai pengembangan diri
 
-                        var rating_n_k_p= getRating(respons.data.n_k_p);
-                        var rata_lama_n_k_p = respons.data.n_k_p.toFixed(2) + " ( " + rating_n_k_p + " )";
+                        var rating_n_k_p = getRating(respons.data.n_k_p);
+                        var rata_lama_n_k_p = (respons.data.n_k_p !== null && !isNaN(respons.data.n_k_p)) ? 
+                            parseFloat(respons.data.n_k_p).toFixed(2) + " ( " + rating_n_k_p + " )" : "00.00 ( " + rating_n_k_p + " )";
 
-                        var rating_n_th_p= getRating(respons.data.n_th_p);
-                        var rata_lama_n_th_p = respons.data.n_th_p.toFixed(2) + " ( " + rating_n_th_p + " )";
+                        var rating_n_th_p = getRating(respons.data.n_th_p);
+                        var rata_lama_n_th_p = (respons.data.n_th_p !== null && !isNaN(respons.data.n_th_p)) ? 
+                            parseFloat(respons.data.n_th_p).toFixed(2) + " ( " + rating_n_th_p + " )" : "00.00 ( " + rating_n_th_p + " )";
 
                         var rating_n_jk_p = getRatingKhatam(respons.data.n_jk_p);
-                        var rata_lama_n_jk_p= respons.data.n_jk_p.toFixed(0) + " ( " + rating_n_jk_p + " )";
+                        var rata_lama_n_jk_p = (respons.data.n_jk_p !== null && !isNaN(respons.data.n_jk_p)) ? 
+                            parseFloat(respons.data.n_jk_p).toFixed(0) + " ( " + rating_n_jk_p + " )" : "0 ( " + rating_n_jk_p + " )";
 
                         $('#n_k_th').text(rating_n_k_p !== null ? rata_lama_n_k_p : '00.00');
                         $('#n_th_th').text(rating_n_th_p !== null ? rata_lama_n_th_p : '00.00');
