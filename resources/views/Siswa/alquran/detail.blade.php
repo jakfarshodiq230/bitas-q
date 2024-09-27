@@ -423,11 +423,11 @@
                         var rating_baru = getRating(rata_baru);
                         var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
                         var surah_baru = respons.data.surah_baru || null;
-                        $('#n_g_baru').text(n_g_baru !== null ? n_g_baru.toFixed(2) : '00.00');
-                        $('#n_m_baru').text(n_m_baru !== null ? n_m_baru.toFixed(2) : '00.00');
-                        $('#n_w_baru').text(n_w_baru !== null ? n_w_baru.toFixed(2) : '00.00');
-                        $('#n_k_baru').text(n_k_baru !== null ? n_k_baru.toFixed(2) : '00.00');
-                        $('#rata_baru').text(n_k_baru !== null ? rata_baru_rounded : '00.00');
+                        $('#n_g_baru').text(n_g_baru !== null && !isNaN(n_g_baru) ? parseFloat(n_g_baru).toFixed(2) : '00.00');
+                        $('#n_m_baru').text(n_m_baru !== null && !isNaN(n_m_baru) ? parseFloat(n_m_baru).toFixed(2) : '00.00');
+                        $('#n_w_baru').text(n_w_baru !== null && !isNaN(n_w_baru) ? parseFloat(n_w_baru).toFixed(2) : '00.00');
+                        $('#n_k_baru').text(n_k_baru !== null && !isNaN(n_k_baru) ? parseFloat(n_k_baru).toFixed(2) : '00.00');
+                        $('#rata_baru').text(rata_baru_rounded !== null && !isNaN(rata_baru_rounded) ? rata_baru_rounded : '00.00');
                         var $target = $('#surah_baru');
                         $target.empty();
 
