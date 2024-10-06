@@ -17,7 +17,7 @@ class PeriodeModel extends Model
     protected $keyType = 'string'; 
     protected $fillable = [
         'id_periode', 'id_tahun_ajaran', 'judul_periode', 'jenis_periode', 'jenis_kegiatan', 
-        'id_penilaian_periode', 'tggl_akhir_periode', 'tggl_akhir_penilaian', 'tggl_periode',
+        'id_penilaian_periode', 'tggl_akhir_penilaian', 'tggl_periode',
         'tanggungjawab_periode', 'pesan_periode', 'status_periode', 'file_periode', 'id_user','deleted_at',
         'juz_periode', 'sesi_periode'
     ];

@@ -69,7 +69,7 @@
                         render: function(data, type, row) {
                             var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() +
                                 row.nama_tahun_ajaran.slice(1);
-                            var jenis_periode = row.jenis_periode.trim().toUpperCase();
+                            var jenis_periode = row.jenis_periode.trim().toUpperCase() + ' ' + row.jenis_kegiatan.toUpperCase();
                             var formatted_string = nama_tahun_ajaran + ' [ ' 
                             + jenis_periode + ' ] ';
                             return formatted_string;
