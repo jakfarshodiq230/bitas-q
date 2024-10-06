@@ -64,6 +64,7 @@ Route::middleware('auth:guru,sanctum')->group(function () {
         Route::post('/store_penilaian', [PenilaianPbiGuruController::class, 'storeData'])->name('storeData');
         Route::get('/data_penilaian_kegiatan/{periode}/{tahun}', [PenilaianPbiGuruController::class, 'AjaxDataNilaiPesertaPbi'])->name('AjaxDataNilaiPesertaPbi');
         Route::delete('/hapus_data_pbi/{id}/{kategori}', [PenilaianPbiGuruController::class, 'deleteData'])->name('deleteData');
+        Route::put('/verifikasi_data_pbi/{id}/{kategori}', [PenilaianPbiGuruController::class, 'verifikasiData'])->name('verifikasiData');
         Route::get('/kirim_data_penilaian_pbi/{periode}/{tahun}/{kategori}', [PenilaianPbiGuruController::class, 'kirimData'])->name('kirimData');
 
         Route::get('/edit_data_pbi/{id}/{kategori}', [PenilaianPbiGuruController::class, 'editDataPenilaian'])->name('editDataPenilaian');

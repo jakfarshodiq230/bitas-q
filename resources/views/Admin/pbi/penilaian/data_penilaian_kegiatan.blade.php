@@ -72,7 +72,7 @@
                         render: function(data, type, row) {
                             var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() +
                                 row.nama_tahun_ajaran.slice(1);
-                            var jenis_periode = 'BINA PRIBADI ISLAM (BPI)';
+                            var jenis_periode = 'BINA PRIBADI ISLAM (BPI) ' + (row.jenis_kegiatan ? row.jenis_kegiatan.toUpperCase() : '');
                             var formatted_string = nama_tahun_ajaran + ' [ ' + jenis_periode + ' ]';
                             return formatted_string;
                         }

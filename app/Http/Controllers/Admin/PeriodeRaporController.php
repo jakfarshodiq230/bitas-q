@@ -24,18 +24,18 @@ class PeriodeRaporController extends Controller
     }
 
     public function AjaxDataTahun(Request $request) {
-        $DataPeriode = TahunAjaranModel::whereNull('deleted_at')->where('status_tahun_ajaran',1)->get();
-        if ($DataPeriode == true) {
+        //$DataPeriode = TahunAjaranModel::whereNull('deleted_at')->where('status_tahun_ajaran',1)->get();
+        $DataPeriode = PeriodeModel::DataAll();
+        if ($DataPeriode) {
             return response()->json(['success' => true, 'message' => 'Data Ditemukan', 'data' => $DataPeriode]);
         }else{
             return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
         }
     }
 
-    public function AjaxData(Request $request) {
-            $DataPeriode = PeriodeModel::DataRapor();
-        
-        if ($DataPeriode == true) {
+    public function AjaxDataRaporKegiatan(Request $request) {
+        $DataPeriode = PeriodeModel::DataRapor();
+        if ($DataPeriode) {
             return response()->json(['success' => true, 'message' => 'Data Ditemukan', 'data' => $DataPeriode]);
         }else{
             return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
@@ -57,62 +57,61 @@ class PeriodeRaporController extends Controller
         try {
             // Validate incoming request data
             $validatedData = $request->validate([
-                'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
-                'jenis_kegiatan' => 'required|string',
-                'tggl_awal_periode' => 'required|date',
-                'tggl_akhir_periode' => 'required|date',
                 'tggl_akhir_penilaian' => 'required|date',
                 'tggl_periode' => 'required|date',
                 'tanggungjawab_periode' => 'required|string',
                 'pesan_periode' => 'required|string',
             ]);
+
+            // Fetch the related periode
+            $cekPeriode = PeriodeModel::where('id_periode', $validatedData['kegiatan'])
+                ->where('judul_periode', 'setoran')
+                ->whereNull('deleted_at')->first();
     
-            // Construct the nama_tahun_ajaran
-            $cekTahun = PeriodeModel::where('id_tahun_ajaran', $validatedData['tahun_ajaran'])
-            ->where('jenis_periode', $validatedData['kegiatan'])
-            ->where('jenis_kegiatan', $validatedData['jenis_kegiatan'])
-            ->where('judul_periode', 'rapor')
-            ->whereNull('deleted_at')->get();
+            if (!$cekPeriode) {
+                return response()->json(['error' => true, 'message' => 'Periode tidak ditemukan']);
+            }
+    
+            // Check if the tahun ajaran already has a rapor entry
+            $cekTahun = PeriodeModel::where('id_tahun_ajaran', $cekPeriode->id_tahun_ajaran)
+                ->where('jenis_periode', $cekPeriode->jenis_periode)
+                ->where('jenis_kegiatan', $cekPeriode->jenis_kegiatan)
+                ->where('judul_periode', 'rapor')
+                ->whereNull('deleted_at')->first();
+    
+            if ($cekTahun) {
+                return response()->json(['error' => true, 'message' => 'Rapor sudah terdaftar']);
+            }
             
             $tanggal = now()->format('dmy');
             $nomorUrut = PeriodeModel::whereDate('created_at', now()->toDateString())->count() + 1;
             $id = 'PE' . '-' . $tanggal . '-' . $nomorUrut;
 
+            // Prepare data for insertion
+            $data = [
+                'id_periode' => $id,
+                'id_tahun_ajaran' => $cekPeriode->id_tahun_ajaran,
+                'jenis_periode' => $cekPeriode->jenis_periode,
+                'jenis_kegiatan' => $cekPeriode->jenis_kegiatan,
+                'id_penilaian_periode' => $cekPeriode->id_periode,
+                'tggl_akhir_penilaian' => $validatedData['tggl_akhir_penilaian'],
+                'tggl_periode' => $validatedData['tggl_periode'],
+                'tanggungjawab_periode' => $validatedData['tanggungjawab_periode'],
+                'pesan_periode' => $validatedData['pesan_periode'],
+                'judul_periode' => 'rapor',
+                'status_periode' => '0',
+                'id_user' => session('user')['id'],
+            ];
 
-            if (!$cekTahun->isEmpty()) {
-                // If the tahun_ajaran already exists, respond with a message
-                return response()->json(['success' => false, 'message' => 'Rapor Sudah Terdaftar']);
+            // Store data into database
+            $Periode = PeriodeModel::create($data);
+
+            // Check if data was successfully stored
+            if ($Periode) {
+                return response()->json(['success' => true, 'message' => 'Berhasil Tambah Data', 'data' => $Periode]);
             } else {
-                // Generate unique ID based on current date and count
-                
-    
-                // Prepare data for insertion
-                $data = [
-                    'id_periode' => $id,
-                    'id_tahun_ajaran' => $validatedData['tahun_ajaran'],
-                    'jenis_periode' => $validatedData['kegiatan'],
-                    'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
-                    'tggl_awal_periode' => $validatedData['tggl_awal_periode'],
-                    'tggl_akhir_periode' => $validatedData['tggl_akhir_periode'],
-                    'tggl_akhir_penilaian' => $validatedData['tggl_akhir_penilaian'],
-                    'tggl_periode' => $validatedData['tggl_periode'],
-                    'tanggungjawab_periode' => $validatedData['tanggungjawab_periode'],
-                    'pesan_periode' => $validatedData['pesan_periode'],
-                    'judul_periode' => 'rapor',
-                    'status_periode' => '0',
-                    'id_user' => session('user')['id'],
-                ];
-    
-                // Store data into database
-                $Periode = PeriodeModel::create($data);
-    
-                // Check if data was successfully stored
-                if ($Periode) {
-                    return response()->json(['success' => true, 'message' => 'Berhasil Tambah Data', 'data' => $Periode]);
-                } else {
-                    return response()->json(['error' => true, 'message' => 'Gagal Tambah Data']);
-                }
+                return response()->json(['error' => true, 'message' => 'Gagal Tambah Data']);
             }
     
         }catch (\Illuminate\Validation\ValidationException $e) {
@@ -129,23 +128,28 @@ class PeriodeRaporController extends Controller
         try {
             // Validate incoming request data
             $validatedData = $request->validate([
-                'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
-                'jenis_kegiatan' => 'required|string',
-                'tggl_awal_periode' => 'required|date',
-                'tggl_akhir_periode' => 'required|date',
                 'tggl_akhir_penilaian' => 'required|date',
                 'tggl_periode' => 'required|date',
                 'tanggungjawab_periode' => 'required|string',
                 'pesan_periode' => 'required|string',
             ]);
 
+            // Fetch the related periode
+            $cekPeriode = PeriodeModel::where('id_periode', $validatedData['kegiatan'])
+                ->where('judul_periode', 'setoran')
+                ->whereNull('deleted_at')->first();
+    
+            if (!$cekPeriode) {
+                return response()->json(['error' => true, 'message' => 'Periode tidak ditemukan']);
+            }
+    
+
             $data = [
-                'id_tahun_ajaran' => $validatedData['tahun_ajaran'],
-                'jenis_periode' => $validatedData['kegiatan'],
-                'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
-                'tggl_awal_periode' => $validatedData['tggl_awal_periode'],
-                'tggl_akhir_periode' => $validatedData['tggl_akhir_periode'],
+                'id_tahun_ajaran' => $cekPeriode->id_tahun_ajaran,
+                'jenis_periode' => $cekPeriode->jenis_periode,
+                'jenis_kegiatan' => $cekPeriode->jenis_kegiatan,
+                'id_penilaian_periode' => $cekPeriode->id_periode,
                 'tggl_akhir_penilaian' => $validatedData['tggl_akhir_penilaian'],
                 'tggl_periode' => $validatedData['tggl_periode'],
                 'tanggungjawab_periode' => $validatedData['tanggungjawab_periode'],
@@ -153,7 +157,7 @@ class PeriodeRaporController extends Controller
             ];
 
             // Store data into database
-            $Periode = PeriodeModel::where('id_periode',$request->id_periode)->update($data);
+            $Periode = PeriodeModel::where('id_periode',$request->id_periode_rapor)->update($data);
     
             // Check if data was successfully stored
             if ($Periode) {
@@ -210,7 +214,8 @@ class PeriodeRaporController extends Controller
             $dataPeriode = PeriodeModel::where('id_periode', $periode)
             ->where('id_tahun_ajaran', $tahun)
             ->first();
-            $DataPesertaPeriode = PesertaKegiatan::DataPesertaRapor($tahun, $jenisRapor, $dataPeriode->tggl_awal_periode, $dataPeriode->tggl_akhir_periode);
+            $DataPesertaPeriode = PesertaKegiatan::DataPesertaRapor($tahun, $jenisRapor, $dataPeriode->id_penilaian_periode);
+
             // Convert stdClass objects to arrays
             $DataPesertaPeriode = json_decode(json_encode($DataPesertaPeriode), true);
     

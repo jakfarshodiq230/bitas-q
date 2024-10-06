@@ -256,6 +256,47 @@
                         </div>
                     </div>
 
+                    {{-- Aktivitas Amal Mandiri --}}
+                    <div class="card" id="aktivitas_amal">
+                        <div class="card-header">
+                            <h5 class="card-title">Data Pengisian Mandiri Aktifitas Amal (Ditolak)</h5>
+                        </div>
+                        <div class="card-body">
+                            <table id="datatables-ajax-aktivitas_amal-mandiri" class="table table-striped" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>KALI/PEKAN</th>
+                                        <th>SHOLAT WAJIB</th>
+                                        <th>TILAWAH</th>
+                                        <th>TAHAJJUD</th>
+                                        <th>DUHA</th>
+                                        <th>RAWATIB</th>
+                                        <th>DZIKIR</th>
+                                        <th>PUASA</th>
+                                        <th>INFAQ</th>
+                                        <th>KETERANGAN</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>KALI/PEKAN</th>
+                                        <th>SHOLAT WAJIB</th>
+                                        <th>TILAWAH</th>
+                                        <th>TAHAJJUD</th>
+                                        <th>DUHA</th>
+                                        <th>RAWATIB</th>
+                                        <th>DZIKIR</th>
+                                        <th>PUASA</th>
+                                        <th>INFAQ</th>
+                                        <th>KETERANGAN</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
                     
                     {{-- add --}}
                     <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-hidden="true"
@@ -936,7 +977,7 @@
                 type: 'GET',
                 success: function(data) {
                     $('#kegiatan').text('BINA PRIBADI ISLAM (BPI)');
-                    $('#tahun_ajaran').text(data.peserta.nama_tahun_ajaran.toUpperCase());
+                    $('#tahun_ajaran').text(data.peserta.nama_tahun_ajaran.toUpperCase() + ' ' + (data.peserta.jenis_kegiatan ? data.peserta.jenis_kegiatan.toUpperCase() : ''));
                     $('#pembimbing').text(data.peserta.nama_guru.toUpperCase());
                     $('#nama').text(data.peserta.nama_siswa.toUpperCase());
                     $('#kelas').text(data.peserta.nama_kelas.toUpperCase());
@@ -1056,6 +1097,60 @@
                                 <button class="btn btn-sm btn-warning editBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Data" 
                                 data-id_penialain="${row.id_aktifitas_amal}" data-kategori="aktivitas_amal">
                                 <i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-primary tidakBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Data Tidak Sesuai" 
+                                        data-id_penialain="${row.id_aktifitas_amal}" data-kategori="tidak" 
+                                        style="${row.status_amal === 1 ? '' : 'display: none;'}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                        }
+                    }
+                ]
+            );
+
+            initializeDataTable(
+                '#datatables-ajax-aktivitas_amal-mandiri',
+                'nilai_amal_ext',
+                [
+                    {
+                        data: null,
+                        name: "rowNumber",
+                        render: function(data, type, row) {
+                            return 'KALI/PEKAN ' + row.pekan_amal;
+                        }
+                    },
+                    { data: 'sholat_wajib', name: 'sholat_wajib', render: function(data) { return data + ' KALI'; } },
+                    { data: 'tilawah', name: 'tilawah', render: function(data) { return data + ' HAL'; } },
+                    { data: 'tahajud', name: 'tahajud', render: function(data) { return data + ' KALI'; } },
+                    { data: 'duha', name: 'duha', render: function(data) { return data + ' KALI'; } },
+                    { data: 'rawatib', name: 'rawatib', render: function(data) { return data + ' KALI'; } },
+                    { data: 'dzikri', name: 'dzikri', render: function(data) { return data + ' KALI'; } },
+                    { data: 'puasa', name: 'puasa', render: function(data) { return data + ' KALI'; } },
+                    { data: 'infaq', name: 'infaq', render: function(data) { return data + ' KALI'; } },
+                    { 
+                        data: 'ktr_amal', 
+                        name: 'ktr_amal', 
+                        render: function(data, type, row) { 
+                            return `
+                                <span class="status badge ${row.status_amal === 0 ? 'bg-warning' : (row.status_amal === 1 ? 'bg-success' : 'bg-danger')}" 
+                                    style="display: inline-block;">
+                                    ${row.status_amal === 0 ? 'Proses Verifikasi' : (row.status_amal === 1 ? 'Data Sesuai' : 'Tidak Sesuai')}
+                                </span>
+                                <span>${row.ktr_amal}</span>
+                            `;
+                        } 
+                    },
+                    {
+                        data: null,
+                        name: null,
+                        render: function(data, type, row) {
+                            return `
+                                
+                                <button class="btn btn-sm btn-success benarBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Data Sesuai" 
+                                        data-id_penialain="${row.id_aktifitas_amal}" data-kategori="benar" 
+                                        style="${row.status_amal === 2 ? '' : 'display: none;'}">
+                                    <i class="fas fa-check"></i>
+                                </button>
                             `;
                         }
                     }
@@ -1394,6 +1489,50 @@
                 },
                 error: function(xhr, status, error) {
                     console.error("Error fetching data:", error);
+                }
+            });
+        });
+
+        $(document).on('click', '.tidakBtn, .benarBtn', function() {
+            var id = $(this).data('id_penialain');
+            var kategori = $(this).data('kategori');
+
+            // Make an Ajax call to delete the record
+            Swal.fire({
+                title: 'Verifikasi Data',
+                text: 'Apakah Anda Ingin Verifikasi Data Ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya verifikasi data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url:  '{{ url('guru/penilaian_pbi/verifikasi_data_pbi') }}/' + id + '/' + kategori,
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            $('#datatables-ajax-aktivitas_amal, #datatables-ajax-aktivitas_amal-mandiri').DataTable().ajax.reload();
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function(response) {
+                            $('#datatables-ajax-aktivitas_amal, #datatables-ajax-aktivitas_amal-mandiri').DataTable().ajax.reload();
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
                 }
             });
         });

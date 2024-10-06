@@ -28,23 +28,29 @@ class PesertaKegiatan extends Model
     {
         $data = DB::table('periode')
             ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
-            ->leftJoin('peserta_kegiatan', 'periode.id_periode', '=', 'peserta_kegiatan.id_periode')
+            ->leftJoin('peserta_kegiatan', function($join) {
+                $join->on('periode.id_periode', '=', 'peserta_kegiatan.id_periode')
+                     ->whereNull('peserta_kegiatan.deleted_at');
+            })
             ->select(
                 'periode.id_periode',
                 'periode.judul_periode',
                 'periode.jenis_periode',
                 'periode.status_periode',
+                'periode.jenis_kegiatan',
                 'tahun_ajaran.id_tahun_ajaran',
                 'tahun_ajaran.nama_tahun_ajaran',
                 'tahun_ajaran.status_tahun_ajaran',
-                DB::raw('count(peserta_kegiatan.id_periode) as total_peserta_kegiatan')
+                DB::raw('count(peserta_kegiatan.id_periode) as total_peserta_kegiatan'),
             )
             ->whereNull('periode.deleted_at')
-            ->whereNull('peserta_kegiatan.deleted_at')
             ->where('periode.judul_periode', 'setoran')
             ->groupBy(
                 'periode.id_periode',
                 'periode.judul_periode',
+                'periode.jenis_periode',
+                'periode.status_periode',
+                'periode.jenis_kegiatan',
                 'tahun_ajaran.id_tahun_ajaran',
                 'tahun_ajaran.nama_tahun_ajaran',
                 'tahun_ajaran.status_tahun_ajaran'
@@ -52,8 +58,9 @@ class PesertaKegiatan extends Model
             ->orderBy('periode.created_at', 'DESC')
             ->get();
     
-        return $data; // Return the result set
+        return $data;
     }
+    
 
     public static function DataAll()
     {
@@ -127,6 +134,7 @@ class PesertaKegiatan extends Model
                 'siswa.foto_siswa',
                 'periode.jenis_periode',
                 'periode.status_periode',
+                'periode.jenis_kegiatan',
                 'guru.nama_guru',
                 'kelas.nama_kelas',
                 'tahun_ajaran.nama_tahun_ajaran'
@@ -201,6 +209,7 @@ class PesertaKegiatan extends Model
                 'periode.judul_periode',
                 'periode.jenis_periode',
                 'periode.status_periode',
+                'periode.jenis_kegiatan',
                 'tahun_ajaran.id_tahun_ajaran',
                 'tahun_ajaran.nama_tahun_ajaran',
                 'tahun_ajaran.status_tahun_ajaran',
@@ -224,7 +233,7 @@ class PesertaKegiatan extends Model
     }
 
     // rapor
-    public static function DataPesertaRapor($id_tahun_ajaran, $jenisRapor, $tglMulai, $tglAkhir)
+    public static function DataPesertaRapor($id_tahun_ajaran, $jenisRapor, $id_penilaian_periode)
     {
         if ($jenisRapor == 'tahfidz') {
             $keterangan_1 = 'tahfidz';
@@ -248,7 +257,7 @@ class PesertaKegiatan extends Model
             ->where('periode.jenis_periode', $jenisRapor)
             ->where('tahun_ajaran.id_tahun_ajaran', $id_tahun_ajaran)
             ->where('peserta_kegiatan.status_peserta_kegiatan', 1)
-            ->whereBetween('penilaian_kegiatan.tanggal_penilaian_kegiatan', [$tglMulai, $tglAkhir]);
+            ->where('periode.id_periode', $id_penilaian_periode);
     
         $queryKeterangan = clone $queryBase;
         $queryKeterangan->addSelect(

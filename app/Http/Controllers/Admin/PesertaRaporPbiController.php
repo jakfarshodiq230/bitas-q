@@ -44,8 +44,11 @@ class PesertaRaporPbiController extends Controller
             $dataPeriode = PeriodeModel::where('id_periode', $periode)
             ->where('id_tahun_ajaran', $tahun)
             ->first();
-            $DataPesertaPeriode = PesertaPbiModel::DataPesertaRapor($tahun, $jenisRapor, $dataPeriode->tggl_awal_periode, $dataPeriode->tggl_akhir_periode);
+            $DataPesertaPeriode = PesertaPbiModel::DataPesertaRapor($tahun, $jenisRapor, $dataPeriode->id_penilaian_periode);
 
+            if (!$DataPesertaPeriode) {
+                return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan'], 404);
+            }
             // Convert stdClass objects to arrays
             $DataPesertaPeriode = json_decode(json_encode($DataPesertaPeriode), true);
     

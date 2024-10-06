@@ -45,9 +45,19 @@
                                                         <option value="tahsin">TAHSIN</option>
                                                     </select>
                                                 </div>
-
                                             </div>
                                             <div class="col-12">
+                                                <div class="input-group mb-2 me-sm-4">
+                                                    <div class="input-group-text">Pekan Penilaian</div>
+                                                    <select class="form-control select2 mb-4 me-sm-4 mt-0 " name="jenis_kegiatan"
+                                                        data-bs-toggle="select2" required style="width: 150px;">
+                                                        <option selected>PILIH</option>
+                                                        <option value="ganjil">GANJIL</option>
+                                                        <option value="genap">GENAP</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 d-flex justify-content-end">
                                                 <button type="button" id="saveBtn"
                                                     class="btn btn-primary mb-2 me-sm-2"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                                                     Simpan</button>
@@ -94,6 +104,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const selectElement = document.querySelector('select[name="tahun_ajaran"]');
             const selectElement2 = document.querySelector('select[name="kegiatan"]');
+            const selectElement3 = document.querySelector('select[name="jenis_kegiatan"]');
             const saveBtn = document.getElementById('saveBtn');
 
             $.ajax({
@@ -124,7 +135,7 @@
             });
 
             function checkInputs() {
-                if (selectElement.value.trim() === 'PILIH' || selectElement2.value.trim() === 'PILIH' || selectElement.value.trim() === '' || selectElement2.value.trim() === '') {
+                if (selectElement.value.trim() === 'PILIH' || selectElement2.value.trim() === 'PILIH' || selectElement3.value.trim() === 'PILIH' || selectElement.value.trim() === '' || selectElement2.value.trim() === '' || selectElement3.value.trim() === '') {
                     saveBtn.disabled = true;
                 } else {
                     saveBtn.disabled = false;
@@ -134,7 +145,7 @@
             // Use 'change' event for select elements
             $(selectElement).on('change', checkInputs);
             $(selectElement2).on('change', checkInputs);
-
+            $(selectElement3).on('change', checkInputs);
             checkInputs(); // Initial check
         });
 
@@ -165,11 +176,13 @@
                         data: 'nama_tahun_ajaran',
                         name: 'nama_tahun_ajaran',
                         render: function(data, type, row) {
-                            var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() +
-                                row.nama_tahun_ajaran.slice(1);
+                            var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() + row.nama_tahun_ajaran.slice(1);
                             var jenis_periode = row.jenis_periode.trim().toUpperCase();
-                            var formatted_string = nama_tahun_ajaran + ' [ ' + jenis_periode + ' ]';
-                            return formatted_string;
+                            var jenis_kegiatan = row.jenis_kegiatan ? row.jenis_kegiatan.toUpperCase() : ' '; // Properly handle null or undefined
+
+                            // Concatenate formatted string
+                            var formatted_string = nama_tahun_ajaran + ' [ ' + jenis_periode + ' ' + jenis_kegiatan + ' ]';
+                            return formatted_string; 
                         }
 
                     },
@@ -247,6 +260,14 @@
                                 }
                             });
                             $('select[name="kegiatan"]').select2();
+                            $('select[name="jenis_kegiatan"] option').each(function() {
+                                // Check if the value of the option matches tahun_awal
+                                if ($(this).val() === String(data.data.jenis_kegiatan)) {
+                                    // Set the selected attribute of the matching option
+                                    $(this).prop('selected', true);
+                                }
+                            });
+                            $('select[name="jenis_kegiatan"]').select2();
                         },
                         error: function(response) {
                             Swal.fire({

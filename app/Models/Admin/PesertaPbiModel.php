@@ -28,19 +28,22 @@ class PesertaPbiModel extends Model
     {
         $data = DB::table('periode')
             ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
-            ->leftJoin('peserta_pbi', 'periode.id_periode', '=', 'peserta_pbi.id_periode')
+            ->leftJoin('peserta_pbi', function($join) {
+                $join->on('periode.id_periode', '=', 'peserta_pbi.id_periode')
+                     ->whereNull('peserta_pbi.deleted_at');
+            })
             ->select(
                 'periode.id_periode',
                 'periode.judul_periode',
                 'periode.jenis_periode',
+                'periode.jenis_kegiatan',
                 'periode.status_periode',
                 'tahun_ajaran.id_tahun_ajaran',
                 'tahun_ajaran.nama_tahun_ajaran',
                 'tahun_ajaran.status_tahun_ajaran',
-                DB::raw('count(peserta_pbi.id_periode) as total_peserta_pbi')
+                DB::raw('COUNT(peserta_pbi.id_periode) as total_peserta_pbi')
             )
             ->whereNull('periode.deleted_at')
-            ->whereNull('peserta_pbi.deleted_at')
             ->where('periode.judul_periode', 'pbi')
             ->groupBy(
                 'periode.id_periode',
@@ -54,7 +57,7 @@ class PesertaPbiModel extends Model
     
         return $data; // Return the result set
     }
-
+    
     public static function DataAll()
     {
         $data = DB::table('periode')
@@ -176,6 +179,7 @@ class PesertaPbiModel extends Model
                 'periode.judul_periode',
                 'periode.jenis_periode',
                 'periode.status_periode',
+                'periode.jenis_kegiatan',
                 'periode.sesi_periode',
                 'tahun_ajaran.id_tahun_ajaran',
                 'tahun_ajaran.nama_tahun_ajaran',
@@ -358,7 +362,7 @@ class PesertaPbiModel extends Model
         return $data; // Return the result set
     }
 
-    public static function DataPesertaRapor($id_tahun_ajaran, $jenisRapor, $tglMulai, $tglAkhir)
+    public static function DataPesertaRapor($id_tahun_ajaran, $jenisRapor, $idPenilaianPeriode)
     {
         $queryBase = DB::table('peserta_pbi')
             ->join('tahun_ajaran', 'peserta_pbi.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
@@ -373,43 +377,90 @@ class PesertaPbiModel extends Model
             ->where('periode.judul_periode', 'pbi')
             ->where('periode.jenis_periode', $jenisRapor)
             ->where('tahun_ajaran.id_tahun_ajaran', $id_tahun_ajaran)
-            ->where('peserta_pbi.status_peserta_pbi', 1)
-            ->whereBetween('penilaian_aktifitas_amal_pbi.tanggal_penilaian_amal', [$tglMulai, $tglAkhir])
-            ->whereBetween('penilaian_bidang_studi_pbi.tanggal_penilaian_bidang_studi', [$tglMulai, $tglAkhir])
-            ->whereBetween('penilaian_karakter_pbi.tanggal_penilaian_karakter', [$tglMulai, $tglAkhir]);
+            ->where('periode.id_periode', $idPenilaianPeriode)
+            ->where('peserta_pbi.status_peserta_pbi', 1); 
     
         $queryKeterangan = clone $queryBase;
         $queryKeterangan->addSelect(
             // nilai penilaian_aktifitas_amal_pbi
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.sholat_wajib)) / (COUNT(penilaian_aktifitas_amal_pbi.sholat_wajib)), 2) AS sholat_wajib'),
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.tilawah)) / (COUNT(penilaian_aktifitas_amal_pbi.tilawah)), 2) AS tilawah'),
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.tahajud)) / (COUNT(penilaian_aktifitas_amal_pbi.tahajud)), 2) AS tahajud'),
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.duha)) / (COUNT(penilaian_aktifitas_amal_pbi.duha)), 2) AS duha'),
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.rawatib)) / (COUNT(penilaian_aktifitas_amal_pbi.rawatib)), 2) AS rawatib'),
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.dzikri)) / (COUNT(penilaian_aktifitas_amal_pbi.dzikri)), 2) AS dzikri'),
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.puasa)) / (COUNT(penilaian_aktifitas_amal_pbi.puasa)), 2) AS puasa'),
-            DB::raw('ROUND((SUM(penilaian_aktifitas_amal_pbi.infaq)) / (COUNT(penilaian_aktifitas_amal_pbi.infaq)), 2) AS infaq'),
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.sholat_wajib ELSE 0 END) / 
+            NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.sholat_wajib END), 0), 2) AS sholat_wajib'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.tilawah ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.tilawah END), 0), 2) AS tilawah'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.tahajud ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.tahajud END), 0), 2) AS tahajud'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.duha ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.duha END), 0), 2) AS duha'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.rawatib ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.rawatib END), 0), 2) AS rawatib'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.dzikri ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.dzikri END), 0), 2) AS dzikri'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.puasa ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.puasa END), 0), 2) AS puasa'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.infaq ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_aktifitas_amal_pbi.status_amal = 1 THEN penilaian_aktifitas_amal_pbi.infaq END), 0), 2) AS infaq'),
+
     
             // nilai penilaian_bidang_studi_pbi
-            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.alquran)) / (COUNT(penilaian_bidang_studi_pbi.alquran)), 2) AS alquran'),
-            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.aqidah)) / (COUNT(penilaian_bidang_studi_pbi.aqidah)), 2) AS aqidah'),
-            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.ibadah)) / (COUNT(penilaian_bidang_studi_pbi.ibadah)), 2) AS ibadah'),
-            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.hadits)) / (COUNT(penilaian_bidang_studi_pbi.hadits)), 2) AS hadits'),
-            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.sirah)) / (COUNT(penilaian_bidang_studi_pbi.sirah)), 2) AS sirah'),
-            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.tazkiyatun)) / (COUNT(penilaian_bidang_studi_pbi.tazkiyatun)), 2) AS tazkiyatun'),
-            DB::raw('ROUND((SUM(penilaian_bidang_studi_pbi.fikrul)) / (COUNT(penilaian_bidang_studi_pbi.fikrul)), 2) AS fikrul'),
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.alquran ELSE 0 END) / 
+            NULLIF(COUNT(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.alquran END), 0), 2) AS alquran'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.aqidah ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.aqidah END), 0), 2) AS aqidah'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.ibadah ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.ibadah END), 0), 2) AS ibadah'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.hadits ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.hadits END), 0), 2) AS hadits'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.sirah ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.sirah END), 0), 2) AS sirah'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.tazkiyatun ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.tazkiyatun END), 0), 2) AS tazkiyatun'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.fikrul ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_bidang_studi_pbi.status_bidang_studi = 1 THEN penilaian_bidang_studi_pbi.fikrul END), 0), 2) AS fikrul'),
+
+        
     
             // nilai penilaian_karakter_pbi
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.aqdh)) / (COUNT(penilaian_karakter_pbi.aqdh)), 2) AS aqdh'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.ibdh)) / (COUNT(penilaian_karakter_pbi.ibdh)), 2) AS ibdh'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.akhlak)) / (COUNT(penilaian_karakter_pbi.akhlak)), 2) AS akhlak'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.prbd)) / (COUNT(penilaian_karakter_pbi.prbd)), 2) AS prbd'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.aqr)) / (COUNT(penilaian_karakter_pbi.aqr)), 2) AS aqr'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.wwsn)) / (COUNT(penilaian_karakter_pbi.wwsn)), 2) AS wwsn'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.kwta)) / (COUNT(penilaian_karakter_pbi.kwta)), 2) AS kwta'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.perkemahan)) / (COUNT(penilaian_karakter_pbi.perkemahan)), 2) AS perkemahan'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.mbit)) / (COUNT(penilaian_karakter_pbi.mbit)), 2) AS mbit'),
-            DB::raw('ROUND((SUM(penilaian_karakter_pbi.mbit)) / NULLIF(COUNT(penilaian_karakter_pbi.mbit), 0), 2) AS jumlah_amal')
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.aqdh ELSE 0 END) / 
+            NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.aqdh END), 0), 2) AS aqdh'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.ibdh ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.ibdh END), 0), 2) AS ibdh'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.akhlak ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.akhlak END), 0), 2) AS akhlak'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.prbd ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.prbd END), 0), 2) AS prbd'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.aqr ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.aqr END), 0), 2) AS aqr'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.wwsn ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.wwsn END), 0), 2) AS wwsn'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.kwta ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.kwta END), 0), 2) AS kwta'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.perkemahan ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.perkemahan END), 0), 2) AS perkemahan'),
+
+            DB::raw('ROUND(SUM(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.mbit ELSE 0 END) / 
+                        NULLIF(COUNT(CASE WHEN penilaian_karakter_pbi.status_karakter = 1 THEN penilaian_karakter_pbi.mbit END), 0), 2) AS mbit'),
+
+        
         )
         ->groupBy('peserta_pbi.id_peserta_pbi', 'periode.id_periode', 'tahun_ajaran.id_tahun_ajaran');
     

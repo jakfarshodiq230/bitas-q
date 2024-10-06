@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    FORM PENILAIAN PESERTA {{ strtoupper($judul_3) }}
+                    FORM PENILAIAN PESERTA {{ strtoupper($judul_3). ' ' .strtoupper($periode->jenis_kegiatan)}}
                 </h1>
             </div>
             <div class="row">
@@ -170,7 +170,7 @@
                                                     <label>Tahun Ajaran</label>
                                                     <input type="text" name="tahun_ajaran" id="tahun_ajaran"
                                                         class="form-control" placeholder="id_tahun_ajaran"
-                                                        value="{{ $tahun->nama_tahun_ajaran }}" readonly>
+                                                        value="{{ $tahun->nama_tahun_ajaran }} {{ strtoupper($periode->jenis_kegiatan)}}" readonly>
                                                     <input type="text" name="id_tahun_ajaran" id="id_tahun_ajaran"
                                                         class="form-control" value="{{ $tahun->id_tahun_ajaran }}"
                                                         placeholder="id_tahun_ajaran" hidden>
@@ -657,7 +657,7 @@
             }
         });
 
-        var judul = "{{ $judul_3 }}";
+        var judul = "{{ $judul_3 }} {{ strtoupper($periode->jenis_kegiatan)}}";
         // penilaian
         const ranges = {
             "sangat_baik": {

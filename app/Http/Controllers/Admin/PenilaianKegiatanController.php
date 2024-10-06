@@ -92,6 +92,7 @@ class PenilaianKegiatanController extends Controller
             'guru',
             'kelas',
             'kegiatan',
+            'judul_1'
         ));
     }
 

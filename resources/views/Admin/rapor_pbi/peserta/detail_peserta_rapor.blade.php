@@ -324,6 +324,8 @@
                 url: '{{ url('admin/peserta_rapor_pbi/ajax_detail_peserta') }}/' + id + '/' + peserta + '/' + tahun + '/' + jenjang + '/' + periode,
                 type: 'GET',
                 success: function(respons) {
+                    console.log(respons);
+                    
                     const data = respons.data;
                     
                     // Update identity-related fields
@@ -355,7 +357,7 @@
 
                     // Update Amal fields
                     ['sholat_wajib', 'tilawah', 'tahajud', 'duha', 'rawatib', 'dzikri', 'puasa', 'infaq'].forEach(field => {
-                        $(`#${field.replace('_', '-')}`).text(formatRataLamaAmal(data[field], getAmal(data[field])));
+                        $(`#${field}`).text(formatRataLamaAmal(data[field], getAmal(data[field])));
                     });
 
                  

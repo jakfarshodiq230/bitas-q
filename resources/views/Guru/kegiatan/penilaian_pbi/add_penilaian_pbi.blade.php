@@ -51,7 +51,7 @@
                                         <span class="label text-end" style="flex: 1;">Tahun Ajaran</span>
                                         <span class="separator">:</span>
                                         <span class="value text-start" id="tahun_ajaran_tahfidz"
-                                            style="flex: 1;">{{ $tahun->nama_tahun_ajaran }}</span>
+                                            style="flex: 1;">{{ $tahun->nama_tahun_ajaran }} {{ strtoupper($periode->jenis_kegiatan) }}</span>
                                     </div>
                                     <div class="profile-item mb-3 d-flex justify-content-between">
                                         <span class="label text-end" style="flex: 1;">Kegiatan</span>
@@ -228,7 +228,7 @@
                                                     <label>Tahun Ajaran</label>
                                                     <input type="text" name="tahun_ajaran" id="tahun_ajaran"
                                                         class="form-control" placeholder="id_tahun_ajaran"
-                                                        value="{{ $tahun->nama_tahun_ajaran }}" readonly>
+                                                        value="{{ $tahun->nama_tahun_ajaran }} {{ strtoupper($periode->jenis_kegiatan) }}" readonly>
                                                     <input type="text" name="id_tahun_ajaran" id="id_tahun_ajaran"
                                                         class="form-control" value="{{ $tahun->id_tahun_ajaran }}"
                                                         placeholder="id_tahun_ajaran" hidden>
@@ -891,21 +891,32 @@
                     ajax: {
                         url: `{{ url('guru/penilaian_pbi/data_penilaian_kegiatan') }}/${periode}/${tahun}`,
                         dataSrc: dataSrc,
-                        error: function(xhr, error, thrown) {
-                            console.log("AJAX error:", error);
-                            console.log("Thrown error:", thrown);
-                        }
                     },
                     columns: columns.concat([{
                         data: null,
                         name: null,
                         render: function(data, type, row) {
-                            return `
+                            const deleteButton = `
                                 <button class="btn btn-sm btn-danger deleteBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Data" 
-                                data-id_penilaain="${row[idField]}" data-kategori="${kategori}">
-                                <i class="fas fa-trash"></i></button>
-                                `;
+                                        data-id_penilaian="${row[idField]}" data-kategori="${kategori}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-warning tidakBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Data Tidak Sesuai" 
+                                        data-id_penilaian="${row[idField]}" data-kategori="tidak" 
+                                        style="${row.jenis_pengisian_amal === 'mandiri' ? '' : 'display: none;'}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="btn btn-sm btn-success benarBtn me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Data Sesuai" 
+                                        data-id_penilaian="${row[idField]}" data-kategori="benar" 
+                                        style="${row.jenis_pengisian_amal === 'mandiri' ? '' : 'display: none;'}">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            `;
+
+                            return deleteButton ;
                         }
+
                     }]),
                     drawCallback: function(settings) {
                         var api = this.api();
@@ -931,7 +942,7 @@
                     data: 'nama_siswa',
                     name: 'nama_siswa',
                     render: function(data, type, row) {
-                        return row.nama_siswa.trim().toUpperCase() + '<br>' + row.nisn_siswa + '<br>' + row.nama_kelas.toUpperCase() + '<br>' + 'PEKAN KE-' + row.pekan;
+                        return row.nama_siswa.trim().toUpperCase() + '<br>' + row.nisn_siswa + '<br>' + row.nama_kelas.toUpperCase() + '<br>' + row.jenis_pengisian_amal.toUpperCase();
                     }
                 }
             ];
@@ -1109,7 +1120,7 @@
 
         // delete 
         $(document).on('click', '.deleteBtn', function() {
-            var id = $(this).data('id_penialain');
+            var id = $(this).data('id_penilaian');
             var kategori = $(this).data('kategori');
 
             // Make an Ajax call to delete the record
@@ -1233,6 +1244,50 @@
                             $('#datatables-ajax-aktivitas_amal').DataTable().ajax.reload();
                             $('#datatables-ajax-karakter').DataTable().ajax.reload();
                             $('#datatables-ajax-bidang_studi').DataTable().ajax.reload();
+                        }
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '.tidakBtn, .benarBtn', function() {
+            var id = $(this).data('id_penilaian');
+            var kategori = $(this).data('kategori');
+
+            // Make an Ajax call to delete the record
+            Swal.fire({
+                title: 'Verifikasi Data',
+                text: 'Apakah Anda Ingin Verifikasi Data Ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya verifikasi data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url:  '{{ url('guru/penilaian_pbi/verifikasi_data_pbi') }}/' + id + '/' + kategori,
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            $('#datatables-ajax-aktivitas_amal').DataTable().ajax.reload();
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function(response) {
+                            $('#datatables-ajax-aktivitas_amal').DataTable().ajax.reload();
+                            Swal.fire({
+                                title: response.success ? 'Success' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
                         }
                     });
                 }

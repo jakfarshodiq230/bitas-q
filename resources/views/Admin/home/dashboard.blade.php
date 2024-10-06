@@ -241,16 +241,17 @@
                     render: function(data, type, row, meta) {
                         var judulPeriode = row.judul_periode.toUpperCase(); 
                         var jenisPeriode = row.jenis_periode.toUpperCase();
+                        var kegiatan = row.jenis_kegiatan  ? row.jenis_kegiatan.toUpperCase() : '';
                         var namaTahunAjaran = row.nama_tahun_ajaran;
 
                         // Return formatted string based on the value of judul_periode
                         return row.judul_periode === 'setoran' 
-                        ? 'SETORAN - ' + jenisPeriode + ' [ ' + namaTahunAjaran + ' ]'
+                        ? jenisPeriode + '<br> [ ' + namaTahunAjaran + ' ' + kegiatan + ' ]'
                         : row.judul_periode === 'sertifikasi' 
-                        ? 'SERTIFIKASI - ' + jenisPeriode + ' [ ' + namaTahunAjaran + ' ]'
+                        ? 'SERTIFIKASI - ' + jenisPeriode + ' ' + row.juz_periode +' JUZ ' + ' [ ' + namaTahunAjaran + ' ]'
                         : row.judul_periode === 'pbi' 
-                        ? 'BINA PRIBADI ISLAM (BPI) ' + ' [ ' + namaTahunAjaran + ' ]'
-                        : judulPeriode + ' ' + row.juz_periode + ' [ ' + namaTahunAjaran + ' ' + jenisPeriode + ' ]';
+                        ? 'BINA PRIBADI ISLAM (BPI) <br>' + ' [ ' + namaTahunAjaran + ' ' + kegiatan +  ' ]'
+                        : judulPeriode + ' ' + row.juz_periode + ' [ ' + namaTahunAjaran + ' ' + jenisPeriode  + ' ]';
 
                     }
                 },

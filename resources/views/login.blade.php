@@ -97,7 +97,7 @@
                                         </div>
                                         
                                     </form>
-                                    <p class="text-center mt-4 mb-0">VERSI 2.1</p>
+                                    <p class="text-center mt-4 mb-0">VERSI 2.2</p>
                                 </div>
                             </div>
                         </div>

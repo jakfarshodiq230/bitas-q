@@ -25,10 +25,10 @@
                                         enctype="multipart/form-data">
                                         @csrf
                                             <div class="col-12">
-                                                <div class="input-group mb-2 me-sm-2">
+                                                <div class="input-group mb-2 me-sm-4">
                                                     <div class="input-group-text">Tahun Ajaran</div>
-                                                    <select class="form-control select2 mb-4 me-sm-2 mt-0"
-                                                        name="tahun_ajaran" data-bs-toggle="select2" required style="width: 100px;">
+                                                    <select class="form-control select2 mb-4 me-sm-4 mt-0"
+                                                        name="tahun_ajaran" data-bs-toggle="select2" required style="width: 160px;">
                                                         <option value="PILIH">PILIH</option>
                                                     </select>
                                                     <input type="text" name="id_periode" id="id_periode" hidden>
@@ -36,9 +36,9 @@
 
                                             </div>
                                             <div class="col-12">
-                                                <div class="input-group mb-2 me-sm-2">
+                                                <div class="input-group mb-2 me-sm-4">
                                                     <div class="input-group-text">Kegiatan</div>
-                                                    <select class="form-control select2 mb-4 me-sm-2 mt-0 " name="kegiatan"
+                                                    <select class="form-control select2 mb-4 me-sm-4 mt-0 " name="kegiatan"
                                                         data-bs-toggle="select2" required style="width: 80px;">
                                                         <option value="PILIH" selected>PILIH</option>
                                                         <option value="pbi">BPI</option>
@@ -46,9 +46,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-12">
-                                                <div class="input-group mb-2 me-sm-2">
+                                                <div class="input-group mb-2 me-sm-4">
                                                     <div class="input-group-text">Pekan Penilaian</div>
-                                                    <select class="form-control select2 mb-4 me-sm-2 mt-0 " name="pekan_pbi"
+                                                    <select class="form-control select2 mb-4 me-sm-4 mt-0 " name="pekan_pbi"
                                                         data-bs-toggle="select2" required style="width: 150px;">
                                                         <option value="PILIH" selected>PILIH</option>
                                                         @for ($i = 1; $i <= 30; $i++)
@@ -58,8 +58,19 @@
                                                 </div>
                                             </div>
                                             <div class="col-12">
+                                                <div class="input-group mb-2 me-sm-4">
+                                                    <div class="input-group-text">Pekan Penilaian</div>
+                                                    <select class="form-control select2 mb-4 me-sm-4 mt-0 " name="jenis_kegiatan"
+                                                        data-bs-toggle="select2" required style="width: 150px;">
+                                                        <option selected>PILIH</option>
+                                                        <option value="ganjil">GANJIL</option>
+                                                        <option value="genap">GENAP</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
                                                 <button type="button" id="saveBtn"
-                                                    class="btn btn-primary mb-2 me-sm-2">
+                                                    class="btn btn-primary mb-2 me-sm-2 mt-0">
                                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                                                     Simpan</button>
                                             </div>
@@ -178,7 +189,7 @@
                         render: function(data, type, row) {
                             var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() +
                                 row.nama_tahun_ajaran.slice(1);
-                            var jenis_periode = 'BINA PRIBADI ISLAM (BPI)';
+                            var jenis_periode = 'BINA PRIBADI ISLAM (BPI) ' + (row.jenis_kegiatan ? row.jenis_kegiatan.toUpperCase() : '');
                             var formatted_string = nama_tahun_ajaran + ' [ ' + jenis_periode + ' ]';
                             return formatted_string;
                         }
@@ -247,8 +258,10 @@
                             id, // URL to fetch data for the selected row
                         type: 'GET',
                         success: function(data) {
+                            console.log(data);
+                            
                             saveBtn.disabled = false;
-                            // Populate the modal fields with the data
+
                             $('#dataForm input[name="id_periode"]').val(data.data.id_periode);
                             $('select[name="tahun_ajaran"] option').each(function() {
                                 // Check if the value of the option matches tahun_awal
@@ -258,23 +271,27 @@
                                 }
                             });
                             $('select[name="tahun_ajaran"]').select2();
+
                             $('select[name="kegiatan"] option').each(function() {
-                                // Check if the value of the option matches tahun_awal
                                 if ($(this).val() === data.data.jenis_periode) {
-                                    // Set the selected attribute of the matching option
                                     $(this).prop('selected', true);
                                 }
                             });
                             $('select[name="kegiatan"]').select2();
 
                             $('select[name="pekan_pbi"] option').each(function() {
-                                // Check if the value of the option matches tahun_awal
-                                if ($(this).val() === data.data.sesi_periode) {
-                                    // Set the selected attribute of the matching option
+                                if ($(this).val() === String(data.data.sesi_periode)) {
                                     $(this).prop('selected', true);
                                 }
                             });
                             $('select[name="pekan_pbi"]').select2();
+
+                            $('select[name="jenis_kegiatan"] option').each(function() {
+                                if ($(this).val() === data.data.jenis_kegiatan) {
+                                    $(this).prop('selected', true);
+                                }
+                            });
+                            $('select[name="jenis_kegiatan"]').select2();
                         },
                         error: function(response) {
                             Swal.fire({
@@ -392,7 +409,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, saya menghapus data ini'
+                confirmButtonText: 'Ya, saya mengaktifkan data ini'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

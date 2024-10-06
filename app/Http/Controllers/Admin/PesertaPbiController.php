@@ -42,7 +42,8 @@ class PesertaPbiController extends Controller
         $judul_1 = PeriodeModel::where('id_periode', $id_periode)->whereNull('deleted_at')->first();
         $judul_2 = TahunAjaranModel::where('id_tahun_ajaran', $id_tahun_ajaran)->whereNull('deleted_at')->first();
         $judul_3 = ucfirst($judul_1->jenis_periode).' '. $judul_2->nama_tahun_ajaran;
-        return view ('Admin/pbi/peserta/data_list_peserta_pbi',compact('menu','submenu','periode','tahun_ajaran','judul_1','judul_2','judul_3'));
+        $periode_lampau = PeriodeModel::DataPbi($id_periode);
+        return view ('Admin/pbi/peserta/data_list_peserta_pbi',compact('menu','submenu','periode','tahun_ajaran','judul_1','judul_2','judul_3','periode_lampau'));
     }
 
     public function AjaxData($id_periode,$id_tahun_ajaran) {
@@ -247,5 +248,75 @@ class PesertaPbiController extends Controller
             return response()->json(['error' => true, 'message' => 'Gagal: ' . $e->getMessage()]); // Tangani jika terjadi kesalahan dalam pencarian atau pembaruan
         }
     }
+
+    public function TarikDataPeriodeLampau($IdPeriodeBaru, $IdPeriodeLampau, $tahun)
+    {
+        $dataBerhasilDisimpan = [];
+        $dataGagalDisimpan = [];
+
+        try {
+            $DataPesertaPeriodeLampau = PesertaPbiModel::where('id_periode', $IdPeriodeLampau)->whereNull('deleted_at')->get();
+            $totalData = $DataPesertaPeriodeLampau->count();
+            foreach ($DataPesertaPeriodeLampau as $value) {
+
+                $CekData = PesertaPbiModel::where('id_tahun_ajaran', $tahun)
+                    ->where('id_periode', $IdPeriodeBaru)
+                    ->where('id_siswa', $value['id_siswa'])
+                    ->where('id_kelas', $value['id_kelas'])
+                    ->where('id_guru', $value['id_guru'])
+                    ->whereNull('deleted_at')
+                    ->exists();
+    
+                if ($CekData) {
+                    continue;
+                }
+
+                $tanggal = now()->format('dmy');
+                $nomorUrut = PesertaPbiModel::whereDate('created_at', now()->toDateString())->count() + 1;
+                $id = 'PES-PBI' . '-' . $tanggal . '-' . $nomorUrut;
+    
+                // Prepare data for insertion
+                $data = [
+                    'id_peserta_pbi' => $id,
+                    'id_tahun_ajaran' => $tahun,
+                    'id_periode' => $IdPeriodeBaru,
+                    'id_siswa' => $value['id_siswa'],
+                    'id_kelas' => $value['id_kelas'],
+                    'id_guru' => $value['id_guru'],
+                    'status_peserta_pbi' => 1,
+                    'id_user' => session('user')['id'],
+                ];
+    
+                // Store data into the database
+                try {
+                    PesertaPbiModel::create($data);
+                    $dataBerhasilDisimpan[] = $value['id_siswa']; // Simpan ID siswa yang berhasil
+                } catch (\Throwable $th) {
+                    $dataGagalDisimpan[] = [
+                        'id_siswa' => $value['id_siswa'],
+                        'error' => $th->getMessage()
+                    ]; // Simpan data gagal beserta error
+                }
+            }
+    
+            $jumlahBerhasil = count($dataBerhasilDisimpan);
+            $jumlahGagal = count($dataGagalDisimpan);
+
+            // Respons dengan rincian hasil proses
+            return response()->json([
+                'success' => true,
+                'message' => 'Proses Tarik Data Selesai',
+                'total_data' => $totalData,
+                'berhasil_ditarik' => $jumlahBerhasil,
+                'gagal_ditarik' => $jumlahGagal,
+                'berhasil_disimpan' => $dataBerhasilDisimpan,
+                'gagal_disimpan' => $dataGagalDisimpan
+            ]);
+            
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => 'Gagal Tarik Data Periode Lampau', 'error' => $th->getMessage()]);
+        }
+    }
+    
         
 }

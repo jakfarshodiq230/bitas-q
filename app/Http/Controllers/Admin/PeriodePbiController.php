@@ -59,13 +59,14 @@ class PeriodePbiController extends Controller
                 'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
                 'pekan_pbi' => 'required|string',
+                'jenis_kegiatan' => 'required|string',
             ]);
     
             // Construct the nama_tahun_ajaran
             $cekTahun = PeriodeModel::where('id_tahun_ajaran', $validatedData['tahun_ajaran'])
             ->where('jenis_periode', $validatedData['kegiatan'])
             ->where('judul_periode', 'pbi')
-            ->where('sesi_periode', $validatedData['pekan_pbi'])
+            ->where('jenis_kegiatan', $validatedData['jenis_kegiatan'])
             ->whereNull('deleted_at')->get();
             
             if (!$cekTahun->isEmpty()) {
@@ -84,6 +85,7 @@ class PeriodePbiController extends Controller
                     'jenis_periode' => $validatedData['kegiatan'],
                     'judul_periode' => 'pbi',
                     'sesi_periode' => $validatedData['pekan_pbi'],
+                    'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
                     'status_periode' => '0',
                     'id_user' => session('user')['id'],
                 ];
@@ -114,12 +116,14 @@ class PeriodePbiController extends Controller
                 'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
                 'pekan_pbi' => 'required|numeric',
+                'jenis_kegiatan' => 'required|string',
             ]);
 
             $data = [
                 'id_tahun_ajaran' => $validatedData['tahun_ajaran'],
                 'jenis_periode' => $validatedData['kegiatan'],
                 'sesi_periode' => $validatedData['pekan_pbi'],
+                'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
             ];
 
             // Store data into database

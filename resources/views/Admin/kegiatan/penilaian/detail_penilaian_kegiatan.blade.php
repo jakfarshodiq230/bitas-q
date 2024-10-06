@@ -38,7 +38,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    DATA PENILAIAN KEGIATAN {{ strtoupper($judul_3) }}
+                    DATA PENILAIAN KEGIATAN {{ strtoupper($judul_3).' '.strtoupper($judul_1->jenis_kegiatan) }}
                 </h1>
             </div>
             <div class="row">
@@ -51,29 +51,34 @@
                                         <div class="profile-item mb-3 d-flex justify-content-between">
                                             <span class="label text-end" style="flex: 1;">Tahun Ajaran</span>
                                             <span class="separator">:</span>
-                                            <span class="value text-start" id="tahun_ajaran" style="flex: 1;">Andi</span>
+                                            <span class="value text-start" id="tahun_ajaran" style="flex: 1;">-</span>
                                         </div>
                                         <div class="profile-item mb-3 d-flex justify-content-between">
                                             <span class="label text-end" style="flex: 1;">Kegiatan</span>
                                             <span class="separator">:</span>
-                                            <span class="value text-start" id="kegiatan" style="flex: 1;">Andi</span>
+                                            <span class="value text-start" id="kegiatan" style="flex: 1;">-</span>
                                         </div>
                                         <div class="profile-item mb-3 d-flex justify-content-between">
                                             <span class="label text-end" style="flex: 1;">Pembimbing</span>
                                             <span class="separator">:</span>
-                                            <span class="value text-start" id="pembimbing" style="flex: 1;">Andi</span>
+                                            <span class="value text-start" id="pembimbing" style="flex: 1;">-</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4 profile">
                                         <div class="profile-item mb-3 d-flex justify-content-between">
                                             <span class="label text-end" style="flex: 1;">Nama</span>
                                             <span class="separator">:</span>
-                                            <span class="value text-start" id="nama" style="flex: 1;">Andi</span>
+                                            <span class="value text-start" id="nama" style="flex: 1;">-</span>
                                         </div>
                                         <div class="profile-item mb-3 d-flex justify-content-between">
                                             <span class="label text-end" style="flex: 1;">Kelas</span>
                                             <span class="separator">:</span>
-                                            <span class="value text-start" id="kelas" style="flex: 1;">Andi</span>
+                                            <span class="value text-start" id="kelas" style="flex: 1;">-</span>
+                                        </div>
+                                        <div class="profile-item mb-3 d-flex justify-content-between">
+                                            <span class="label text-end" style="flex: 1;">Jenjang</span>
+                                            <span class="separator">:</span>
+                                            <span class="value text-start" id="jenjang" style="flex: 1;">-</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4 profile">
@@ -174,12 +179,12 @@
             type: 'GET',
             success: function(data) {
                 // Populate the modal fields with the data
-                console.log(data);
                 $('#tahun_ajaran').text(capitalizeFirstLetter(data.siswa.nama_tahun_ajaran));
                 $('#kegiatan').text(capitalizeFirstLetter(data.siswa.jenis_periode));
                 $('#pembimbing').text(capitalizeFirstLetter(data.siswa.nama_guru));
                 $('#nama').text(capitalizeFirstLetter(data.siswa.nama_siswa));
-                $('#kelas').text(data.siswa.nama_kelas);
+                $('#kelas').text(capitalizeFirstLetter(data.siswa.nama_kelas));
+                $('#jenjang').text(capitalizeFirstLetter(data.siswa.jenis_kegiatan));
                 if (data.siswa.foto_siswa != null) {
                     var fotoSiswaUrl = "{{ url('storage') }}/" + data.siswa.foto_siswa;
                     $('#avatarImg').attr('src', fotoSiswaUrl);

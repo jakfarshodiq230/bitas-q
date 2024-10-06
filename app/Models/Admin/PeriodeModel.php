@@ -17,7 +17,7 @@ class PeriodeModel extends Model
     protected $keyType = 'string'; 
     protected $fillable = [
         'id_periode', 'id_tahun_ajaran', 'judul_periode', 'jenis_periode', 'jenis_kegiatan', 
-        'tggl_awal_periode', 'tggl_akhir_periode', 'tggl_akhir_penilaian', 'tggl_periode',
+        'id_penilaian_periode', 'tggl_akhir_periode', 'tggl_akhir_penilaian', 'tggl_periode',
         'tanggungjawab_periode', 'pesan_periode', 'status_periode', 'file_periode', 'id_user','deleted_at',
         'juz_periode', 'sesi_periode'
     ];
@@ -27,31 +27,41 @@ class PeriodeModel extends Model
         static::addGlobalScope(new ExcludePasswordScope());
     }
 
-    public static function DataAll()
+    public static function DataAll($idPeriodeKegiatan = null)
     {
-        $data = DB::table('periode')
+        $query = DB::table('periode')
             ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
-            ->select('periode.*','tahun_ajaran.*',) 
-            ->orderBy('periode.created_at', 'DESC')
+            ->select('periode.*','tahun_ajaran.*') 
             ->whereNull('periode.deleted_at')
-            ->where('judul_periode', 'setoran')
-            ->get();
+            ->where('periode.judul_periode', 'setoran');
         
+        if ($idPeriodeKegiatan !== null) {
+            $query->where('periode.id_periode', '!=', $idPeriodeKegiatan);
+        }
+    
+        $data = $query->orderBy('periode.created_at', 'DESC')->get();
+    
         return $data;
     }
 
-    public static function DataPbi()
+    public static function DataPbi($idPeriode = null)
     {
-        $data = DB::table('periode')
+        $query = DB::table('periode')
             ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
-            ->select('periode.*','tahun_ajaran.*',) 
-            ->orderBy('periode.created_at', 'DESC')
+            ->select('periode.*', 'tahun_ajaran.*')
             ->whereNull('periode.deleted_at')
-            ->where('judul_periode', 'pbi')
-            ->get();
-        
+            ->where('periode.judul_periode', 'pbi');
+    
+        // Tambahkan kondisi jika idPeriode tidak null
+        if ($idPeriode !== null) {
+            $query->where('periode.id_periode', '!=', $idPeriode);
+        }
+    
+        $data = $query->orderBy('periode.created_at', 'DESC')->get();
+    
         return $data;
     }
+    
 
     public static function DataRapor()
     {
@@ -60,7 +70,8 @@ class PeriodeModel extends Model
             ->select('periode.*','tahun_ajaran.*',) 
             ->orderBy('periode.created_at', 'DESC')
             ->whereNull('periode.deleted_at')
-            ->where('judul_periode', 'rapor')
+            ->where('periode.judul_periode', 'rapor')
+            ->where('periode.jenis_periode', '!=','pbi')
             ->get();
         
         return $data;
@@ -118,6 +129,7 @@ class PeriodeModel extends Model
                      DB::raw('COALESCE(COUNT(rapor_kegiatan.id_siswa), 0) as siswa_count'))
             ->whereNull('periode.deleted_at')
             ->where('judul_periode', 'rapor')
+            ->where('jenis_periode', '!=','pbi')
             ->groupBy('periode.id_periode', 'tahun_ajaran.id_tahun_ajaran') // Group by unique identifiers
             ->orderBy('periode.created_at', 'DESC')
             ->get();
@@ -168,6 +180,7 @@ class PeriodeModel extends Model
                 'periode.judul_periode',
                 'periode.jenis_periode',
                 'periode.juz_periode',
+                'periode.jenis_kegiatan',
                 'tahun_ajaran.nama_tahun_ajaran',
                 DB::raw('COUNT(DISTINCT peserta_kegiatan.id_siswa) as jumlah_siswa_setoran'),
                 DB::raw('COUNT(DISTINCT peserta_sertifikasi.id_siswa) as jumlah_siswa_sertifikasi'),
@@ -193,6 +206,38 @@ class PeriodeModel extends Model
             ->orderBy('periode.tggl_akhir_penilaian', 'ASC')
             ->get();
             
+        return $data;
+    }
+
+    public static function PeridoeMandiri()
+    {
+        $data = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->join('peserta_pbi', 'periode.id_periode', '=', 'peserta_pbi.id_periode')
+            ->select('periode.*','tahun_ajaran.*','peserta_pbi.*') 
+            ->whereNull('periode.deleted_at')
+            ->where('judul_periode', 'pbi')
+            ->where('status_periode', 1)
+            ->where('peserta_pbi.id_siswa', session('user')['id'])
+            ->first();
+        
+        return $data;
+    }
+
+    public static function NilaiaMandiriSiswa()
+    {
+        $data = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->join('peserta_pbi', 'periode.id_periode', '=', 'peserta_pbi.id_periode')
+            ->join('penilaian_aktifitas_amal_pbi', 'peserta_pbi.id_peserta_pbi', '=', 'penilaian_aktifitas_amal_pbi.id_peserta_pbi')
+            ->select('periode.*','tahun_ajaran.*','penilaian_aktifitas_amal_pbi.*') 
+            ->whereNull('periode.deleted_at')
+            ->where('judul_periode', 'pbi')
+            ->where('status_periode', 1)
+            ->where('penilaian_aktifitas_amal_pbi.jenis_pengisian_amal', 'mandiri')
+            ->where('peserta_pbi.id_siswa', session('user')['id'])
+            ->get();
+        
         return $data;
     }
     

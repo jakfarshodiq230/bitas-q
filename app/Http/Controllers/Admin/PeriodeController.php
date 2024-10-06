@@ -22,7 +22,7 @@ class PeriodeController extends Controller
     }
 
     public function AjaxDataTahun(Request $request) {
-        $DataPeriode = TahunAjaranModel::whereNull('deleted_at')->where('status_tahun_ajaran',1)->get();
+        $DataPeriode = PeriodeModel::DataPbi();
         if ($DataPeriode == true) {
             return response()->json(['success' => true, 'message' => 'Data Ditemukan', 'data' => $DataPeriode]);
         }else{
@@ -57,12 +57,14 @@ class PeriodeController extends Controller
             $validatedData = $request->validate([
                 'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
+                'jenis_kegiatan' => 'required|string',
             ]);
     
             // Construct the nama_tahun_ajaran
             $cekTahun = PeriodeModel::where('id_tahun_ajaran', $validatedData['tahun_ajaran'])
             ->where('jenis_periode', $validatedData['kegiatan'])
             ->where('judul_periode', 'setoran')
+            ->where('jenis_kegiatan',  $validatedData['jenis_kegiatan'])
             ->whereNull('deleted_at')->get();
             
             if (!$cekTahun->isEmpty()) {
@@ -79,6 +81,7 @@ class PeriodeController extends Controller
                     'id_periode' => $id,
                     'id_tahun_ajaran' => $validatedData['tahun_ajaran'],
                     'jenis_periode' => $validatedData['kegiatan'],
+                    'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
                     'judul_periode' => 'setoran',
                     'status_periode' => '0',
                     'id_user' => session('user')['id'],
@@ -111,11 +114,13 @@ class PeriodeController extends Controller
             $validatedData = $request->validate([
                'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
+                'jenis_kegiatan' => 'required|string',
             ]);
 
             $cekTahun = PeriodeModel::where('id_tahun_ajaran', $validatedData['tahun_ajaran'])
             ->where('jenis_periode', $validatedData['kegiatan'])
             ->where('judul_periode', 'setoran')
+            ->where('jenis_kegiatan',  $validatedData['jenis_kegiatan'])
             ->whereNull('deleted_at')->get();
             
             if (!$cekTahun->isEmpty()) {
@@ -125,7 +130,8 @@ class PeriodeController extends Controller
 
             $data = [
                 'id_tahun_ajaran' => $validatedData['tahun_ajaran'],
-                'jenis_periode' => $validatedData['kegiatan']
+                'jenis_periode' => $validatedData['kegiatan'],
+                'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
             ];
 
             // Store data into database

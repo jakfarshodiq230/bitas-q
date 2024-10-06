@@ -13,7 +13,7 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                DATA PENILAIAN PESERTA {{ strtoupper($judul_3) }}
+                DATA PENILAIAN PESERTA {{ strtoupper($judul_3). ' ' .strtoupper($judul_1->jenis_kegiatan) }}
                 </h1>
             </div>
             <div class="row">

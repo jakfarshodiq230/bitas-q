@@ -75,7 +75,8 @@
                             var nama_tahun_ajaran = row.nama_tahun_ajaran.charAt(0).toUpperCase() +
                                 row.nama_tahun_ajaran.slice(1);
                             var jenis_periode = row.jenis_periode.trim().toUpperCase();
-                            var formatted_string = nama_tahun_ajaran + ' [ ' + jenis_periode + ' ]';
+                            var jenis_kegiatan = row.jenis_kegiatan.trim().toUpperCase();
+                            var formatted_string = nama_tahun_ajaran + ' [ ' + jenis_periode + ' ' + jenis_kegiatan + ' ]';
                             return formatted_string;
                         }
 

@@ -51,9 +51,14 @@ class DashboardController extends Controller
     }
 
     public function AjaxStatistikPeserta($tahun) {
-        $guru = session('user')['id'];
-        $peserta = PesertaKegiatan::DataDashbordGuru($tahun,$guru);
-        return response()->json($peserta);
+        try {
+            $guru = session('user')['id'];
+            $peserta = PesertaKegiatan::DataDashbordGuru($tahun,$guru);
+            return response()->json($peserta);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);
+        }
+        
     }
 
     public function AjaxDataStatistik($peserta, $tahun) {

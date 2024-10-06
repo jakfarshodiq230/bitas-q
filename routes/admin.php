@@ -131,6 +131,7 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::delete('peserta/delete_peserta/{id}', 'deleteData');
         Route::put('peserta/status_peserta/{id}/{status}', 'statusData');
         Route::put('peserta/status_peserta_all/{tahun}/{periode}/{status}', 'statusDataAll');
+        Route::post('peserta_pbi/tarik_periode_lampau_kegiatan/{periode_baru}/{periode_lampau}/{tahun}', 'TarikDataPeriodeLampauKegiatan');
         
     });
 
@@ -177,6 +178,7 @@ Route::group(['middleware' => ['auth:users']], function () {
         Route::delete('peserta_pbi/delete_peserta_pbi/{id}', 'deleteData');
         Route::put('peserta_pbi/status_peserta_pbi/{id}/{status}', 'statusData');
         Route::put('peserta_pbi/status_peserta_pbi_all/{tahun}/{periode}/{status}', 'statusDataAll');
+        Route::post('peserta_pbi/tarik_periode_lampau_pbi/{periode_baru}/{periode_lampau}/{tahun}', 'TarikDataPeriodeLampau');
     });
 
     Route::prefix('admin')->controller(PeriodeRaporPbiController::class)->group(function () {
@@ -206,7 +208,7 @@ Route::group(['middleware' => ['auth:users']], function () {
     Route::prefix('admin')->controller(PeriodeRaporController::class)->group(function () {
         Route::get('periode_rapor', 'index');
         Route::get('periode_rapor/data_tahun', 'AjaxDataTahun');
-        Route::get('periode_rapor/data_periode_rapor', 'AjaxData');
+        Route::get('periode_rapor/data_periode_rapor', 'AjaxDataRaporKegiatan');
         Route::get('periode_rapor/edit_periode_rapor/{id}', 'editData');
         Route::post('periode_rapor/store_periode_rapor', 'storeData');
         Route::post('periode_rapor/update_periode_rapor/{id}', 'updateData');

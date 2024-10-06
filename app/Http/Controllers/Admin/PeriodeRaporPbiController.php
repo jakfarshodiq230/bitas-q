@@ -57,69 +57,64 @@ class PeriodeRaporPbiController extends Controller
         try {
             // Validate incoming request data
             $validatedData = $request->validate([
-                'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
-                'jenis_kegiatan' => 'required|string',
-                'tggl_awal_periode' => 'required|date',
-                'tggl_akhir_periode' => 'required|date',
                 'tggl_akhir_penilaian' => 'required|date',
                 'tggl_periode' => 'required|date',
                 'tanggungjawab_periode' => 'required|string',
                 'pesan_periode' => 'required|string',
             ]);
     
-            // Construct the nama_tahun_ajaran
-            $cekTahun = PeriodeModel::where('id_tahun_ajaran', $validatedData['tahun_ajaran'])
-            ->where('jenis_periode', $validatedData['kegiatan'])
-            ->where('jenis_kegiatan', $validatedData['jenis_kegiatan'])
-            ->where('judul_periode', 'rapor')
-            ->whereNull('deleted_at')->get();
-            
-            $tanggal = now()->format('dmy');
-            $nomorUrut = PeriodeModel::whereDate('created_at', now()->toDateString())->count() + 1;
-            $id = 'PBI' . '-' . $tanggal . '-' . $nomorUrut;
-
-
-            if (!$cekTahun->isEmpty()) {
-                // If the tahun_ajaran already exists, respond with a message
-                return response()->json(['success' => false, 'message' => 'Rapor Sudah Terdaftar']);
-            } else {
-                // Generate unique ID based on current date and count
-                
+            // Fetch the related periode
+            $cekPeriode = PeriodeModel::where('id_periode', $validatedData['kegiatan'])
+                ->where('judul_periode', 'pbi')
+                ->whereNull('deleted_at')->first();
     
-                // Prepare data for insertion
-                $data = [
-                    'id_periode' => $id,
-                    'id_tahun_ajaran' => $validatedData['tahun_ajaran'],
-                    'jenis_periode' => $validatedData['kegiatan'],
-                    'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
-                    'tggl_awal_periode' => $validatedData['tggl_awal_periode'],
-                    'tggl_akhir_periode' => $validatedData['tggl_akhir_periode'],
-                    'tggl_akhir_penilaian' => $validatedData['tggl_akhir_penilaian'],
-                    'tggl_periode' => $validatedData['tggl_periode'],
-                    'tanggungjawab_periode' => $validatedData['tanggungjawab_periode'],
-                    'pesan_periode' => $validatedData['pesan_periode'],
-                    'judul_periode' => 'rapor',
-                    'status_periode' => '0',
-                    'id_user' => session('user')['id'],
-                ];
-    
-                // Store data into database
-                $Periode = PeriodeModel::create($data);
-    
-                // Check if data was successfully stored
-                if ($Periode) {
-                    return response()->json(['success' => true, 'message' => 'Berhasil Tambah Data', 'data' => $Periode]);
-                } else {
-                    return response()->json(['error' => true, 'message' => 'Gagal Tambah Data']);
-                }
+            if (!$cekPeriode) {
+                return response()->json(['error' => true, 'message' => 'Periode tidak ditemukan'], 404);
             }
     
+            // Check if the tahun ajaran already has a rapor entry
+            $cekTahun = PeriodeModel::where('id_tahun_ajaran', $cekPeriode->id_tahun_ajaran)
+                ->where('jenis_periode', 'pbi')
+                ->where('jenis_kegiatan', $cekPeriode->jenis_kegiatan)
+                ->where('judul_periode', 'rapor')
+                ->whereNull('deleted_at')->first();
+    
+            if ($cekTahun) {
+                return response()->json(['success' => false, 'message' => 'Rapor sudah terdaftar'], 400);
+            }
+    
+            // Generate a unique ID based on date and count
+            $tanggal = now()->format('dmy');
+            $nomorUrut = PeriodeModel::whereDate('created_at', now()->toDateString())->count() + 1;
+            $id = 'PBI-' . $tanggal . '-' . $nomorUrut;
+    
+            // Prepare data for insertion
+            $data = [
+                'id_periode' => $id,
+                'id_tahun_ajaran' => $cekPeriode->id_tahun_ajaran,
+                'jenis_periode' => 'pbi',
+                'jenis_kegiatan' => $cekPeriode->jenis_kegiatan,
+                'id_penilaian_periode' => $cekPeriode->id_periode,
+                'tggl_akhir_penilaian' => $validatedData['tggl_akhir_penilaian'],
+                'tggl_periode' => $validatedData['tggl_periode'],
+                'tanggungjawab_periode' => $validatedData['tanggungjawab_periode'],
+                'pesan_periode' => $validatedData['pesan_periode'],
+                'judul_periode' => 'rapor',
+                'status_periode' => '0',
+                'id_user' => session('user')['id'],
+            ];
+    
+            // Insert the data
+            $periode = PeriodeModel::create($data);
+    
+            return response()->json(['success' => true, 'message' => 'Data berhasil ditambahkan', 'data' => $periode]);
+    
         } catch (\Exception $e) {
-            // Handle any exceptions that occur during validation or data insertion
-            return response()->json(['error' => true, 'message' => $e->getMessage()]);
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
         }
     }
+    
     
 
     public function updateData($id,Request $request)
@@ -127,23 +122,26 @@ class PeriodeRaporPbiController extends Controller
         try {
             // Validate incoming request data
             $validatedData = $request->validate([
-                'tahun_ajaran' => 'required|string',
                 'kegiatan' => 'required|string',
-                'jenis_kegiatan' => 'required|string',
-                'tggl_awal_periode' => 'required|date',
-                'tggl_akhir_periode' => 'required|date',
                 'tggl_akhir_penilaian' => 'required|date',
                 'tggl_periode' => 'required|date',
                 'tanggungjawab_periode' => 'required|string',
                 'pesan_periode' => 'required|string',
             ]);
 
+            // Fetch the related periode
+            $cekPeriode = PeriodeModel::where('id_periode', $validatedData['kegiatan'])
+            ->where('judul_periode', 'pbi')
+            ->whereNull('deleted_at')->first();
+
+            if (!$cekPeriode) {
+                return response()->json(['error' => true, 'message' => 'Periode tidak ditemukan'], 404);
+            }
+            
             $data = [
-                'id_tahun_ajaran' => $validatedData['tahun_ajaran'],
-                'jenis_periode' => $validatedData['kegiatan'],
-                'jenis_kegiatan' => $validatedData['jenis_kegiatan'],
-                'tggl_awal_periode' => $validatedData['tggl_awal_periode'],
-                'tggl_akhir_periode' => $validatedData['tggl_akhir_periode'],
+                'id_tahun_ajaran' => $cekPeriode->id_tahun_ajaran,
+                'jenis_kegiatan' => $cekPeriode->jenis_kegiatan,
+                'id_penilaian_periode' => $cekPeriode->id_periode,
                 'tggl_akhir_penilaian' => $validatedData['tggl_akhir_penilaian'],
                 'tggl_periode' => $validatedData['tggl_periode'],
                 'tanggungjawab_periode' => $validatedData['tanggungjawab_periode'],
@@ -151,7 +149,7 @@ class PeriodeRaporPbiController extends Controller
             ];
 
             // Store data into database
-            $Periode = PeriodeModel::where('id_periode',$request->id_periode)->update($data);
+            $Periode = PeriodeModel::where('id_periode',$request->id_periode_rapor)->update($data);
     
             // Check if data was successfully stored
             if ($Periode) {
@@ -208,7 +206,11 @@ class PeriodeRaporPbiController extends Controller
             $dataPeriode = PeriodeModel::where('id_periode', $periode)
             ->where('id_tahun_ajaran', $tahun)
             ->first();
-            $DataPesertaPeriode = PesertaPbiModel::DataPesertaRapor($tahun, $jenisRapor, $dataPeriode->tggl_awal_periode, $dataPeriode->tggl_akhir_periode);
+            $DataPesertaPeriode = PesertaPbiModel::DataPesertaRapor($tahun, $jenisRapor, $dataPeriode->id_penilaian_periode);
+
+            if (!$DataPesertaPeriode) {
+                return response()->json(['error' => true, 'message' => 'Anggota Tidak Ditemukan'], 404);
+            }
             // Convert stdClass objects to arrays
             $DataPesertaPeriode = json_decode(json_encode($DataPesertaPeriode), true);
     
@@ -216,8 +218,7 @@ class PeriodeRaporPbiController extends Controller
                 $tanggal = now()->format('dmy');
                 $nomorUrut = RaporBpiModel::whereDate('created_at', now()->toDateString())->count() + 1;
                 $id = 'RAP-PBI' . '-' . $tanggal . '-' . $nomorUrut;
-            
-                // Example of checking and setting default values for missing keys
+
                 $data = [
                     'id_rapor_pbi' => $id,
                     'id_tahun_ajaran' => $value['id_tahun_ajaran'] ?? null,
@@ -237,9 +238,6 @@ class PeriodeRaporPbiController extends Controller
                     'prbd' => $value['prbd'] ?? null,
                     'aqr' => $value['aqr'] ?? null,
                     'wwsn' => $value['wwsn'] ?? null,
-                    'kwta' => $value['kwta'] ?? null,
-                    'perkemahan' => $value['perkemahan'] ?? null,
-                    'mbit' => $value['mbit'] ?? null,
                     'sholat_wajib' => $value['sholat_wajib'] ?? null,
                     'tilawah' => $value['tilawah'] ?? null,
                     'tahajud' => $value['tahajud'] ?? null,
@@ -248,6 +246,9 @@ class PeriodeRaporPbiController extends Controller
                     'dzikri' => $value['dzikri'] ?? null,
                     'puasa' => $value['puasa'] ?? null,
                     'infaq' => $value['infaq'] ?? null,
+                    'kwta' => $value['kwta'] ?? null,
+                    'perkemahan' => $value['perkemahan'] ?? null,
+                    'mbit' => $value['mbit'] ?? null,
                     'id_user' => session('user')['id'],
                 ];
             

@@ -55,7 +55,7 @@
                         Mandiri Bina Pribadi Islam (BPI)
                     </li>
                     <li class="sidebar-item {{ $menu == 'mandiri_bpi' ? 'active' : null }}">
-						<a class='sidebar-link' href='{{ url('siswa/mandiri_bpi')}}'>
+						<a class='sidebar-link' href='{{ url('siswa/bpi/mandiri_bpi')}}'>
 							<i class="align-middle me-2 fas fa-fw fa-edit"></i> <span class="align-middle">Mandiri Bina Pribadi Islam (BPI)</span>
 						</a>
 					</li>

@@ -219,6 +219,7 @@ class PenilaianPbiGuruController extends Controller
                         'puasa' => $validatedData['aktivitas_amal_puasa'],
                         'infaq' => $validatedData['aktivitas_amal_infaq'],
                         'id_user' => session('user')['id'],
+                        'jenis_pengisian_amal' => 'tidak mandiri',
                     ];
                     $PenialaiSM = AktifitasAmalModel::create($data);
                 } else {
@@ -261,6 +262,34 @@ class PenilaianPbiGuruController extends Controller
             }
         } catch (\Exception $e) {
             return response()->json(['error' => true, 'message' => 'Terjadi kesalahan saat menghapus data', 'details' => $e->getMessage()]);
+        }
+    }
+
+    public function verifikasiData($id,$kategori)
+    {
+        try {
+
+            if ($kategori === 'tidak') {
+                $data = [
+                    'status_amal' => 2,
+                    'ktr_amal' => 'Data anda input tidak sesuai dengan apa yang kamu kerjakan, mohon berbuat kejujuran dalam memberikan apa yang kamu kerjakan.'
+                ];
+                $verifikasiNilai = AktifitasAmalModel::where('id_aktifitas_amal', $id)->update($data);
+            } else {
+                $data = [
+                    'status_amal' => 1,
+                    'ktr_amal' => 'Data anda input sesuai dengan apa yang kamu kerjakan, mohon untuk di pertahankan dan lebih baik lagi.'
+                ];
+                $verifikasiNilai = AktifitasAmalModel::where('id_aktifitas_amal', $id)->update($data);
+            }
+                        
+            if ($verifikasiNilai) {
+                return response()->json(['success' => true, 'message' => 'Data Berhasil Verifikasi']);
+            } else {
+                return response()->json(['error' => true, 'message' => 'Data Tidak Berhasil Verifikasi']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => 'Terjadi kesalahan saat Verifikasi data', 'details' => $e->getMessage()]);
         }
     }
 
@@ -375,6 +404,7 @@ class PenilaianPbiGuruController extends Controller
             $jumlah_bidang_studi = BidangStudiModel::RataNilaiRapor($periode,$tahun,$siswa);
             $jumlah_karakter = KarakterModel::RataNilaiRapor($periode,$tahun,$siswa);
             $jumlah_amal = AktifitasAmalModel::RataNilaiRapor($periode,$tahun,$siswa);
+            $nilai_amal_ext = AktifitasAmalModel::NilaiAmalListExt($periode,$tahun,$siswa,$kelas);
             return response()->json([
                 'success' => true, 
                 'message' => 'Data Ditemukan',
@@ -385,6 +415,7 @@ class PenilaianPbiGuruController extends Controller
                 'jumlah_bidang_studi' => $jumlah_bidang_studi,
                 'jumlah_karakter' => $jumlah_karakter,
                 'jumlah_amal' => $jumlah_amal,
+                'nilai_amal_ext'=> $nilai_amal_ext,
             ]);
         } catch (\Throwable $th) {
             return response()->json(['error' => true, 'message' => 'Data Tidak Ditemukan']);

@@ -13,13 +13,38 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title" id="judul_header">
-                    DATA PESERTA BINA PRIBADI ISLAM (BPI)
+                    DATA PESERTA BINA PRIBADI ISLAM (BPI) {{ strtoupper($judul_2->nama_tahun_ajaran) . ' ' . strtoupper($judul_1->jenis_kegiatan) }}
                 </h1>
             </div>
             <div class="row">
                 <div class="col-12">
                     <div class="card ">
                         <div class="card-header">
+                            <div class="card-actions float-start">
+                                <div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">
+                                            <select class="form-control select2 " name="Idperiode" id="Idperiode" placeholder="Masukkan periode"
+                                                data-bs-toggle="select2" style="width: 200px;" required>
+                                                <option value="" disabled selected>PILIH PERIODE LAMPAU</option>
+                                                <?php
+                                                    foreach ($periode_lampau as $key => $value) {
+                                                ?>
+                                                    <option value="<?= $value->id_periode; ?>">
+                                                        <?= strtoupper('BPI ' . $value->nama_tahun_ajaran . ' ' . $value->jenis_kegiatan); ?>
+                                                    </option>
+                                                <?php
+                                                    }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <button class="btn btn-secondary tarikDataBtn" id="tarikDataBtn" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Tarik data periode lampau">
+                                            <i class="fas fa-arrow-down"></i> Tarik Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card-actions float-end">
                                 <div>
                                     <div class="btn-group">
@@ -79,7 +104,7 @@
                                                             <label>Tahun Ajaran</label>
                                                             <input type="text" name="tahun_ajaran" id="tahun_ajaran"
                                                                 class="form-control" placeholder="Tahun Ajaran"
-                                                                value="{{ strtoupper($judul_2->nama_tahun_ajaran) . ' [' . strtoupper($judul_1->jenis_periode) . ']' }}"
+                                                                value="{{ strtoupper($judul_2->nama_tahun_ajaran) . ' [' . strtoupper($judul_1->jenis_kegiatan) . ']' }}"
                                                                 readonly>
                                                             <input type="text" name="id_tahun_ajaran"
                                                                 id="id_tahun_ajaran" class="form-control"
@@ -150,6 +175,16 @@
         $('#dataForm')[0].reset();
 
         $(document).ready(function() {
+            $('.select2').select2();
+            $('#tarikDataBtn').prop('disabled', true);
+            $('#Idperiode').on('change', function() {
+                if ($(this).val()) {
+                    $('#tarikDataBtn').prop('disabled', false);
+                } else {
+                    $('#tarikDataBtn').prop('disabled', true);
+                }
+            });
+            
             $.ajax({
                 url: '{{ url('admin/guru/data_guru') }}',
                 method: 'GET',
@@ -171,6 +206,7 @@
                     console.error('Error fetching data:', error);
                 }
             });
+
             $.ajax({
                 url: '{{ url('admin/peserta_pbi/data_siswa') }}/' + tahun_ajaran + '/' + periode,
                 method: 'GET',
@@ -563,5 +599,68 @@
                 }
             });
         });
+
+        // tarik data
+        $(document).on('click', '.tarikDataBtn', function() {
+            var idPeriodeBaru = "{{ $periode }}";
+            var idPeriodeLampau = $('#Idperiode').val();
+            var idTahun = "{{ $tahun_ajaran }}";
+
+            // Show confirmation dialog
+            Swal.fire({
+                title: 'Tarik Data',
+                text: 'Apakah Anda ingin menarik semua data dari periode lampau?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya menarik semu data ini'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading while executing
+                    Swal.fire({
+                        title: 'Sedang Menarik Data...',
+                        text: 'Harap tunggu.',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    // Execute AJAX request
+                    $.ajax({
+                        url: `{{ url('admin/peserta_pbi/tarik_periode_lampau_pbi') }}/${idPeriodeBaru}/${idPeriodeLampau}/${idTahun}`,
+                        type: 'POST',
+                        data: { _token: '{{ csrf_token() }}' },
+                        success: function(response) {
+                            Swal.fire({
+                                title: response.success ? 'Sukses' : 'Error',
+                                text: response.success
+                                    ? `Proses Tarik Data Selesai\nTotal Data: ${response.total_data}\nBerhasil Ditambah: ${response.berhasil_ditarik}\nGagal Ditambah: ${response.gagal_ditarik}`
+                                    : response.message,
+                                icon: response.success ? 'success' : 'error',
+                                confirmButtonText: 'OK'
+                            });
+                            refreshForm();
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: xhr.responseJSON?.message || 'Terjadi kesalahan.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                            refreshForm();
+                        }
+                    });
+                }
+            });
+        });
+
+        function refreshForm() {
+            $('#datatables-ajax').DataTable().ajax.reload();
+            $('.select2').val(null).trigger('change');
+            $('#dataForm2')[0].reset();
+        }
+
+
     </script>
 @endsection

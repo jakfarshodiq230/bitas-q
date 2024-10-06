@@ -94,8 +94,6 @@
                             var tanggal = new Date(row.tggl_akhir_penilaian);
                             var tanggal_syn = new Date(row.updated_at);
                             var options = { day: 'numeric', month: 'long', year: 'numeric' };
-                            var tanggal_mulai_1 = tanggal_mulai.toLocaleDateString('id-ID', options);
-                            var tanggal_akhir_2 = tanggal_akhir.toLocaleDateString('id-ID', options);
                             
                             const options2 = { 
                                 day: 'numeric', 
@@ -108,7 +106,7 @@
                             };
                             var tanggal_formatted = tanggal.toLocaleDateString('id-ID', options2);
                             var tanggal_sinkron= tanggal_syn.toLocaleDateString('id-ID', options2);
-                            return `Mulai Rapor : ${tanggal_mulai_1} s/d  ${tanggal_akhir_2} <br>
+                            return `
                             <span class="badge ${new Date(row.tggl_akhir_penilaian) < new Date() ? 'bg-danger' : 'bg-success'}">Akhir Penilaian : ${tanggal_formatted}
                             </span> <br>
                             <span class="badge bg-success">Sinkronisasi Data : ${tanggal_sinkron}</span>`;
