@@ -82,14 +82,7 @@ class BpiControllerSiswa extends Controller
         $html = view('Siswa/bpi/cetak_rapor_pbi',compact('nilai'));
         
         // Print text using writeHTMLCell()
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-        // Center the image
-        if (file_exists(asset('storage/' . $nilai->foto_siswa))) {
-            $imagePath = asset('storage/' . $nilai->foto_siswa);
-        } else {
-            $imagePath = asset('assets/admin/img/avatars/pas_foto.jpg');
-        }        
+        $pdf->writeHTML($html, true, false, true, false, '');   
         // Close and output PDF document
         $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
     }

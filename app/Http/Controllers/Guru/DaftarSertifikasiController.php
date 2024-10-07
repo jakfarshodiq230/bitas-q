@@ -197,7 +197,7 @@ class DaftarSertifikasiController extends Controller
         $nilai_sertif = 'Dan Dinyatakan Lulus Dengan Predikat '.$nilai_ktr['grade'];
 
         // Set background image
-        $backgroundImagePath = asset('storage/sertifikat/' . $identitas->file_periode);
+        $backgroundImagePath = storage_path('app/public/sertifikat/' . $identitas->file_periode);
         $pdf->Image($backgroundImagePath, 0, 0, 330.2, 215.9, '', '', '', false, 300, '', false, false, 0);
 
         // Set font
@@ -231,7 +231,7 @@ class DaftarSertifikasiController extends Controller
         // Print text using writeHTMLCell()
         $pdf->writeHTML($html, true, false, true, false, '');
         // Output PDF
-        $pdf->Output('sertifikat.pdf', 'D');
+        $pdf->Output('sertifikat.pdf', 'I');
     }
     
     

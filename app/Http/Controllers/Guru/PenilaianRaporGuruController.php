@@ -390,9 +390,11 @@ class PenilaianRaporGuruController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
 
         // Center the image
-        $imagePath = $nilai->foto_siswa 
-        ? asset('storage/' . $nilai->foto_siswa) 
-        : asset('assets/admin/img/avatars/pas_foto.jpg');
+        if (file_exists(storage_path('app/public/' . $nilai->foto_siswa))) {
+            $imagePath = storage_path('app/public/' . $nilai->foto_siswa);
+        } else {
+            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
+        }
          
          // Correctly define the image path
         $imageWidth = 30; // Set image width (3 cm)
@@ -404,21 +406,21 @@ class PenilaianRaporGuruController extends Controller
         $pdf->Image($imagePath, $x, $y, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 0, false, false, false);
         
 
-        $url = url("cek_rapor/{$idRapor}/{$peserta}/{$tahun}/{$jenjang}/{$periode}");
-        $generator = new BarcodeGeneratorPNG();
-        $barcodeImage = $generator->getBarcode($url, BarcodeGeneratorPNG::TYPE_CODE_128);
-        // Create a temporary file for the barcode image
-        $tempBarcodeFile = tempnam(sys_get_temp_dir(), 'barcode');
-        file_put_contents($tempBarcodeFile, $barcodeImage);
+        // $url = url("cek_rapor/{$idRapor}/{$peserta}/{$tahun}/{$jenjang}/{$periode}");
+        // $generator = new BarcodeGeneratorPNG();
+        // $barcodeImage = $generator->getBarcode($url, BarcodeGeneratorPNG::TYPE_CODE_128);
+        // // Create a temporary file for the barcode image
+        // $tempBarcodeFile = tempnam(sys_get_temp_dir(), 'barcode');
+        // file_put_contents($tempBarcodeFile, $barcodeImage);
 
-        $imageWidth1 = 40; // Set image width (3 cm)
-        $imageHeight1 = 10; // Set image height (4 cm)
-        $x1 = 150; // Calculate X position for centering
-        $y1 = 262; // Set a fixed Y position from the top
-        $pdf->Image($tempBarcodeFile, $x1, $y1, $imageWidth1, $imageHeight1, 'PNG', '', '', false, 300, '', false, false, 0, false, false, false);
+        // $imageWidth1 = 40; // Set image width (3 cm)
+        // $imageHeight1 = 10; // Set image height (4 cm)
+        // $x1 = 150; // Calculate X position for centering
+        // $y1 = 262; // Set a fixed Y position from the top
+        // $pdf->Image($tempBarcodeFile, $x1, $y1, $imageWidth1, $imageHeight1, 'PNG', '', '', false, 300, '', false, false, 0, false, false, false);
 
         // Close and output PDF document
         $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
-        unlink($tempBarcodeFile);
+        // unlink($tempBarcodeFile);
     }
 }

@@ -27,15 +27,15 @@ if (!function_exists('getRating')) {
 <table cellpadding="2" >
     <tr>
         <th width="15%">Nama</th>
-        <th width="50%">: <b> {{ ucwords($nilai->nama_siswa) }}</b></th>
+        <th width="50%">: <b> {{ strtoupper($nilai->nama_siswa) }}</b></th>
         <th width="10%">Semester</th>
-        <th width="40%">: <b> {{ ucwords($nilai->jenis_kegiatan) }}</b></th>
+        <th width="40%">: <b> {{ strtoupper($nilai->jenis_kegiatan) }}</b></th>
     </tr>
     <tr>
         <th width="15%">Kelas/Program</th>
-        <th width="50%">: <b> {{ $nilai->nama_kelas.' / '.ucwords($nilai->jenis_periode) }}</b></th>
+        <th width="50%">: <b> {{ strtoupper($nilai->nama_kelas).' / '.strtoupper($nilai->jenis_periode) }}</b></th>
         <th width="10%">Periode</th>
-        <th width="40%">: <b> {{ $nilai->nama_tahun_ajaran}}</b></th>
+        <th width="40%">: <b> {{ strtoupper($nilai->nama_tahun_ajaran) }}</b></th>
     </tr>
 </table>
 <br>

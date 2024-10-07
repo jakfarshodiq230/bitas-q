@@ -78,31 +78,28 @@ class AlquranControllerSiswa extends Controller
         $pdf->SetY(30);
         //Add content
         $nilai = PenilaianPengembanganDiriModel::AjaxNilaiPesertaRapor($periode);
-        if ($jenjang === 'tahfidz') {
-            $html = view('Admin/rapor/peserta/cetak_rapor_tahfidz',compact('nilai'));
-        } else {
-            $html = view('Admin/rapor/peserta/cetak_rapor_tahsin',compact('nilai'));
+        if (!$nilai) {
+            // Return JSON response with an error if data is not found
+            return response()->json(['error' => 'Data not found or invalid. Please try again.'], 404);
         }
-        
-        // Print text using writeHTMLCell()
-        $pdf->writeHTML($html, true, false, true, false, '');
+        $html = ($jenjang === 'tahfidz')
+        ? view('Admin/rapor/peserta/cetak_rapor_tahfidz', compact('nilai'))
+        : view('Admin/rapor/peserta/cetak_rapor_tahsin', compact('nilai'));
 
-        // Center the image
-        if (file_exists(asset('storage/' . $nilai->foto_siswa))) {
-            $imagePath = asset('storage/' . $nilai->foto_siswa);
+        $pdf->writeHTML($html, true, false, true, false, '');
+        if (file_exists(storage_path('app/public/' . $nilai->foto_siswa))) {
+            $imagePath = storage_path('app/public/' . $nilai->foto_siswa);
         } else {
-            $imagePath = asset('assets/admin/img/avatars/pas_foto.jpg');
-        }        
-         // Correctly define the image path
+            $imagePath = public_path('assets/admin/img/avatars/pas_foto.jpg');
+        }
+
         $imageWidth = 30; // Set image width (3 cm)
         $imageHeight = 40; // Set image height (4 cm)
-        $x = ($pdf->getPageWidth() - $imageWidth) / 2; // Calculate X position for centering
-        $y = 230; // Set a fixed Y position from the top
+        $x = ($pdf->getPageWidth() - $imageWidth) / 2; 
+        $y = 230;
         
         // Place the image
         $pdf->Image($imagePath, $x, $y, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 0, false, false, false);
-           
-        // Close and output PDF document
         $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
 
     }

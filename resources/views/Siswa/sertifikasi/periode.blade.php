@@ -45,7 +45,7 @@
 @section('scripts')
     <!-- Your other content -->
     <script>
-        $('.select2').val(null).trigger('change');
+
         $(document).ready(function() {
             // menampilkan data
             $('#datatables-ajax').DataTable({
@@ -115,5 +115,6 @@
             var url= '{{ url('siswa/sertifikasi/downloadRapor') }}/'+ id_periode;
             window.location.href = url;
         });
+
     </script>
 @endsection

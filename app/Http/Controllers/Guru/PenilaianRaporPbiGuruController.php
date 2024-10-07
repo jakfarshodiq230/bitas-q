@@ -207,6 +207,6 @@ class PenilaianRaporPbiGuruController extends Controller
         $pdf->writeHTML($html, true, false, true, false, '');
       
         // Close and output PDF document
-        $pdf->Output($nilai->nama_siswa.'.pdf', 'D'); // 'I' for inline display or 'D' for download
+        $pdf->Output($nilai->nama_siswa.'.pdf', 'I'); // 'I' for inline display or 'D' for download
     }
 }

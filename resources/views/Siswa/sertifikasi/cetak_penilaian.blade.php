@@ -74,7 +74,7 @@
                 $total_ahir = round($total / $identitas->sesi_periode);
         ?>
         <tr style="background-color:#d3d3d3;">
-            <td colspan="4" style="height: 30px; text-align:center; padding-top: 10px; ">Dengan Ini Dinyatakan <strong>{{cekKelulusan($total_ahir)}}</strong> Sertifikasi Hafalan Juz {{ $identitas->juz_periode }}</td>
+            <td colspan="4" style="height: 30px; text-align:center; padding-top: 10px; ">Dengan Ini Dinyatakan <strong>{{cekKelulusan($total_ahir)}}</strong> Sertifikasi Hafalan {{ $identitas->juz_periode }} Juz</td>
             <td style="height: 30px; text-align:center; padding-top: 10px;"><strong>{{$total_ahir}}</strong></td>
             <td style="height: 30px; text-align:center; padding-top: 10px;"><strong>{{cekKelulusan($total_ahir)}}</strong></td>
         </tr>
