@@ -30,6 +30,7 @@ Route::middleware('auth:siswa')->group(function () {
         Route::get('/mandiri_bpi', [BpiControllerSiswa::class, 'IsiMandiri'])->name('siswa.IsiMandiri');
         Route::post('/ajax-simpan-mandiri', [BpiControllerSiswa::class, 'AjaxSimpanMandiri'])->name('siswa.AjaxSimpanMandiri');
         Route::get('/ajax-nilai-mandiri', [BpiControllerSiswa::class, 'AjaxNilaiMandiri'])->name('siswa.AjaxNilaiMandiri');
+        Route::get('/ajax-listpekan-mandiri', [BpiControllerSiswa::class, 'AjaxPekanListMandiri'])->name('siswa.AjaxPekanListMandiri');
     });
 
     Route::prefix('siswa/sertifikasi')->group(function () {

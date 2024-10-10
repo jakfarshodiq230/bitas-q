@@ -100,7 +100,7 @@ class BpiControllerSiswa extends Controller
                 'wizard-peserta' => 'required',
                 'wizard-id-tahun' => 'required',
                 'wizard-id-periode' => 'required',
-                'wizard-sesi' => 'required|numeric',
+                'wizard-pekan' => 'required|numeric',
                 'wizard-guru' => 'required',
                 'wizard-tanggal' => 'required|date',
                 'wizard-wajib' => 'required|numeric',
@@ -117,13 +117,15 @@ class BpiControllerSiswa extends Controller
             $nomorUrut = AktifitasAmalModel::whereDate('created_at', now()->toDateString())->count() + 1;
             $id = 'AKT' . '-' . $tanggal . '-' . $nomorUrut;
 
-            $CountPekan = AktifitasAmalModel::PekanCountMandiri($validatedData['wizard-id-tahun'], $validatedData['wizard-id-periode'], $validatedData['wizard-peserta'], $validatedData['wizard-guru']);
-            if ($CountPekan <= $validatedData['wizard-sesi']) {
+            $CountPekan = AktifitasAmalModel::PekanCountMandiri($validatedData['wizard-id-tahun'], $validatedData['wizard-id-periode'], $validatedData['wizard-peserta'], $validatedData['wizard-guru'],$validatedData['wizard-pekan']);
+            if ($CountPekan) {
+                return response()->json(['error' => true, 'message' => 'Pekan sudah diisi. Silakan pilih pekan lain.']);
+            }
                 $data = [
                     'id_aktifitas_amal' => $id,
                     'id_peserta_pbi' => $validatedData['wizard-peserta'],
                     'tanggal_penilaian_amal' => $validatedData['wizard-tanggal'],
-                    'pekan_amal' => $CountPekan,
+                    'pekan_amal' => $validatedData['wizard-pekan'],
                     'status_amal' => 0,
                     'sholat_wajib' => $validatedData['wizard-wajib'],
                     'tilawah' => $validatedData['wizard-tilawah'],
@@ -138,9 +140,6 @@ class BpiControllerSiswa extends Controller
                 ];
                 $PenialaiSM = AktifitasAmalModel::create($data);
                 return response()->json(['success' => true, 'message' => 'Berhasil Pengisian Mandiri Bina Pribadi Islam (BPI)']);
-            } else {
-                return response()->json(['error' => true, 'message' => 'Sudah Memenuhi Penilaian Perperiode']);
-            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json($e->errors(), 422);
         } catch (\Exception $e) {
@@ -152,6 +151,15 @@ class BpiControllerSiswa extends Controller
         try {
             $nilaiMandiri = PeriodeModel::NilaiaMandiriSiswa();
             return response()->json(['success' => true, 'message' => 'Berhasil Data Nilai Mandiri', 'data' => $nilaiMandiri]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => $e->getMessage()],500);
+        }
+    }
+
+    public function AjaxPekanListMandiri() {
+        try {
+            $PekanList = PeriodeModel::PekanListMandiri();
+            return response()->json(['success' => true, 'message' => 'Berhasil Data Nilai Mandiri', 'data' => $PekanList]);
         } catch (\Exception $e) {
             return response()->json(['error' => true, 'message' => $e->getMessage()],500);
         }

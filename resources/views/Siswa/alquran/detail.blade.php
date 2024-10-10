@@ -331,12 +331,11 @@
                         var n_k_baru = respons.data.n_k_baru || 0;
                         var rata_baru = (n_j_baru+n_f_baru+n_k_baru)/3;
                         var rating_baru = getRating(rata_baru);
-                        var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
                         var surah_baru = respons.data.surah_baru || 0;
                         $('#n_j_baru').text(n_j_baru !== null && !isNaN(n_j_baru) ? parseFloat(n_j_baru).toFixed(2) : '00.00');
                         $('#n_f_baru').text(n_f_baru !== null && !isNaN(n_f_baru) ? parseFloat(n_f_baru).toFixed(2) : '00.00');
                         $('#n_k_baru').text(n_k_baru !== null && !isNaN(n_k_baru) ? parseFloat(n_k_baru).toFixed(2) : '00.00');
-                        $('#rata_baru').text(rata_baru_rounded !== null && !isNaN(rata_baru_rounded) ? rata_baru_rounded : '00.00');
+                        $('#rata_baru').text(parseFloat(rata_baru).toFixed(2)  + ' ( ' + rating_baru + ' )');
 
 
                         var $target = $('#surah_baru');
@@ -360,12 +359,11 @@
                         var n_k_lama = respons.data.n_k_lama || 0;
                         var rata_lama = (n_j_lama+n_f_lama+n_k_lama)/3;
                         var rating_lama = getRating(rata_lama);
-                        var rata_lama_rounded = rata_lama.toFixed(2) + " ( " + rating_lama + " )";
                         var surah_lama = respons.data.surah_lama || 0;
                         $('#n_j_lama').text(n_j_lama !== null && !isNaN(n_j_lama) ? parseFloat(n_j_lama).toFixed(2) : '00.00');
                         $('#n_f_lama').text(n_f_lama !== null && !isNaN(n_f_lama) ? parseFloat(n_f_lama).toFixed(2) : '00.00');
                         $('#n_k_lama').text(n_k_lama !== null && !isNaN(n_k_lama) ? parseFloat(n_k_lama).toFixed(2) : '00.00');
-                        $('#rata_lama').text(rata_lama_rounded !== null && !isNaN(rata_lama_rounded) ? rata_lama_rounded : '00.00');
+                        $('#rata_lama').text(parseFloat(rata_lama).toFixed(2)  + ' ( ' + rating_lama + ' )');
 
 
                         var $target = $('#surah_lama');
@@ -429,13 +427,12 @@
                         var n_k_baru = respons.data.n_k_baru || null;
                         var rata_baru = (n_g_baru+n_m_baru+n_w_baru+n_k_baru)/4;
                         var rating_baru = getRating(rata_baru);
-                        var rata_baru_rounded = rata_baru.toFixed(2) + " ( " + rating_baru + " )";
                         var surah_baru = respons.data.surah_baru || null;
                         $('#n_g_baru').text(n_g_baru !== null && !isNaN(n_g_baru) ? parseFloat(n_g_baru).toFixed(2) : '00.00');
                         $('#n_m_baru').text(n_m_baru !== null && !isNaN(n_m_baru) ? parseFloat(n_m_baru).toFixed(2) : '00.00');
                         $('#n_w_baru').text(n_w_baru !== null && !isNaN(n_w_baru) ? parseFloat(n_w_baru).toFixed(2) : '00.00');
                         $('#n_k_baru').text(n_k_baru !== null && !isNaN(n_k_baru) ? parseFloat(n_k_baru).toFixed(2) : '00.00');
-                        $('#rata_baru').text(rata_baru_rounded !== null && !isNaN(rata_baru_rounded) ? rata_baru_rounded : '00.00');
+                        $('#rata_baru').text(parseFloat(rata_baru).toFixed(2)  + ' ( ' + rating_baru + ' )');
                         var $target = $('#surah_baru');
                         $target.empty();
 
@@ -458,13 +455,12 @@
                         var n_k_lama = respons.data.n_k_lama || null;
                         var rata_lama = (n_g_lama+n_m_lama+n_w_lama+n_k_lama)/4;
                         var rating_lama = getRating(rata_lama);
-                        var rata_lama_rounded = rata_lama.toFixed(2) + " ( " + rating_lama + " )";
                         var surah_lama = respons.data.surah_lama || null;
                         $('#n_g_lama').text(n_g_lama !== null && !isNaN(n_g_lama) ? parseFloat(n_g_lama).toFixed(2) : '00.00');
                         $('#n_m_lama').text(n_m_lama !== null && !isNaN(n_m_lama) ? parseFloat(n_m_lama).toFixed(2) : '00.00');
                         $('#n_w_lama').text(n_w_lama !== null && !isNaN(n_w_lama) ? parseFloat(n_w_lama).toFixed(2) : '00.00');
                         $('#n_k_lama').text(n_k_lama !== null && !isNaN(n_k_lama) ? parseFloat(n_k_lama).toFixed(2) : '00.00');
-                        $('#rata_lama').text(rata_lama_rounded !== null && !isNaN(rata_lama_rounded) ? rata_lama_rounded : '00.00');
+                        $('#rata_lama').text(parseFloat(rata_lama).toFixed(2)  + ' ( ' + rating_lama + ' )');
 
                         var $target = $('#surah_lama');
                         $target.empty();

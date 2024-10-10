@@ -173,9 +173,7 @@
         var tahun_ajaran = "{{ $tahun_ajaran }}";
         $('.select2').val(null).trigger('change');
         $('#dataForm')[0].reset();
-
-        $(document).ready(function() {
-            $('.select2').select2();
+        $('.select2').select2();
             $('#tarikDataBtn').prop('disabled', true);
             $('#Idperiode').on('change', function() {
                 if ($(this).val()) {
@@ -184,7 +182,7 @@
                     $('#tarikDataBtn').prop('disabled', true);
                 }
             });
-
+        $(document).ready(function() {
             $.ajax({
                 url: '{{ url('admin/guru/data_guru') }}',
                 method: 'GET',
@@ -195,7 +193,7 @@
                     select.append('<option>PILIH</option>'); // Add default option
                     $.each(data.data, function(key, value) {
                         select.append('<option value="' + value.id_guru + '">' + value
-                            .nama_guru + '</option>');
+                            .nama_guru.toUpperCase() + '</option>');
                     });
 
                     if (selectedId && select.find('option[value="' + selectedId + '"]').length > 0) {
@@ -216,7 +214,7 @@
                     select.append('<option>PILIH</option>'); // Add default option
                     $.each(data.data, function(key, value) {
                         select.append('<option value="' + value.id_siswa + '">' + value
-                            .nama_siswa + '</option>');
+                            .nama_siswa.toUpperCase() + '</option>');
                     });
                 },
                 error: function(xhr, status, error) {
@@ -233,7 +231,7 @@
                     select.append('<option>PILIH</option>'); // Add default option
                     $.each(data.data, function(key, value) {
                         select.append('<option value="' + value.id_kelas + '">' + value
-                            .nama_kelas + '</option>');
+                            .nama_kelas.toUpperCase() + '</option>');
                     });
                 },
                 error: function(xhr, status, error) {

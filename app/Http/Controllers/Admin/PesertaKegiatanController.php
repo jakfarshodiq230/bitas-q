@@ -158,9 +158,9 @@ class PesertaKegiatanController extends Controller
             $validatedData = $request->validate([
                 'id_tahun_ajaran' => 'required|string',
                 'id_periode' => 'required|string',
-                'peserta' => 'required|string',
-                'kelas' => 'required|string',
-                'guru' => 'required|string',
+                'peserta' => 'required|string|not_in:PILIH',
+                'kelas' => 'required|string|not_in:PILIH',
+                'guru' => 'required|string|not_in:PILIH',
             ]);
 
             $CekData = PesertaKegiatan::where('id_tahun_ajaran', $validatedData['id_tahun_ajaran'])

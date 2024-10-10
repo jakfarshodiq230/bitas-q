@@ -38,9 +38,9 @@
                         alt="Linda Miller" />
                     <div class="fw-bold">{{ ucfirst(strtolower(session('user')['nama_user'])) }}</div>
                     @php
-                        $levelUser = session('user')['level_user'];
+                        $levelUser = session('user')['level'];
+                        
                     @endphp
-
                     <small>
                         @switch($levelUser)
                             @case(1)

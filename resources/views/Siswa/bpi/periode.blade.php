@@ -112,7 +112,7 @@
                         data: 'nama_tahun_ajaran',
                         name: 'nama_tahun_ajaran',
                         render: function(data, type, row) {
-                            var formatted_string = row.nama_tahun_ajaran.toUpperCase() + '<br>' + row.jenis_kegiatan.toUpperCase();
+                            var formatted_string = row.nama_tahun_ajaran.toUpperCase() + '<br>' + row.jenis_kegiatan.toUpperCase() + '<br>' + 'KALI/PEKAN ' + row.pekan_amal;
                             return formatted_string;
                         }
                     },
@@ -213,14 +213,6 @@
                                         <i class="fas fa-download"></i>
                                 </button>
                                 
-                                <button class="btn btn-sm btn-info mandiriBtn me-1" 
-                                        data-bs-toggle="tooltip" 
-                                        data-bs-placement="top" 
-                                        title="Amalan Mandiri" 
-                                        data-id_periode="${row.id_periode}">
-                                        <i class="fas fa-edit"></i>
-                                </button>
-
                                 <span class="status badge bg-success" 
                                     style="display: ${new Date(row.tggl_akhir_penilaian) > new Date() ? 'inline-block' : 'none'};">
                                     ${new Date(row.tggl_akhir_penilaian) > new Date() ? 'Dalam Proses Penilaian' : ''}

@@ -21,32 +21,29 @@
                     <div class="card ">
                         <div class="card-header">
                             <div class="card-actions float-start">
-                                <div>
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-2">
-                                            <select class="form-control select2 " name="Idperiode" id="Idperiode" placeholder="Masukkan periode"
-                                                data-bs-toggle="select2" style="width: 200px;" required>
-                                                <option value="" disabled selected>PILIH PERIODE LAMPAU</option>
-                                                <?php
-                                                    foreach ($periode_lampau as $key => $value) {
-                                                ?>
-                                                    <option value="<?= $value->id_periode; ?>">
-                                                        <?= strtoupper('BPI ' . $value->nama_tahun_ajaran . ' ' . $value->jenis_kegiatan); ?>
-                                                    </option>
-                                                <?php
-                                                    }
-                                                ?>
-                                            </select>
-                                        </div>
-                                        <button class="btn btn-secondary tarikDataBtn" id="tarikDataBtn" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Tarik data periode lampau">
-                                            <i class="fas fa-arrow-down"></i> Tarik Data
-                                        </button>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <select class="form-control select2 " name="Idperiode" id="Idperiode" placeholder="Masukkan periode"
+                                            data-bs-toggle="select2" style="width: 200px;" required>
+                                            <option value="" disabled selected>PILIH PERIODE LAMPAU</option>
+                                            <?php
+                                                foreach ($periode_lampau as $key => $value) {
+                                            ?>
+                                                <option value="<?= $value->id_periode; ?>">
+                                                    <?= strtoupper('BPI ' . $value->nama_tahun_ajaran . ' ' . $value->jenis_kegiatan); ?>
+                                                </option>
+                                            <?php
+                                                }
+                                            ?>
+                                        </select>
                                     </div>
+                                    <button class="btn btn-secondary tarikDataBtn" id="tarikDataBtn" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Tarik data periode lampau">
+                                        <i class="fas fa-arrow-down"></i> Tarik Data
+                                    </button>
                                 </div>
                             </div>
                             <div class="card-actions float-end">
-                                <div>
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-warning dropdown-toggle"
                                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -59,7 +56,6 @@
                                     </div>
                                     <button class="btn btn-primary" id="addBtn" data-bs-toggle="tooltip"
                                         data-bs-placement="top" title="Tambah Data"><i class="fas fa-add"></i></button>
-                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -145,7 +141,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
@@ -173,18 +168,17 @@
         var tahun_ajaran = "{{ $tahun_ajaran }}";
         $('.select2').val(null).trigger('change');
         $('#dataForm')[0].reset();
-
-        $(document).ready(function() {
-            $('.select2').select2();
-            $('#tarikDataBtn').prop('disabled', true);
-            $('#Idperiode').on('change', function() {
-                if ($(this).val()) {
-                    $('#tarikDataBtn').prop('disabled', false);
-                } else {
-                    $('#tarikDataBtn').prop('disabled', true);
-                }
-            });
-            
+        
+        $('.select3').select2();
+        $('#tarikDataBtn').prop('disabled', true);
+        $('#Idperiode').on('change', function() {
+            if ($(this).val()) {
+                $('#tarikDataBtn').prop('disabled', false);
+            } else {
+                $('#tarikDataBtn').prop('disabled', true);
+            }
+        });
+        $(document).ready(function() {            
             $.ajax({
                 url: '{{ url('admin/guru/data_guru') }}',
                 method: 'GET',
@@ -326,7 +320,7 @@
             $('#formModal').modal('show');
         });
 
-        // editData
+        //editData
         $(document).on('click', '.editBtn', function() {
             var id = $(this).data('id');
             Swal.fire({
@@ -413,7 +407,7 @@
             });
         });
 
-        // save dan update data
+        //save dan update data
         $('#saveBtn').on('click', function() {
             var $saveBtn = $(this);
             var id = $('#id_peserta_pbi').val();
@@ -600,7 +594,7 @@
             });
         });
 
-        // tarik data
+        //tarik data
         $(document).on('click', '.tarikDataBtn', function() {
             var idPeriodeBaru = "{{ $periode }}";
             var idPeriodeLampau = $('#Idperiode').val();
@@ -654,12 +648,6 @@
                 }
             });
         });
-
-        function refreshForm() {
-            $('#datatables-ajax').DataTable().ajax.reload();
-            $('.select2').val(null).trigger('change');
-            $('#dataForm2')[0].reset();
-        }
 
 
     </script>

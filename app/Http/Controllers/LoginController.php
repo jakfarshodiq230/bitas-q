@@ -49,7 +49,8 @@ class LoginController extends Controller
                     $request->session()->put('user', [
                         'id' => $user->id ?? $user->id_guru ?? $user->id_siswa,
                         'nama_user' => $user->nama_user ?? $user->nama_guru ?? $user->nama_siswa,
-                        'level_user' => $guard
+                        'level_user' => $guard,
+                        'level' => $user->level_user,
                     ]);
     
                     return response()->json([

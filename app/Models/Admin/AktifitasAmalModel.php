@@ -114,7 +114,7 @@ class AktifitasAmalModel extends Model
         return $nextPekan;
     }  
 
-    public static function PekanCountMandiri($tahun, $periode, $peserta, $guru) {
+    public static function PekanCountMandiri($tahun, $periode, $peserta, $guru, $pekan) {
     
         $data = DB::table('penilaian_aktifitas_amal_pbi')
             ->join('peserta_pbi', 'penilaian_aktifitas_amal_pbi.id_peserta_pbi', '=', 'peserta_pbi.id_peserta_pbi')
@@ -122,11 +122,10 @@ class AktifitasAmalModel extends Model
             ->where('peserta_pbi.id_periode', $periode)
             ->where('peserta_pbi.id_peserta_pbi', $peserta)
             ->where('penilaian_aktifitas_amal_pbi.id_user',$guru)
-            ->max('penilaian_aktifitas_amal_pbi.pekan_amal');
+            ->where('penilaian_aktifitas_amal_pbi.pekan_amal',$pekan)
+            ->exists(); 
     
-        $nextPekan = $data ? $data + 1 : 1;
-    
-        return $nextPekan;
+        return $data;
     } 
 
     public static function NilaiAmalListAll($periode, $tahun,$siswa,$guru,$kelas)  {

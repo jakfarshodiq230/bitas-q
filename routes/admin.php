@@ -285,7 +285,7 @@ Route::group(['middleware' => ['auth:users']], function () {
 
         Route::get('rekap/kegiatan', [RekapController::class, 'kegiatan'])->name('admin.rekap-kegiatan.kegiatan');
         Route::get('rekap/kegiatan/periode_kegiatan', [RekapController::class, 'PeriodeKegiatan'])->name('admin.rekap-kegiatan.PeriodeKegiatan');
-        Route::get('rekap/kegiatan/siswa_kegiatan/{IdPeriode}/{IdKelas}', [RekapController::class, 'SiswaKegiatan'])->name('admin.rekap-kegiatan.SiswaKegiatan');
+        Route::get('rekap/kegiatan/siswa_kegiatan/{IdPeriode}/{IdKelas}/{jenis}', [RekapController::class, 'SiswaKegiatan'])->name('admin.rekap-kegiatan.SiswaKegiatan');
         Route::get('rekap/kegiatan/download/{IdPeriode}/{IdKelas}/{idSiswa}', [RekapController::class, 'cetakExcelKegiatan'])->name('admin.rekap-kegiatan.cetakExcelKegiatan');
 
         Route::get('rekap/sertifikasi', [RekapController::class, 'sertifikasi'])->name('admin.rekap-sertifikasi.sertifikasi');

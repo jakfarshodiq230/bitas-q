@@ -31,6 +31,7 @@
                                                         name="periode" id="periode" data-bs-toggle="select2" required>
                                                         <option value="PILIH">PILIH</option>
                                                     </select>
+                                                <input type="text" class="form-control" name="jenis_kegiatan" id="jenis_kegiatan" placeholder="jenis_kegiatan" hidden>
 											</div>
 											<div class="mb-3 col-md-3">
 												<label for="inputEmail4">Kelas</label>
@@ -79,7 +80,8 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ PENILAIAN ${item.jenis_periode.toUpperCase()} ]`);
+                    
+                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ PENILAIAN ${item.jenis_periode.toUpperCase() + ' ' + item.jenis_kegiatan.toUpperCase()} ]`);
                     populateSelect('kelas', response.kelas, item => item.nama_kelas.toUpperCase());
                     $('.siswa').val(null).trigger('change');
 
@@ -90,6 +92,7 @@
 
                         let periodeSelected = $('#periode').val();
                         let kelasSelected = $('#kelas').val();
+                        let jenisSelected = $('#jenis_kegiatan').val();
 
                         if (periodeSelected === 'PILIH' || kelasSelected === 'PILIH') {
                             Swal.fire({
@@ -108,7 +111,7 @@
                             });
 
                             $.ajax({
-                                url: '{{ url('admin/rekap/kegiatan/siswa_kegiatan') }}/' + periodeSelected + '/' + kelasSelected,
+                                url: '{{ url('admin/rekap/kegiatan/siswa_kegiatan') }}/' + periodeSelected + '/' + kelasSelected + '/' + jenisSelected,
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function(response) {
@@ -158,14 +161,32 @@
                 defaultOption.textContent = 'PILIH';
                 selectElement.appendChild(defaultOption);
 
+                // Populate the select element
                 data.forEach(item => {
                     const option = document.createElement('option');
-                    option.value = (name === 'periode') ? item.id_periode : (name === 'kelas') ? item.id_kelas : item.id_siswa;
+
+                    option.value = (name === 'periode') ? item.id_periode : 
+                                (name === 'kelas') ? item.id_kelas : item.id_siswa;
+
+
                     option.textContent = formatText(item);
                     selectElement.appendChild(option);
                 });
 
                 $(selectElement).select2();
+
+                if (name === 'periode') {
+                    $(selectElement).on('change', function() {
+                        const selectedPeriodeId = this.value;
+                        const selectedItem = data.find(item => item.id_periode === selectedPeriodeId);
+                        if (selectedItem) {
+                            document.querySelector('#jenis_kegiatan').value = selectedItem.judul_periode;
+                        } else {
+                            // If no match is found, clear the input
+                            document.querySelector('#jenis_kegiatan').value = '';
+                        }
+                    });
+                }
 
                 // Tambahkan logika untuk mengaktifkan/menonaktifkan tombol download atau save berdasarkan input
                 function checkInputs() {

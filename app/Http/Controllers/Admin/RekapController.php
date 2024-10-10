@@ -12,12 +12,14 @@ use App\Models\Admin\PeriodeModel;
 use App\Models\Admin\KelasModel;
 use App\Models\Admin\RaporKegiatanModel;
 use App\Models\Admin\PesertaKegiatan;
+use App\Models\Admin\PesertaPbiModel;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\NilaiRapor;
 use App\Exports\NilaiKegiatan;
 use App\Exports\NilaiSertifikasi;
 use App\Exports\NilaiBpi;
+
 
 
 class RekapController extends Controller
@@ -37,7 +39,7 @@ class RekapController extends Controller
     public function periode()
     {
         try {
-            $periode = PeriodeModel::DataRapor();
+            $periode = PeriodeModel::DataRaporRekap();
             $kelas = KelasModel::whereNull('deleted_at')->get();
             $response = [
                 'periode' => $periode,
@@ -85,7 +87,7 @@ class RekapController extends Controller
     public function PeriodeKegiatan()
     {
         try {
-            $periode = PeriodeModel::DataAll();
+            $periode = PeriodeModel::DataAllRekap();
             $kelas = KelasModel::whereNull('deleted_at')->get();
             $response = [
                 'periode' => $periode,
@@ -101,14 +103,24 @@ class RekapController extends Controller
         }
     }
 
-    public function SiswaKegiatan($idPeriode, $IdKelas)
+    public function SiswaKegiatan($idPeriode, $IdKelas,$Jenis)
     {
         try {
-            $siswa = PesertaKegiatan::PesertaExcel($idPeriode, $IdKelas);
-            $response = [
-                'siswa' => $siswa,
-            ];
-            return response()->json($response, Response::HTTP_OK);
+            if ($Jenis === 'setoran') {
+                $siswa = PesertaKegiatan::PesertaExcel($idPeriode, $IdKelas);
+                $response = [
+                    'siswa' => $siswa,
+                ];
+                return response()->json($response, Response::HTTP_OK);
+            } else {
+                $siswa = PesertaPbiModel::PesertaPbiExcel($idPeriode, $IdKelas);
+                $response = [
+                    'siswa' => $siswa,
+                ];
+                return response()->json($response, Response::HTTP_OK);
+            }
+            
+            
         }catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json($e->errors(), 422);
         }catch (\Exception $e) {

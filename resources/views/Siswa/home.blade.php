@@ -14,7 +14,6 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mb-5">Timeline Kegiatan</h4>
-                        <!-- Timeline 7 - Bootstrap Brain Component -->
                         <div class="bsb-timeline-7 bg-light">
                             <div class="row justify-content-center">
                                 <div class="col-10 col-md-12 col-xl-10 col-xxl-9">

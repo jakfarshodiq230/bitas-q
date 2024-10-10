@@ -44,6 +44,22 @@ class PeriodeModel extends Model
         return $data;
     }
 
+    public static function DataAllRekap($idPeriodeKegiatan = null)
+    {
+        $query = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->select('periode.*', 'tahun_ajaran.*')
+            ->whereNull('periode.deleted_at')
+            ->whereIn('periode.judul_periode', ['setoran', 'pbi']);
+    
+        if ($idPeriodeKegiatan) {
+            $query->where('periode.id_periode', '!=', $idPeriodeKegiatan);
+        }
+    
+        return $query->orderBy('periode.created_at', 'DESC')->get();
+    }
+    
+
     public static function DataPbi($idPeriode = null)
     {
         $query = DB::table('periode')
@@ -72,6 +88,19 @@ class PeriodeModel extends Model
             ->whereNull('periode.deleted_at')
             ->where('periode.judul_periode', 'rapor')
             ->where('periode.jenis_periode', '!=','pbi')
+            ->get();
+        
+        return $data;
+    }
+
+    public static function DataRaporRekap()
+    {
+        $data = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->select('periode.*','tahun_ajaran.*',) 
+            ->orderBy('periode.jenis_periode', 'ASC')
+            ->whereNull('periode.deleted_at')
+            ->where('periode.judul_periode', 'rapor')
             ->get();
         
         return $data;
@@ -240,6 +269,56 @@ class PeriodeModel extends Model
         
         return $data;
     }
+
+    public static function PekanListMandiri()
+    {
+        $dataPeriode = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->join('peserta_pbi', 'periode.id_periode', '=', 'peserta_pbi.id_periode')
+            ->select('periode.sesi_periode')
+            ->whereNull('periode.deleted_at')
+            ->where('judul_periode', 'pbi')
+            ->where('status_periode', 1)
+            ->where('peserta_pbi.id_siswa', session('user')['id'])
+            ->first();
+    
+        $dataAmal = DB::table('periode')
+            ->join('tahun_ajaran', 'periode.id_tahun_ajaran', '=', 'tahun_ajaran.id_tahun_ajaran')
+            ->join('peserta_pbi', 'periode.id_periode', '=', 'peserta_pbi.id_periode')
+            ->join('penilaian_aktifitas_amal_pbi', 'peserta_pbi.id_peserta_pbi', '=', 'penilaian_aktifitas_amal_pbi.id_peserta_pbi')
+            ->select('penilaian_aktifitas_amal_pbi.pekan_amal', 'penilaian_aktifitas_amal_pbi.jenis_pengisian_amal')
+            ->whereNull('periode.deleted_at')
+            ->where('judul_periode', 'pbi')
+            ->where('status_periode', 1)
+            ->where('penilaian_aktifitas_amal_pbi.status_amal', 1)
+            ->where('peserta_pbi.id_siswa', session('user')['id'])
+            ->get();
+    
+        $result = [];
+        if ($dataPeriode) {
+            $sesiPeriode = $dataPeriode->sesi_periode;
+            
+            // Extract pekan_amal values for easier checking later
+            $checkedAmal = $dataAmal->pluck('pekan_amal')->toArray();
+            for ($i = 1; $i <= $sesiPeriode; $i++) {
+                $isChecked = in_array($i, $checkedAmal) ? 'checked' : '';
+                $jenisPengisianAmal = $dataAmal->firstWhere('pekan_amal', $i)->jenis_pengisian_amal ?? '';
+    
+                $result[] = [
+                    'sesi_periode' => $sesiPeriode,
+                    'pekan_amal' => $i,
+                    'checked' => $isChecked,
+                    'jenis_pengisian_amal' => $jenisPengisianAmal,
+                ];
+            }
+        }
+    
+        return $result;
+    }
+    
+    
+    
+    
     
     
     

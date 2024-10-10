@@ -499,6 +499,27 @@ class PesertaPbiModel extends Model
         return $data; // Return the result set
     }
 
+    public static function PesertaPbiExcel($idPeriode,$IdKelas)  {
+        $data = DB::table('peserta_pbi')
+        ->join('siswa', 'peserta_pbi.id_siswa', '=', 'siswa.id_siswa')
+        ->join('kelas', 'peserta_pbi.id_kelas', '=', 'kelas.id_kelas')
+        ->select(
+            'siswa.id_siswa',
+            'siswa.nama_siswa',
+            'siswa.nisn_siswa',
+            'kelas.id_kelas',
+            'kelas.nama_kelas',
+            'peserta_pbi.id_peserta_pbi',
+        )
+        ->whereNull('peserta_pbi.deleted_at')
+        ->whereNull('siswa.deleted_at')
+        ->where('peserta_pbi.id_kelas', $IdKelas)
+        ->where('peserta_pbi.id_periode', $idPeriode)
+        ->where('peserta_pbi.status_peserta_pbi', 1)
+        ->get();
+        return $data; // Return the result set
+    }
+
    
     
 }

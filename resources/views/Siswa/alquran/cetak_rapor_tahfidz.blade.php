@@ -66,19 +66,19 @@ if (!function_exists('getRatingKhatam')) {
         <tr>
             <td style="height: 20px; text-align:center">01</td>
             <td style="height: 20px;text-align:lefth">Kelancaran</td>
-            <td style="height: 20px; text-align:center">{{ $nilai->n_k_baru === null ? 0 : $nilai->n_k_baru}}</td>
+            <td style="height: 20px; text-align:center">{{ $nilai->n_k_baru === null ? 0 : floor($nilai->n_k_baru)}}</td>
             <td style="height: 20px;text-align:center"><?= getRating($nilai->n_k_baru) ?></td>
         </tr>
         <tr>
             <td style="height: 20px; text-align:center">02</td>
             <td style="height: 20px;text-align:lefth">Fashohah</td>
-            <td style="height: 20px; text-align:center">{{ $nilai->n_f_baru === null ? 0 : $nilai->n_f_baru}}</td>
+            <td style="height: 20px; text-align:center">{{ $nilai->n_f_baru === null ? 0 : floor($nilai->n_f_baru)}}</td>
             <td style="height: 20px;text-align:center"><?= getRating($nilai->n_f_baru) ?></td>
         </tr>
         <tr>
             <td style="height: 20px; text-align:center">03</td>
             <td style="height: 20px;text-align:lefth">Tajwid</td>
-            <td style="height: 20px; text-align:center">{{ $nilai->n_j_baru === null ? 0 : $nilai->n_j_baru}}</td>
+            <td style="height: 20px; text-align:center">{{ $nilai->n_j_baru === null ? 0 : floor($nilai->n_j_baru)}}</td>
             <td style="height: 20px;text-align:center"><?= getRating($nilai->n_j_baru) ?></td>
         </tr>
         <?php
@@ -155,19 +155,19 @@ if (!function_exists('getRatingKhatam')) {
         <tr>
             <td style="height: 20px; text-align:center">01</td>
             <td style="height: 20px;text-align:lefth">Kelancaran</td>
-            <td style="height: 20px; text-align:center">{{ $nilai->n_k_lama === null ? 0 : $nilai->n_k_lama}}</td>
+            <td style="height: 20px; text-align:center">{{ $nilai->n_k_lama === null ? 0 : floor($nilai->n_k_lama)}}</td>
             <td style="height: 20px;text-align:center"><?= getRating($nilai->n_k_lama) ?></td>
         </tr>
         <tr>
             <td style="height: 20px; text-align:center">02</td>
             <td style="height: 20px;text-align:lefth">Fashohah</td>
-            <td style="height: 20px; text-align:center">{{ $nilai->n_f_lama === null ? 0 : $nilai->n_f_lama}}</td>
+            <td style="height: 20px; text-align:center">{{ $nilai->n_f_lama === null ? 0 : floor($nilai->n_f_lama)}}</td>
             <td style="height: 20px;text-align:center"><?= getRating($nilai->n_f_lama) ?></td>
         </tr>
         <tr>
             <td style="height: 20px; text-align:center">03</td>
             <td style="height: 20px;text-align:lefth">Tajwid</td>
-            <td style="height: 20px; text-align:center">{{ $nilai->n_j_lama === null ? 0 : $nilai->n_j_lama}}</td>
+            <td style="height: 20px; text-align:center">{{ $nilai->n_j_lama === null ? 0 : floor($nilai->n_j_lama)}}</td>
             <td style="height: 20px; text-align:center"><?= getRating($nilai->n_j_lama) ?></td>
         </tr>
         <?php

@@ -70,7 +70,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ ${item.jenis_periode === 'pbi' ? 'BPI' : item.jenis_periode.toUpperCase()} ${item.jenis_kegiatan.toUpperCase()} ]`);
+                    populateSelect('periode', response.periode, item => `${item.nama_tahun_ajaran} [ ${item.jenis_periode === 'pbi' ? 'BINA PRIBADI ISLAM (BPI)' : item.jenis_periode.toUpperCase()} ${item.jenis_kegiatan.toUpperCase()} ]`);
                     populateSelect('kelas', response.kelas, item => item.nama_kelas.toUpperCase());
                 },
                 error: function (xhr, status, error) {

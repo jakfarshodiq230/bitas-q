@@ -83,8 +83,8 @@ class AlquranControllerSiswa extends Controller
             return response()->json(['error' => 'Data not found or invalid. Please try again.'], 404);
         }
         $html = ($jenjang === 'tahfidz')
-        ? view('Admin/rapor/peserta/cetak_rapor_tahfidz', compact('nilai'))
-        : view('Admin/rapor/peserta/cetak_rapor_tahsin', compact('nilai'));
+        ? view('siswa/alquran/cetak_rapor_tahfidz', compact('nilai'))
+        : view('siswa/alquran/cetak_rapor_tahsin', compact('nilai'));
 
         $pdf->writeHTML($html, true, false, true, false, '');
         if (file_exists(storage_path('app/public/' . $nilai->foto_siswa))) {
